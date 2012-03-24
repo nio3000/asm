@@ -2,6 +2,7 @@
 *.log
 *.tmp
 *.swp
+*~
 
 # OS generated files
 .DS_Store
