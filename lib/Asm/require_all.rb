@@ -10,5 +10,6 @@ require 'Asm/Boilerplate.rb'
 require 'Asm/Loader.rb'
 require 'Asm/Virtual_Machine.rb'
 
-# application specific functionality that might be taken out
+# application specific functionality
 require 'Asm/Program_Options.rb'
+require 'Asm/Application.rb'
