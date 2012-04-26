@@ -1,4 +1,15 @@
 #!/usr/bin/ruby
+# regexmod v0.1 (Regular Expression Module)
+# The script takes a single instruction and converts it to binary.
+#
+# The script takes a command and data values as input
+# Example:
+#   $ irb RegExMod.rb MOVE R1,R2
+#
+# Note: This script is not white space friendly so make sure data 
+# values contain no white spaces. The program will not function 
+# properly if you enter in MOVE R1, R2. Also all commands must be 
+# capatilize.
 
 comment = /\/\/[A-Za-z0-9]*/
 input = ARGV[0]
