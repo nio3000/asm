@@ -1,87 +1,14 @@
-def	raise_unless_type( argument ,type )
-	raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
-end
+# this file is undocumented, haha.
+require	'Asm/require_all.rb'
 
-# the residence of hardcoded magic numbers & literals
-#
-# Examples
-# 	puts Literals_are_magic::Memory::inclusive_minimum_index #=> 0
-#
-# nested modules are used to facilitate reorganization & renaming later as well as to allow us to indulge in explanatory variable names.
-module	Literals_are_magic
-	# Virtual_Machine Memory related magic
-	module	Memory
-		# one word is the value associated with a memory location
-		bits_per_word	= 16
-		bits_per_halfword	= 8
-		bits_per_quarterword	= 4
-		# memory locations are homomorphic to integers, so determining contiguous memory locations is reduced to integer calculations
-		inclusive_minimum_index	= 0
-		exclusive_maximum_index	= 2^16
-		# special registers
-	end
-	# Virtual_Machine Register related magic
-	module	Register
-		# register locations are homomorphic to integers, so determining contiguous contiguous locations is reduced to integer calculations
-		inclusive_minimum_index	= 0
-		exclusive_maximum_index	= 2^4
-		# special registers, integer indicies
-		program_counter_index	= 15
-		input_register_indicies	= [ 6 ]
-		output_register_indicies	= [ 13 ,14 ]
-		# special registers, memory locations
-		program_counter_memory_location	= Bitset.new( '0000000000001111' )
-		input_register_memory_locations	= [ Bitset.new( '0000000000000110' ) ]
-		output_register_memory_locations	= [ Bitset.new( '0000000000001101' ) ,Bitset.new( '0000000000001110' ) ]
-	end
-end
-
-class	Program_Options
-end
-
-class	Application
-end
-
-module	BCPU
-	# a Loader instance initializes a Virtual_Machine instance's memory.
-	class	Loader
-		# Public: get & set the_Virtual_Machine associated with this instance.
-		attr_accessor :the_Virtual_Machine
-		# Public: initialize Loader instance with reference to a Virtual_Machine
-		#
-		# the_Virtual_Machine	- reference to a Virtual_Machine instance
-		def initialize( the_Virtual_Machine )
-			raise_unless_type( the_Virtual_Machine ,BCPU::Virtual_Machine )
-			@the_Virtual_Machine	= the_Virtual_Machine
-		end
-		attr_accessor :passive_target
-		# Public: invoke Loader instance with a given file of BCPU assembly
-		def load( file )
-			...
-			for each line in file,
-				classify the line
-					Regexp match, y/n
-					context appropriate, y/n
-				obtain the relevant info from the line
-					Regex match, named captures
-					valid, y/n
-				pass that information to Loader.relevant functionality.
-					do it
-					valid, y/n
-		end
-		# Private: given ???, do ???; for invalid literals, do ???
-		def directive__memory_value( memory_location_literal ,memory_value_literal )
-			...
-		end
-		# Private: given ???, do ???; for invalid literals, do ???
-		def directive__asm( memory_location_literal )
-			...
-		end
-	end
-
-DESIGN FAIL:
+	DESIGN FAIL:
 blarg, memory location concept needs to be altared
 presently, unequal strings represent the same memory location.
+
+go away, this code is still being designed; start on something related to Asm::Loader instead.
+
+# module Asm contains code relevant to the function of a BCPU VM.
+module Asm
 	# a Virtual_Machine instance preserves the internal state of a BCPU and can simulate that BCPU excution affects its internal state.
 	class	Virtual_Machine
 		# Public: initialize Virtual_Machine instance
