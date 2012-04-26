@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+# this file instantiates an Application instance & does the stuff
+require	'Asm/require_all.rb'
+
+didnt_have_breakfast	= Asm::Application.new( )
+
+puts 'herro wald'
