@@ -34,13 +34,13 @@ module Asm
 			bits_per_quarterword	= 4
 			# memory locations are homomorphic to integers, so determining contiguous memory locations is reduced to integer calculations
 			inclusive_minimum_index	= 0
-			exclusive_maximum_index	= 2^16
+			exclusive_maximum_index	= 65536 # 2^16
 		end
 		# Asm::Virtual_Machine Register related magic
 		module	Register
 			# register locations are homomorphic to integers, so determining contiguous contiguous locations is reduced to integer calculations
 			inclusive_minimum_index	= 0
-			exclusive_maximum_index	= 2^4
+			exclusive_maximum_index	= 16 # 2^4
 			# special registers, integer indicies
 			program_counter_index	= 15
 			input_register_indicies	= [ 6 ]

@@ -7,6 +7,7 @@ require 'Asm/version.rb'
 require 'Asm/Boilerplate.rb'
 
 # the core functionality of the BCPU virtual machine
+require 'Asm/BCPU.rb'
 require 'Asm/Loader.rb'
 require 'Asm/Virtual_Machine.rb'
 

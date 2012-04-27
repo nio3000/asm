@@ -16,5 +16,14 @@ module Asm
 			raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
 			return
 		end
+		# paranoid typechecking boilerplate
+		#
+		# argument - an object whose type is being checked
+		# type - the type which argument's type must be for the check to not fail.
+		#
+		# Returns true iff arugment is of type type.
+		def	true_if_type( argument ,type )
+			return	argument.kind? == type
+		end
 	end
 end
