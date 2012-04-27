@@ -44,3 +44,73 @@ end
 		puts	'no match; not a literal'
 	end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+### hahahahahaha
+# ...
+module	Type
+	# ...
+	module	BCPU
+		# ...
+		#
+		# Raises exception when argument does not translate to a valid BCPU word
+		# Returns a new BCPU word
+		def Word( argument )
+			# Bitset initialized to 16 bits of zeros.
+			result	= Bitset.new( Asm::Literals_Are_Magic::Memory::bits_per_word )
+			# using argument to set the bits
+			if Asm::Boilerplate::true_if_type( argument ,String )
+				# TODO implement this
+				# convert decimal literals
+				# convert binary literals 
+				raise "hahaha"
+			else if Asm::Boilerplate::true_if_type( argument ,Integer )
+				# convert Integers
+				binary_value	= argument.to_s( )
+				# TODO binary_value needs clean up; if Integer was < 0, then the formatting is wonky (see String's ruby docs), else it's probably fine
+					# psst, abs( argument ) makes it positive; but you still need to set the sign bit and make sure its in the valid range for negative & twos complement
+				partial_result	= Bitset.from_s( binary_value )
+				result	= result | partial_result
+			end
+			return	result
+		end
+		# strict type checking
+		#
+		# Returns true if argument is a BCPU word
+		def Word?( argument )
+			return	Asm::Boilerplate::true_if_type( argument ,Bitset ) && ( argument.size == Asm::Literals_Are_Magic::Memory::bits_per_word )
+		end
+	end
+	# ...
+	module	Memory
+		# strict type checking
+		#
+		# Returns true if argument is a memory value
+		def Value?( argument )
+			return	Asm::Literals_Are_Magic::Type::BCPU::Word?( argument )
+		end
+		# strict type checking
+		#
+		# Returns true if argument is a memory location
+		def Location?( argument )
+			index	= argument.to_s( ).to_i( 2 )
+			return	Asm::Literals_Are_Magic::Type::BCPU::Word?( argument ) && Asm::Literals_Are_Magic::Type::Memory::Index?( index )
+		end
+		# strict type checking
+		#
+		# Returns true if argument is a memory (location) index
+		def Index?( argument )
+			return	Asm::Boilerplate::true_if_type( argument ,Integer ) && ( Asm::Literals_Are_Magic::Memory::inclusive_minimum_index <= argument ) && ( argument < Asm::Literals_Are_Magic::Memory::exclusive_maximum_index )
+		end
+	end
+end

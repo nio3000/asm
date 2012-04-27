@@ -1,11 +1,6 @@
-# this file is undocumented, haha.
+# DOCIT
+
 require	'Asm/require_all.rb'
-
-	DESIGN FAIL:
-blarg, memory location concept needs to be altared
-presently, unequal strings represent the same memory location.
-
-go away, this code is still being designed; start on something related to Asm::Loader instead.
 
 # module Asm contains code relevant to the function of a BCPU VM.
 module Asm
@@ -16,7 +11,71 @@ module Asm
 			# the_memory is a hash (collection of key -> value pairs)
 			@the_memory	= { }
 		end
-		# Private: memory_location checking & recovery
+		# Public: set the value associated with a memory location
+		#
+		# memory_location - DOCIT
+		# memory_value - DOCIT
+		#
+		# (implicit) Raises exceptions when the memory_location is invalid
+		# (implicit) Raises exceptions when the memory_value is invalid
+		# Returns nothing
+		def set_memory_location_to_memory_value( memory_location ,memory_value )
+			Asm::Boilerplate::raise_unless_type( memory_location ,Asm::BCPU::Memory::Location )
+			Asm::Boilerplate::raise_unless_type( memory_value ,Asm::BCPU::Memory::Value )
+			self.the_memory[memory_location]	= memory_value
+			return
+		end
+		# Public: get the value associated with a memory location; does validity checking; will create association if none exists. DOCIT
+		#
+		# memory_location - a String containing binary digits
+		#
+		# (implicit) Raises exceptions when the memory_location is invalid
+		# Returns the value associated with memory_location.
+		def get_memory_value( memory_location )
+			Asm::Boilerplate::raise_unless_type( memory_location ,Asm::BCPU::Memory::Location )
+			# create association if none exists
+			unless self.the_memory.has_key?( memory_location )
+				self.set_memory_location_to_memory_value( memory_location ,Asm::BCPU::Memory::Value.new )
+			end
+			# return association
+			return	self.the_memory[memory_location]
+		end
+		# Public: get the values associated with a range of memory locations; does validity checking; values are presented in order; DOCIT
+		#
+		# inclusive_minimum - Integer; lowest index in the desired range
+		# exclusive_maximum - Integer; lowest index not in the desired range and greater than any index in the desired range
+		#
+		# Examples
+		#
+		# 	# the GUI needs to show a 'window' into the memory that tracks the location of the program counter
+		#	the_Virtual_Machine.get_memory_range( ...tba... )
+		#
+		# computationally expensive; consider using orderedhash gem if this becomes a dealbreaker
+		# (implicit) Raises exceptions when the memory range is invalid
+		# Returns ordered array
+		def get_memory_range( inclusive_minimum ,exclusive_maximum )
+			# obtain order-agnostic array
+			existant_locations	= []
+			an_array_of_memory_values	= []
+			self.the_memory.each do |key ,value|
+				if ( key.to_i( ) >= inclusive_minimum ) && ( key.to_i( ) < exclusive_maximum )
+					existant_locations.push key
+				end
+			end
+			# haha
+			existant_locations.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }
+			existant_locations.each do |key|
+				an_array_of_memory_values.push( self.the_memory[key] )
+			end
+			# return sorted array
+			an_array_of_memory_values
+		end
+	end
+end
+
+
+###
+# Private: memory_location checking & recovery
 		#
 		# memory_location - a String containing binary digits
 		#
@@ -39,100 +98,4 @@ module Asm
 			# return validated memory_location
 			return memory_location
 		end
-		# Private: arbitrary range checking on memory locations
-		#
-		# memory_location - a String containing binary digits
-		# inclusive_minimum - Integer; lowest index in the desired range
-		# exclusive_maximum - Integer; lowest index not in the desired range and greater than any index in the desired range
-		#
-		# Raises exceptions when the memory range is invalid
-		# (implicit) Raises exceptions when the memory_location is invalid
-		# Returns true if the given memory_location is a valid memory location and if it memory location is in the memory range; else false
-		def valid_memory_location_in_memory_range?( memory_location ,inclusive_minimum ,exclusive_maximum )
-			# type checking
-			raise_unless_type( inclusive_minimum ,Integer ) # decimal integer
-			raise_unless_type( exclusive_maximum ,Integer ) # decimal integer
-			raise "inclusive_minimum is not less than exclusive_maximum." unless inclusive_minimum < exclusive_maximum
-			integer_location	= self.valid_memory_location( memory_location ).to_i( 2 )
-			# verification
-			return (inclusive_minimum <= integer_location) && (exclusive_maximum > integer_location)
-		end
-		# Private: memory_value checking & recovery
-		#
-		# memory_value - Bitset; represents a word
-		#
-		# Raises exceptions when the memory_value is invalid
-		# Returns the validated (possibly altered;recovered) memory value
-		def valid_memory_value( memory_value )
-			# type checking
-			raise_unless_type( value ,Bitset )
-			#	could potentially recover a string by instantiating a Bitset from it.
-			# bit amount checking
-			raise "invalid value, too many bits" if value.size > Literals_are_magic::Memory::bits_per_word
-			#	could potentially recover by testing for leading zeros & removing them
-			raise "invalid memory location, out of range" if value.size < Literals_are_magic::Memory::bits_per_word
-			#	could potentially recover by prepending leading zeros
-			# return validated memory_value
-			return memory_value
-		end
-		# Private: generation of memory values for undefined behavior that is defined to actually work.
-		#
-		# Returns the a validated memory value
-		def undefined_memory_value
-			return Bitset.new( Literals_are_magic::Memory::bits_per_word )
-		end
-		# Public: set the value associated with a memory location; does validity checking
-		#
-		# memory_location - a String containing binary digits
-		# memory_value - Bitset; represents a word
-		#
-		# (implicit) Raises exceptions when the memory_location is invalid
-		# (implicit) Raises exceptions when the memory_value is invalid
-		# Returns nothing
-		def set_memory_location_to_bitset( memory_location ,memory_value )
-			@the_memory[self.valid_memory_location( memory_location )]	= self.valid_memory_value( memory_value )
-			return
-		end
-		# Public: get the value associated with a memory location; does validity checking; will create association if none exists.
-		#
-		# memory_location - a String containing binary digits
-		#
-		# (implicit) Raises exceptions when the memory_location is invalid
-		# Returns the value associated with memory_location.
-		def get_memory_location( memory_location )
-			# type checking
-			validated_memory_location	= self.valid_memory_location( memory_location )
-			# create association if none exists
-			unless @the_memory.has_key?( validated_memory_location )
-				@the_memory[validated_memory_location]	= self.undefined_memory_value
-			end
-			# return association
-			return	@the_memory[validated_memory_location]
-		end
-		# Public: get the values associated with a range of memory locations; does validity checking; values are presented in order
-		#
-		# inclusive_minimum - Integer; lowest index in the desired range
-		# exclusive_maximum - Integer; lowest index not in the desired range and greater than any index in the desired range
-		#
-		# Examples
-		#
-		# 	# the GUI needs to show a 'window' into the memory that tracks the location of the program counter
-		#	the_Virtual_Machine.get_memory_range( ...tba... )
-		#
-		# computationally expensive; consider using orderedhash gem if this becomes a dealbreaker
-		# (implicit) Raises exceptions when the memory range is invalid
-		# Returns ordered array
-		def get_memory_range( inclusive_minimum ,exclusive_maximum )
-			# obtain order-agnostic array
-			an_array_of_memory_values	= []
-			@the_memory.each do |key ,value|
-				if self.valid_memory_location_in_memory_range( key ,inclusive_minimum ,exclusive_maximum )
-					an_array_of_memory_values.push value
-			end
-			# haha
-			an_array_of_memory_values.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }
-			# return sorted array
-			an_array_of_memory_values
-		end
-	end
-end
+###
