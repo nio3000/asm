@@ -1,7 +1,10 @@
 # this file is undocumented, haha.
 require	'Asm/require_all.rb'
 
-# module Asm contains code relevant to the function of a BCPU VM.
+=begin
+# Asm
+* highest-level namespace for the project.
+=end
 module Asm
 	# a Loader instance initializes a Virtual_Machine instance's memory.
 	class	Loader

@@ -1,54 +1,84 @@
-# this file contains the boilerplate and magic numbers/literals used with module Asm.
-#
-# design choice:
-# 	if your code has a number (Ruby) literal hardcoded in it,
-# 	then you should consider how or why you could instead hardcode that value in Asm::Literals_Are_Magic.
-#
-# design choice:
-# 	nested modules improve readability,
-# 	allow simpler variable names,
-# 	and are a good idea;
-# 	I don't care if it takes you forever to type the full nested name,
-# 	this design choice is for reading them.
+=begin
+# /lib/Asm/Literals_are_Magic.rb
+* complete definition of module Asm::Magic and all nested modules thereof
+=end
+
 require	'Asm/require_all.rb'
 
-# module Asm contains code relevant to the function of a BCPU VM.
+=begin
+# Asm
+* highest-level namespace for the project.
+=end
 module Asm
-	# the residence of hardcoded magic numbers, literals & related methods
-	#
-	# Examples
-	# 	puts Literals_Are_Magic::Memory::inclusive_minimum_index #=> 0
-	#
-	# nested modules are used to facilitate reorganization & renaming later as well as to allow us to indulge in explanatory variable names.
-	module	Literals_Are_Magic
-		# Asm::Loader related magic
-		module	Loader
+=begin	# Asm::Magic
+	* hardcoded immutable values # TODO figure out how to make them immutable
+	
+	## design choice
+	* refactor multiple-word names into nested modules
+		* indulge in ludicrously explanatory variable names
+		* I don't care if it takes you forever to type the full nested name
+		* this design choice is for reading them
+=end	module Magic
+=begin		# Asm::Magic::Loader
+=end		module	Loader
 			# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
-			example_invalid_load_index	= -666
+			# TODO remove explicit dependence on this variable.
+			example_invalid_load_index	= Asm::Magic::Memory::Index::Exclusive::minimum
 		end
-		# Asm::Virtual_Machine Memory related magic
-		module	Memory
-			# one word is the value associated with a memory location
-			bits_per_word	= 16
-			bits_per_halfword	= 8
-			bits_per_quarterword	= 4
-			# memory locations are homomorphic to integers, so determining contiguous memory locations is reduced to integer calculations
-			inclusive_minimum_index	= 0
-			exclusive_maximum_index	= 65536 # 2^16
+=begin		# Asm::Magic::Memory
+=end		module	Memory
+=begin			# Asm::Magic::Memory::Bits_per
+=end			module	Bits_per
+				word	= 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
+				halfword	= 8
+				quarterword	= 4
+			end
+=begin			# Asm::Magic::Memory::Index
+			* minimums & maximums in inclusive & exclusive flavours
+=end			module	Index
+				module	Inclusive
+					minimum	= 0
+					maximum	= 65535
+				end
+				module	Exclusive
+					minimum	= Asm::Magic::Memory::Index::Inclusive::minimum - 1
+					maximum	= Asm::Magic::Memory::Index::Inclusive::maximum + 1	# 2^16 = 65536
+				end
+			end
 		end
-		# Asm::Virtual_Machine Register related magic
-		module	Register
-			# register locations are homomorphic to integers, so determining contiguous contiguous locations is reduced to integer calculations
-			inclusive_minimum_index	= 0
-			exclusive_maximum_index	= 16 # 2^4
-			# special registers, integer indicies
-			program_counter_index	= 15
-			input_register_indicies	= [ 6 ]
-			output_register_indicies	= [ 13 ,14 ]
-			# special registers, memory locations
-			program_counter_memory_location	= Bitset.new( '0000000000001111' )
-			input_register_memory_locations	= [ Bitset.new( '0000000000000110' ) ]
-			output_register_memory_locations	= [ Bitset.new( '0000000000001101' ) ,Bitset.new( '0000000000001110' ) ]
+=begin		# Asm::Magic::Register
+=end		module	Register
+=begin			# Asm::Magic::Register::Index
+			* memory indicies of unique special function registers
+			* minimums & maximums in inclusive & exclusive flavours
+=end			module	Index
+				program_counter	= Asm::Magic::Register::Index::Inclusive::maximum	# 15
+				module	Inclusive
+					minimum	= 0
+					maximum	= 15
+				end
+				module	Exclusive
+					minimum	= Asm::Magic::Register::Index::Inclusive::minimum - 1
+					maximum	= Asm::Magic::Register::Index::Inclusive::maximum + 1	# 2^4 = 16
+				end
+			end
+=begin			# Asm::Magic::Register::Indicies
+			* memory indicies of categories of special function registers
+=end			module	Indicies
+				input_registers	= [ 6 ]
+				output_registers	= [ 13 ,14 ]
+			end
+=begin			# Asm::Magic::Register::Location
+			* memory locations of unique special function registers
+=end			module	Location 
+				program_counter	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::program_counter )
+			end
+=begin			# Asm::Magic::Register::Locations
+			* memory locations of ategories of special function registers
+=end			module	Locations 
+				input_registers	= Asm::Magic::Register::Indicies::input_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
+				output_registers	= Asm::Magic::Register::Indicies::output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
+			end
 		end
 	end
 end

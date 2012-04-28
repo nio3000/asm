@@ -1,5 +1,9 @@
-# this file is hard-coded to require all other files containing code under module asm.
-#	code dependent on code under module asm can require this file instead of attempting to require files by name explicitly.
+=begin
+# /lib/Asm/require_all.rb
+* hardcoded require for each file containing code under module Asm
+* dependency on module Asm should be resolved by requiring this file
+	* no, don't bother just requiring the individual files you think you need.
+=end
 
 # misc functionality for consistency
 require 'Asm/Literals_Are_Magic.rb'

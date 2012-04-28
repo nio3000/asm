@@ -1,36 +1,62 @@
-# DOCIT
+=begin
+# /lib/Asm/Virtual_Machine.rb
+* complete definition of class Asm::Virtual_Machine
+* unit tests on an instance of Asm::Virtual_Machine
+=end
 
 require	'Asm/require_all.rb'
 
-# module Asm contains code relevant to the function of a BCPU VM.
+=begin
+# Asm
+* highest-level namespace for the project.
+=end
 module Asm
-	# a Virtual_Machine instance preserves the internal state of a BCPU and can simulate that BCPU excution affects its internal state.
-	class	Virtual_Machine
-		# Public: initialize Virtual_Machine instance
+=begin
+# Asm::Virtual_Machine
+* persistant BCPU internal state.
+	* BCPU memory locations mapped to BCPU memory values
+	* BCPU register literals mapped to BCPU memory locations
+* invokable inplace modifications to simulate execution affecting BCPU internal state.
+
+### representing BCPU memory locations as objects
+see Asm::BCPU::Memory::Location
+
+### representing BCPU memory values as objects
+see Asm::BCPU::Memory::Value
+
+### implementation details
+* BCPU memory is represented as an associative array (Ruby Hash)
+	* memory_values are allocated on demand & behavior is compatible with preallocation, but will be more memory efficient in the (expected) case of low memory utilization.
+=end	class	Virtual_Machine
+=begin		public: structors & accessors
+		* the instance variable @the_memory is a private implementation detail
+		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::BCPU::Memory::Location.new( )
+=end
+		# initializing default constructor
 		def initialize( )
-			# the_memory is a hash (collection of key -> value pairs)
+			# @the_memory is a hash (collection of key -> value pairs)
 			@the_memory	= { }
 		end
-		# Public: set the value associated with a memory location
+=begin		public: BCPU memory manipulation
+		* strict type checking is intended
+			* incorrect types will raise exceptions.
+=end
+		# DOCIT
 		#
-		# memory_location - DOCIT
-		# memory_value - DOCIT
-		#
-		# (implicit) Raises exceptions when the memory_location is invalid
-		# (implicit) Raises exceptions when the memory_value is invalid
 		# Returns nothing
 		def set_memory_location_to_memory_value( memory_location ,memory_value )
+			# paranoid type checking
 			Asm::Boilerplate::raise_unless_type( memory_location ,Asm::BCPU::Memory::Location )
 			Asm::Boilerplate::raise_unless_type( memory_value ,Asm::BCPU::Memory::Value )
+			# assignment; creates association if none existed, else overwrites.
 			self.the_memory[memory_location]	= memory_value
 			return
 		end
-		# Public: get the value associated with a memory location; does validity checking; will create association if none exists. DOCIT
+		# DOCIT
 		#
-		# memory_location - a String containing binary digits
+		# Will assign an Asm::BCPU::Memory::Value if the association does not exist yet.
 		#
-		# (implicit) Raises exceptions when the memory_location is invalid
-		# Returns the value associated with memory_location.
+		# Returns the Asm::BCPU::Memory::Value mapped by memory_location
 		def get_memory_value( memory_location )
 			Asm::Boilerplate::raise_unless_type( memory_location ,Asm::BCPU::Memory::Location )
 			# create association if none exists
@@ -42,15 +68,11 @@ module Asm
 		end
 		# Public: get the values associated with a range of memory locations; does validity checking; values are presented in order; DOCIT
 		#
-		# inclusive_minimum - Integer; lowest index in the desired range
-		# exclusive_maximum - Integer; lowest index not in the desired range and greater than any index in the desired range
-		#
-		# Examples
-		#
-		# 	# the GUI needs to show a 'window' into the memory that tracks the location of the program counter
-		#	the_Virtual_Machine.get_memory_range( ...tba... )
+		# inclusive_minimum - Integer compatible type; lowest index in the desired range
+		# exclusive_maximum - Integer compatible type; lowest index not in the desired range and greater than any index in the desired range
 		#
 		# computationally expensive; consider using orderedhash gem if this becomes a dealbreaker
+		#
 		# (implicit) Raises exceptions when the memory range is invalid
 		# Returns ordered array
 		def get_memory_range( inclusive_minimum ,exclusive_maximum )
@@ -70,32 +92,11 @@ module Asm
 			# return sorted array
 			an_array_of_memory_values
 		end
+=begin
+		# Unit tests on this class
+		* any claim made in documentation ought to have a unit tests
+			* TODO implement the unit tests
+=end		class Test < Test::Unit::TestCase
+		end
 	end
 end
-
-
-###
-# Private: memory_location checking & recovery
-		#
-		# memory_location - a String containing binary digits
-		#
-		# well-formed memory locations are represented by String instances containing unsigned binary
-		#	todo: verify whether or not this method correctly interprets "1111" as unsigned instead of signed
-		# valid memory locations represent an integer in the range [Literals_are_magic::Memory::inclusive_minimum_index ,Literals_are_magic::Memory::exclusive_maximum_index)
-		# memory locations do not have to be 16 bits to be valid! They only need translate to an appropriate integer value when subjected to ".to_i( 2 )"
-		# 	hint: when breaking up a memory value in to chunks of binary, a chunk representing a register can be used as a valid memory location.
-		#
-		# Raises exceptions when the memory_location is invalid
-		# Returns the validated (possibly altered;recovered) memory location
-		def valid_memory_location( memory_location )
-			# type checking
-			raise_unless_type( memory_location ,String )
-			raise "invalid memory location, contains characters other than '0' and '1'" unless memory_location.count( "01" ) == memory_location.size
-			# range checking
-			integer_location	= memory_location.to_i( 2 )
-			raise "invalid memory location, out of range" if integer_location >= Literals_are_magic::Memory::inclusive_minimum_index
-			raise "invalid memory location, out of range" if integer_location < Literals_are_magic::Memory::exclusive_maximum_index
-			# return validated memory_location
-			return memory_location
-		end
-###

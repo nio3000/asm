@@ -2,7 +2,10 @@
 
 require	'Asm/require_all.rb'
 
-# module Asm contains code relevant to the function of a BCPU VM.
+=begin
+# Asm
+* highest-level namespace for the project.
+=end
 module Asm
 	# DOCIT
 	module BCPU

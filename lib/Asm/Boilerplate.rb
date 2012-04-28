@@ -1,7 +1,10 @@
 # this file contains refactored boilerplate code; homeless but common code
 require	'Asm/require_all.rb'
 
-# module Asm contains code relevant to the function of a BCPU VM.
+=begin
+# Asm
+* highest-level namespace for the project.
+=end
 module Asm
 	# module Boilerplate contains refactored boilerplate code that still doesn't have a home anywhere else.
 	module Boilerplate
