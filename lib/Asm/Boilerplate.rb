@@ -1,8 +1,9 @@
+# encoding: UTF-8
+
 =begin
 # /lib/Asm/Boilerplate.rb
 * refactored boilerplate code living under module Asm::Boilerplate
 =end
-require	'Asm/require_all.rb'
 
 =begin
 # Asm
@@ -42,3 +43,5 @@ module Asm
 		end
 	end
 end
+
+require	'Asm/require_all.rb'

@@ -1,9 +1,10 @@
+# encoding: UTF-8
+
 =begin
 # /lib/Asm/Program_Options.rb
 * probably going to be deleted
 =end
 
-require	'Asm/require_all.rb'
 
 =begin
 # Asm
@@ -14,3 +15,5 @@ module Asm
 	class	Program_Options
 	end
 end
+
+require	'Asm/require_all.rb'

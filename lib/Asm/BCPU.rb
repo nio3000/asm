@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 =begin
 # /lib/Asm/BCPU.rb
 * complete definition of class Asm::BCPU::Word and inheritors Asm::BCPU::Memory::Location and Asm::BCPU::Memory::Value

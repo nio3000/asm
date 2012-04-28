@@ -1,9 +1,9 @@
+# encoding: UTF-8
+
 =begin
 # /lib/Asm/Literals_are_Magic.rb
 * complete definition of module Asm::Magic and all nested modules thereof
 =end
-
-require	'Asm/require_all.rb'
 
 module Asm
 
@@ -96,3 +96,5 @@ module Asm
 		end
 	end
 end
+
+require	'Asm/require_all.rb'

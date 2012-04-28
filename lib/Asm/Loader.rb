@@ -1,10 +1,10 @@
+# encoding: UTF-8
+
 =begin
 # /lib/Asm/Loader.rb
 * complete definition of class Asm::Loader
 * unit tests on an instance of Asm::Loader
 =end
-
-require	'Asm/require_all.rb'
 
 =begin
 # Asm
@@ -71,3 +71,5 @@ module Asm
 		end
 	end
 end
+
+require	'Asm/require_all.rb'
