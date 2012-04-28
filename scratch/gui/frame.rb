@@ -13,7 +13,6 @@ class AppFrame < Frame
     def initialize()
         super(nil, -1, 'Assembly Simulator')
         # First create the controls
-        set_menu_bar(setup_menu)
         @my_panel = Panel.new(self)
         @my_label = StaticText.new(@my_panel, -1, 'My Label Text', 
             DEFAULT_POSITION, DEFAULT_SIZE, ALIGN_CENTER)
