@@ -26,7 +26,8 @@ module Asm
 	### implementation details
 	* BCPU memory is represented as an associative array (Ruby Hash)
 	* memory_values are allocated on demand & behavior is compatible with preallocation, but will be more memory efficient in the (expected) case of low memory utilization.
-=end	class	Virtual_Machine
+=end	
+    class	Virtual_Machine
 =begin		public: structors & accessors
 		* the instance variable @the_memory is a private implementation detail
 		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
@@ -125,7 +126,10 @@ module Asm
 			* TODO implement the unit tests
 		* all the major instructions needs unit tests
 			* TODO implement the unit tests
-=end		class Test < Test::Unit::TestCase
-		end
-	end
-end
+=end		
+        class Test < Test::Unit::TestCase
+            test "" do
+            end
+		end # class Test
+	end # class VM
+end # module Asm

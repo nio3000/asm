@@ -14,7 +14,8 @@ module Asm
 =begin	# Asm::Loader
 	* initializes an instance of Asm::Virtual_Machine
 	* maintains internal state related to loading machine code into an instance of Asm::Virtual_Machine
-=end	class	Loader
+=end	
+    class	Loader
 	# ---persistant member variables & an explanation of them & structors---
 		# Public: get & set the_Virtual_Machine associated with this instance.
 		attr_accessor :the_Virtual_Machine
@@ -33,8 +34,9 @@ module Asm
 	# ---messages to Loader instance regarding handling the task of parsing BCPU assembly---
 		# Public: invoke Loader instance with a given file of BCPU assembly
 		def load( file )
-			#...
-			#for each line in file,
+	        code = File.open(file, 'r')
+            #for each line in file,
+            code.each_line do |line|
 			#	classify the line
 			#		Regexp match, y/n
 			#		context appropriate, y/n
@@ -44,6 +46,7 @@ module Asm
 			#	pass that information to Loader.relevant functionality.
 			#		do it
 			#		valid, y/n
+            end
 		end
 		# Private: dispatch messages based on the given line of text.
 		def handle( line_of_text )

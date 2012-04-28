@@ -13,7 +13,8 @@ module Asm
 =begin	# Asm::Application
 	* a complete and self-contained application object for a BCPU VM
 	* will handle GUI details or something like that
-=end	class	Application
+=end	
+    class	Application
 		# DOCIT
 		def initialize
 			@the_BCPU	= Asm::Virtual_Machine.new

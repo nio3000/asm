@@ -10,7 +10,8 @@ require	'Asm/require_all.rb'
 =end
 module Asm
 =begin	# Asm::Boilerplate
-=end	module Boilerplate
+=end	
+    module Boilerplate
 		# paranoid typechecking boilerplate
 		#
 		# argument - an object whose type is being checked
