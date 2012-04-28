@@ -11,21 +11,20 @@ require	'Asm/require_all.rb'
 * highest-level namespace for the project.
 =end
 module Asm
-=begin
-# Asm::Virtual_Machine
-* persistant BCPU internal state.
-	* BCPU memory locations mapped to BCPU memory values
-	* BCPU register literals mapped to BCPU memory locations
-* invokable inplace modifications to simulate execution affecting BCPU internal state.
-
-### representing BCPU memory locations as objects
-see Asm::BCPU::Memory::Location
-
-### representing BCPU memory values as objects
-see Asm::BCPU::Memory::Value
-
-### implementation details
-* BCPU memory is represented as an associative array (Ruby Hash)
+=begin	# Asm::Virtual_Machine
+	* persistant BCPU internal state.
+		* BCPU memory locations mapped to BCPU memory values
+		* BCPU register literals mapped to BCPU memory locations
+	* invokable inplace modifications to simulate execution affecting BCPU internal state.
+	
+	### representing BCPU memory locations as objects
+	see Asm::BCPU::Memory::Location
+	
+	### representing BCPU memory values as objects
+	see Asm::BCPU::Memory::Value
+	
+	### implementation details
+	* BCPU memory is represented as an associative array (Ruby Hash)
 	* memory_values are allocated on demand & behavior is compatible with preallocation, but will be more memory efficient in the (expected) case of low memory utilization.
 =end	class	Virtual_Machine
 =begin		public: structors & accessors

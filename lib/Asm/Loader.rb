@@ -1,4 +1,9 @@
-# this file is undocumented, haha.
+=begin
+# /lib/Asm/Loader.rb
+* complete definition of class Asm::Loader
+* unit tests on an instance of Asm::Loader
+=end
+
 require	'Asm/require_all.rb'
 
 =begin
@@ -6,8 +11,10 @@ require	'Asm/require_all.rb'
 * highest-level namespace for the project.
 =end
 module Asm
-	# a Loader instance initializes a Virtual_Machine instance's memory.
-	class	Loader
+=begin	# Asm::Loader
+	* initializes an instance of Asm::Virtual_Machine
+	* maintains internal state related to loading machine code into an instance of Asm::Virtual_Machine
+=end	class	Loader
 	# ---persistant member variables & an explanation of them & structors---
 		# Public: get & set the_Virtual_Machine associated with this instance.
 		attr_accessor :the_Virtual_Machine
@@ -50,6 +57,14 @@ module Asm
 		# Private: given ???, do ???; for invalid literals, do ???
 		def directive__asm( memory_location_literal )
 			...
+		end
+=begin
+		# Unit tests on this class
+		* any claim made in documentation ought to have a unit tests
+			* TODO implement the unit tests
+		* interpretation of each instruction ought to have a unit test
+		* interpretation of strange language features ought to have stress tests
+=end		class Test < Test::Unit::TestCase
 		end
 	end
 end

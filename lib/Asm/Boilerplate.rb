@@ -1,4 +1,7 @@
-# this file contains refactored boilerplate code; homeless but common code
+=begin
+# /lib/Asm/Boilerplate.rb
+* refactored boilerplate code living under module Asm::Boilerplate
+=end
 require	'Asm/require_all.rb'
 
 =begin
@@ -6,8 +9,8 @@ require	'Asm/require_all.rb'
 * highest-level namespace for the project.
 =end
 module Asm
-	# module Boilerplate contains refactored boilerplate code that still doesn't have a home anywhere else.
-	module Boilerplate
+=begin	# Asm::Boilerplate
+=end	module Boilerplate
 		# paranoid typechecking boilerplate
 		#
 		# argument - an object whose type is being checked

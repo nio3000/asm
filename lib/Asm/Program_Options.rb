@@ -1,4 +1,8 @@
-# this file is undocumented, haha.
+=begin
+# /lib/Asm/Program_Options.rb
+* probably going to be deleted
+=end
+
 require	'Asm/require_all.rb'
 
 =begin

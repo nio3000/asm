@@ -1,4 +1,10 @@
-# DOCIT
+=begin
+# /lib/Asm/BCPU.rb
+* complete definition of class Asm::BCPU::Word and inheritors Asm::BCPU::Memory::Location and Asm::BCPU::Memory::Value
+* isloated helper methods under modules Asm::BCPU::Memory::Index and Asm::BCPU::Register
+* unit tests on instances of Asm::BCPU::Word,Asm::BCPU::Memory::Location, and Asm::BCPU::Memory::Value
+* largely undocumented and unimplemented
+=end
 
 require	'Asm/require_all.rb'
 
@@ -137,6 +143,12 @@ module Asm
 			def location( register_literal )
 				# TODO make an instance of Memory::Location based on /R[0-9]+/
 			end
+		end
+=begin
+		# Unit tests on this class
+		* any claim made in documentation ought to have a unit tests
+			* TODO implement the unit tests
+=end		class Test < Test::Unit::TestCase
 		end
 	end
 end
