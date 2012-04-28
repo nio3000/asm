@@ -32,5 +32,13 @@ module Asm
 		def	true_if_type( argument ,type )
 			return	argument.kind? == type
 		end
+=begin	# Asm::Boilerplate::Bitset
+=end
+		module Bitset
+			# boilerplate for resizing an instance of Bitset
+			def	resize( Desired_size )
+				# TODO implement this
+			end
+		end
 	end
 end

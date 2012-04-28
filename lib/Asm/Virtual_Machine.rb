@@ -11,7 +11,8 @@ require	'Asm/require_all.rb'
 * highest-level namespace for the project.
 =end
 module Asm
-=begin	# Asm::Virtual_Machine
+=begin
+	# Asm::Virtual_Machine
 	* persistant BCPU internal state.
 		* BCPU memory locations mapped to BCPU memory values
 		* BCPU register literals mapped to BCPU memory locations

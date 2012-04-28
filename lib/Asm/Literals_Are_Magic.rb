@@ -32,12 +32,11 @@ module Asm
         module	Memory
 =begin			# Asm::Magic::Memory::Bits_per
 =end			
-
-        module	Bits_per
-				word	= 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
-				halfword	= 8
-				quarterword	= 4
-		end
+            module	Bits_per
+				Word	= 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
+				Halfword	= 8
+				Quarterword	= 4
+			end
 =begin			# Asm::Magic::Memory::Index
 			* minimums & maximums in inclusive & exclusive flavours
 =end			
