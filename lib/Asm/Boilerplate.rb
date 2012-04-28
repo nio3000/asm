@@ -41,6 +41,17 @@ module Asm
 				# TODO implement this
 			end
 		end
+=begin	# Asm::Boilerplate::Exception
+=end
+		module Exception
+=begin		# Asm::Boilerplate::Exception::Syntax
+			* if code generates a BCPU assembly syntax error, then raise an exception of this type with a message explaining the error
+				* you don't need to add line number information, that happens when the Syntax object is rescued
+				* example: `raise Asm::Boilerplate::Exception::Syntax.new( 'gibberish input; not an instruction, directive, comment, or blank line.' )`
+=end
+			class Syntax < Exception
+			end
+		end
 	end
 end
 
