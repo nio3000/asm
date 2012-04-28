@@ -35,7 +35,6 @@ module Asm
 		# Public: invoke Loader instance with a given file of BCPU assembly
 		def load( file )
 	        code = File.open(file, 'r')
-            #for each line in file,
             code.each_line do |line|
 			#	classify the line
 			#		Regexp match, y/n

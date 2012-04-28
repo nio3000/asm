@@ -1,0 +1,18 @@
+# Configuration file
+memory:
+    bits_per_word: 16
+    bits_per_half_word: 8
+    bits_per_quarter_word: 4
+    idx_inc_min: 0
+    idx_inc_max: 65535
+    idx_exc_min: -1
+    idx_exc_max: 65536
+
+register:
+    program_counter: 15
+    input_regs: [ 6 ]
+    output_regs: [ 13, 14 ]
+    idx_inc_min: 0
+    idx_inc_max: 15
+    idx_exc_min: -1
+    idx_exc_max: 16

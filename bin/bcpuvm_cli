@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+# this file instantiates an Application instance & does the stuff
+require 'optparse'
+#require	'Asm/require_all.rb'
+
+
+def start_bcpuvm
+    # Setup the option parser.
+    options = Hash.new
+    optparse = cli_options(options)
+
+    optparse.parse!
+
+    if ARGV.empty?
+        puts optparse
+        exit false
+    end
+
+    # Pass config file options to BCPU
+
+    #didnt_have_breakfast = Asm::Application.new( )
+    # Send output to file
+end
+
+def cli_options(options)
+    OptionParser.new do |opts|
+        opts.banner = "Usage: BCPUVM [options] <input-file>"
+
+        options[:config] = nil
+        opts.on('-c','--config FILE', 'YAML configuration file') do |f|
+            options[:config] = f
+        end
+
+        options[:output] = nil
+        opts.on('-o','--output FILE','Output file') do |f|
+            options[:output] = f 
+        end
+
+        opts.on('-h','--help','Display this screen.') do
+            puts opts
+            exit
+        end
+    end
+end
+
+start_bcpuvm
