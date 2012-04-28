@@ -5,18 +5,11 @@
 * unit tests on instances of Asm::BCPU::Word,Asm::BCPU::Memory::Location, and Asm::BCPU::Memory::Value
 * largely undocumented and unimplemented
 =end
-
-require	'Asm/require_all.rb'
-
-=begin
-# Asm
-* highest-level namespace for the project.
-=end
 module Asm
 	# DOCIT
 	module BCPU
 		# DOCIT
-		class	Word
+		class Word
 			attr_reader :the_bits
 			# DOCIT
 			#
@@ -148,7 +141,9 @@ module Asm
 		# Unit tests on this class
 		* any claim made in documentation ought to have a unit tests
 			* TODO implement the unit tests
-=end		class Test < Test::Unit::TestCase
-		end
-	end
+=end		
+        class Test < Test::Unit::TestCase
+        end
 end
+
+require	'Asm/require_all.rb'

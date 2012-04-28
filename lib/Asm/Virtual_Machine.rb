@@ -32,22 +32,21 @@ module Asm
 		* the instance variable @the_memory is a private implementation detail
 		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
 =end
-		# initializing default constructor
+        # Initialize the virtual machine.
 		def initialize( )
-			# @the_memory is a hash (collection of key -> value pairs)
+			# @the_memory is a hash
 			@the_memory	= { }
 		end
 =begin		public: invoke simulated BCPU execution
 =end
 		# DOCIT
 		def advance_once
-			# TODO implement
-			# read the memory value of the program counter
+			# TODO implement # read the memory value of the program counter
 			# dispatch based on opcode
 				# make boilerplate code for splitting based on format
 		end
 		# DOCIT
-		def advance( number_of_times )
+		def advance( steps )
 			# TODO implement
 			# call advance_once number_of_times
 		end
@@ -130,6 +129,6 @@ module Asm
         class Test < Test::Unit::TestCase
             test "" do
             end
-		end # class Test
-	end # class VM
-end # module Asm
+		end # Test
+	end # Virtual_Machine
+end # Asm

@@ -10,11 +10,12 @@ require	'Asm/require_all.rb'
 * highest-level namespace for the project.
 =end
 module Asm
+
 =begin	# Asm::Application
 	* a complete and self-contained application object for a BCPU VM
 	* will handle GUI details or something like that
 =end	
-    class	Application
+    class Application
 		# DOCIT
 		def initialize
 			@the_BCPU	= Asm::Virtual_Machine.new
