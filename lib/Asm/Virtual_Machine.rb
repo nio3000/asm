@@ -29,7 +29,8 @@ module Asm
 	* memory_values are allocated on demand & behavior is compatible with preallocation, but will be more memory efficient in the (expected) case of low memory utilization.
 =end	
     class	Virtual_Machine
-=begin		public: structors & accessors
+	public
+=begin		structors & accessors
 		* the instance variable @the_memory is a private implementation detail
 		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
 =end
@@ -38,7 +39,8 @@ module Asm
 			# @the_memory is a hash
 			@the_memory	= { }
 		end
-=begin		public: invoke simulated BCPU execution
+	public
+=begin		invoke simulated BCPU execution
 =end
 		# DOCIT
 		def advance_once
@@ -51,14 +53,16 @@ module Asm
 			# TODO implement
 			# call advance_once number_of_times
 		end
-=begin		private: execute simulated BCPU execution
+	private
+=begin		execute simulated BCPU execution
 =end
 		# DOCIT
 		def MOVE( destination_register ,registerA )
 			# TODO implement
 		end
 		# TODO define all opcode cases
-=begin		public: BCPU memory manipulation
+	public
+=begin		BCPU memory manipulation
 		* strict type checking is intended
 			* incorrect types will raise exceptions.
 =end

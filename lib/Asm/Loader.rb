@@ -16,7 +16,8 @@ module Asm
 	* maintains internal state related to loading machine code into an instance of Asm::Virtual_Machine
 =end	
     class	Loader
-=begin	public: structors & accessors
+	public
+=begin	structors & accessors
 =end
 		# get & set the_Virtual_Machine; is an instance of Asm::Virtual_Machine
 		attr_accessor :the_Virtual_Machine
@@ -32,7 +33,8 @@ module Asm
 			@the_Virtual_Machine	= the_Virtual_Machine
 			@load_index	= Asm::Literals_Are_Magic::Loader::example_invalid_load_index
 		end
-=begin	public: interface related to telling the Loader to load into the virtual machine
+	public
+=begin	interface related to telling the Loader to load into the virtual machine
 =end
 		# invoke Loader instance with a given file of BCPU assembly
 		#
@@ -54,7 +56,8 @@ module Asm
             end
 			messages
 		end
-=begin	private: dispatched messages based on the given line of text.
+	private
+=begin	dispatched messages based on the given line of text.
 		* messages dispatching based on the given line of text.
 		* dispatched messages based on the given line of text.
 			* handle instructions

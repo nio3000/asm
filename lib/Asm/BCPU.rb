@@ -17,7 +17,8 @@ module Asm
 			* Asm::BCPU::Memory::Value inherits from Asm::BCPU::Word
 =end
 		class Word
-=begin		public: structors & accessors
+		public
+=begin		structors & accessors
 			* the instance variable @the_bits is a Bitset
 				* see the repo for Bitset for details & methods available if you need to get at indivudal bits in the Bitset
 =end
@@ -35,7 +36,8 @@ module Asm
 			def clone
 				return	Asm::BCPU::Word.new( self )
 			end
-=begin		private: implementation details, assignment
+		private
+=begin		implementation details, assignment
 =end
 			# Assign the bits in self to be the bits represented by the given object.
 			# dispatches to type-specific assign methods, see those methods for constraints & behavior
@@ -166,7 +168,8 @@ module Asm
 				self.bitwise_OR!( A_Bitset )	# 1s from A_Bitset will appear in @the_bits
 				return
 			end
-=begin		private: implementation details
+		private
+=begin		implementation details
 =end
 			# Bitset's bitwise-or (aka '|') is broken (in one usage case only), don't use it.
 			# If for some reason you need that, then use this instead.
