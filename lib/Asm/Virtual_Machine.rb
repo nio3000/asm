@@ -30,71 +30,101 @@ see Asm::BCPU::Memory::Value
 =end	class	Virtual_Machine
 =begin		public: structors & accessors
 		* the instance variable @the_memory is a private implementation detail
-		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::BCPU::Memory::Location.new( )
+		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
 =end
 		# initializing default constructor
 		def initialize( )
 			# @the_memory is a hash (collection of key -> value pairs)
 			@the_memory	= { }
 		end
+=begin		public: invoke simulated BCPU execution
+=end
+		# DOCIT
+		def advance_once
+			# TODO implement
+			# read the memory value of the program counter
+			# dispatch based on opcode
+				# make boilerplate code for splitting based on format
+		end
+		# DOCIT
+		def advance( number_of_times )
+			# TODO implement
+			# call advance_once number_of_times
+		end
+=begin		private: execute simulated BCPU execution
+=end
+		# DOCIT
+		def MOVE( destination_register ,registerA )
+			# TODO implement
+		end
+		# TODO define all opcode cases
 =begin		public: BCPU memory manipulation
 		* strict type checking is intended
 			* incorrect types will raise exceptions.
 =end
-		# DOCIT
+		# Maps the memory location (@param location) to the memory value (@param value)
 		#
 		# Returns nothing
-		def set_memory_location_to_memory_value( memory_location ,memory_value )
+		def set_location_to_value( location ,value )
 			# paranoid type checking
-			Asm::Boilerplate::raise_unless_type( memory_location ,Asm::BCPU::Memory::Location )
-			Asm::Boilerplate::raise_unless_type( memory_value ,Asm::BCPU::Memory::Value )
+			Asm::Boilerplate::raise_unless_type( location ,Asm::BCPU::Memory::Location )
+			Asm::Boilerplate::raise_unless_type( value ,Asm::BCPU::Memory::Value )
 			# assignment; creates association if none existed, else overwrites.
-			self.the_memory[memory_location]	= memory_value
+			@the_memory[location]	= value
+			# return nothing
 			return
 		end
-		# DOCIT
+		# Returns by value the Asm::BCPU::Memory::Value mapped by the memory location (@param location)
 		#
-		# Will assign an Asm::BCPU::Memory::Value if the association does not exist yet.
+		# Will assign an Asm::BCPU::Memory::Value even if the association does not exist yet.
 		#
-		# Returns the Asm::BCPU::Memory::Value mapped by memory_location
-		def get_memory_value( memory_location )
-			Asm::Boilerplate::raise_unless_type( memory_location ,Asm::BCPU::Memory::Location )
-			# create association if none exists
-			unless self.the_memory.has_key?( memory_location )
-				self.set_memory_location_to_memory_value( memory_location ,Asm::BCPU::Memory::Value.new )
+		# Returns by value an Asm::BCPU::Memory::Value instance
+		def get_memory_value( location )
+			# paranoid type checking
+			Asm::Boilerplate::raise_unless_type( location ,Asm::BCPU::Memory::Location )
+			# create association even if none exists
+			unless @the_memory.has_key?( location )
+				self.set_location_to_memory_value( location ,Asm::BCPU::Memory::Value.new )
 			end
-			# return association
-			return	self.the_memory[memory_location]
+			# return association by value
+			return	@the_memory[location].clone
 		end
-		# Public: get the values associated with a range of memory locations; does validity checking; values are presented in order; DOCIT
+		# Obtain values mapped by memory locations in the given range (@param inclusive_minimum, @paramexclusive_maximum)
+		# 	values are obtained in order
+		#	TODO document what the order is (ascending memory index or not)
 		#
 		# inclusive_minimum - Integer compatible type; lowest index in the desired range
 		# exclusive_maximum - Integer compatible type; lowest index not in the desired range and greater than any index in the desired range
 		#
 		# computationally expensive; consider using orderedhash gem if this becomes a dealbreaker
 		#
-		# (implicit) Raises exceptions when the memory range is invalid
-		# Returns ordered array
+		# Raises exceptions when the memory range is invalid
+		# Returns memory-location-ordered array of memory values
 		def get_memory_range( inclusive_minimum ,exclusive_maximum )
-			# obtain order-agnostic array
-			existant_locations	= []
-			an_array_of_memory_values	= []
-			self.the_memory.each do |key ,value|
-				if ( key.to_i( ) >= inclusive_minimum ) && ( key.to_i( ) < exclusive_maximum )
-					existant_locations.push key
+			# paranoid type checking
+			# TODO force integer-compatible types
+			assert( inclusive_minimum < exclusive_maximum ,"The minimum is not less than the maximum" )
+			# local state
+			locations	= []
+			values	= []
+			# obtain order-agnostic array of locations
+			@the_memory.each do |key ,value|
+				if ( key.to_i >= inclusive_minimum ) && ( key.to_i < exclusive_maximum )
+					locations.push key
 				end
 			end
-			# haha
-			existant_locations.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }
-			existant_locations.each do |key|
-				an_array_of_memory_values.push( self.the_memory[key] )
-			end
-			# return sorted array
-			an_array_of_memory_values
+			# order the locations as is natural for them
+			locations.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }	# TODO test that the ordering is correctly accomplished here
+			# retrieve for values for each location (preserves ordering)
+			locations.each { |key| values.push @the_memory[key] }
+			# return sorted values
+			values
 		end
 =begin
 		# Unit tests on this class
 		* any claim made in documentation ought to have a unit tests
+			* TODO implement the unit tests
+		* all the major instructions needs unit tests
 			* TODO implement the unit tests
 =end		class Test < Test::Unit::TestCase
 		end
