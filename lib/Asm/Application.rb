@@ -1,9 +1,9 @@
+# encoding: UTF-8
+
 =begin
 # /lib/Asm/Application.rb
 * complete definition of class Asm::Application
 =end
-
-require	'Asm/require_all.rb'
 
 =begin
 # Asm
@@ -30,3 +30,5 @@ module Asm
 		end
 	end
 end
+
+require	'Asm/require_all.rb'
