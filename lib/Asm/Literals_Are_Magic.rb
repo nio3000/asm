@@ -96,7 +96,7 @@ module Asm
 		end
 
         module ISA
-            # OpCodes
+            # Integer OpCodes
             MOVE  = 0
             NOT   = 1
             AND   = 2
@@ -114,28 +114,24 @@ module Asm
             MOVEP = 14
             MOVEN = 15
 
-            instructions = {'move'  => MOVE.to_s(2),
-                            'not'   => NOT.to_s(2),
-                            'and'   => AND.to_s(2),
-                            'or'    => OR.to_s(2),
-                            'add'   => ADD.to_s(2),
-                            'sub'   => SUB.to_s(2),
-                            'addi'  => ADDI.to_s(2),
-                            'subi'  => SUBI.to_s(2),
-                            'set'   => SET.to_s(2),
-                            'seth'  => SETH.to_s(2),
-                            'inciz' => INCIZ.to_s(2),
-                            'decin' => DECIN.to_s(2),
-                            'movez' => MOVEZ.to_s(2),
-                            'movex' => MOVEX.to_s(2),
-                            'movep' => MOVEP.to_s(2),
-                            'moven' => MOVEN.to_s(2)}
-
-            def int_to_string(integer)
-                while 
-                end
+            # instructions and their 4 bit binary codes
+            instructions = {'move'  => "%04d" % MOVE.to_s(2),
+                            'not'   => "%04d" % NOT.to_s(2),
+                            'and'   => "%04d" % AND.to_s(2),
+                            'or'    => "%04d" % OR.to_s(2),
+                            'add'   => "%04d" % ADD.to_s(2),
+                            'sub'   => "%04d" % SUB.to_s(2),
+                            'addi'  => "%04d" % ADDI.to_s(2),
+                            'subi'  => "%04d" % SUBI.to_s(2),
+                            'set'   => "%04d" % SET.to_s(2),
+                            'seth'  => "%04d" % SETH.to_s(2),
+                            'inciz' => "%04d" % INCIZ.to_s(2),
+                            'decin' => "%04d" % DECIN.to_s(2),
+                            'movez' => "%04d" % MOVEZ.to_s(2),
+                            'movex' => "%04d" % MOVEX.to_s(2),
+                            'movep' => "%04d" % MOVEP.to_s(2),
+                            'moven' => "%04d" % MOVEN.to_s(2)}
             end
-            
         end
 	end
 end
