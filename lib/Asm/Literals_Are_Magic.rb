@@ -56,8 +56,8 @@ module Asm
 					Minimum	= Asm::Magic::Binary::Twos_complement::Exclusive::Minimum + 1
 					Maximum	= Asm::Magic::Binary::Twos_complement::Exclusive::Maximum - 1
 				end
-				#def	valid?( An_Integer )
-				#	return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
+				#def	valid?( an_Integer )
+				#	return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				#end
 			end
 =begin		# Asm::Magic::Binary::Unsigned
@@ -73,8 +73,8 @@ module Asm
 				module	Exclusive
 					Minimum	= Asm::Magic::Binary::Unsigned::Inclusive::Minimum - 1
 				end
-				#def	valid?( An_Integer )
-				#	return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
+				#def	valid?( an_Integer )
+				#	return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				#end
 			end
 		end

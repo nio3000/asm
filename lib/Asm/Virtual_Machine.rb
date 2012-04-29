@@ -170,10 +170,10 @@ module Asm
 			end
 		end
 		# R15 <- R15 + 1
-		def increment_program_counter( RD ,RD_altered = false ,An_Integer = 1 )
+		def increment_program_counter( RD ,RD_altered = false ,an_Integer = 1 )
 			unless	( RD.equals?( Asm::Magic::Register::Location::program_counter ) && RD_altered )
 				lhs = self.get_memory_value( Asm::Magic::Register::Location::program_counter )
-				lhs.add!( Asm::BCPU::Word.new( An_Integer ) )
+				lhs.add!( Asm::BCPU::Word.new( an_Integer ) )
 				self.set_location_to_value( Asm::Magic::Register::Location::program_counter ,lhs )
 			end
 		end
