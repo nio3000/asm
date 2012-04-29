@@ -17,7 +17,41 @@ module Asm
 		* this design choice is for reading them
 =end	
     module Magic
-
+=begin	# Asm::Magic::Binary
+=end
+        module	Binary
+=begin		# Asm::Magic::Binary::Twos_complement
+=end		
+			module	Twos_complement
+				module	Inclusive
+					Minimum	= Asm::Magic::Binary::Twos_complement::Exclusive::minimum + 1
+					Maximum	= Asm::Magic::Binary::Twos_complement::Exclusive::maximum - 1
+				end
+				module	Exclusive
+					Minimum	= -(Asm::Magic::Binary::Twos_complement::Exclusive::maximum + 1)
+					Maximum	= 2 ** (Asm::Magic::Memory::Bits_per::Word - 1) # 2^15 = ???
+				end
+				def	valid?( An_Integer )
+					return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
+				end
+			end
+=begin		# Asm::Magic::Binary::Unsigned
+=end		
+			module	Unsigned
+				module	Inclusive
+					Minimum	= 0
+					Maximum	= Asm::Magic::Binary::Unsigned::Exclusive::maximum - 1
+				end
+				module	Exclusive
+					Minimum	= Asm::Magic::Binary::Unsigned::Inclusive::minimum - 1
+					Maximum	= 2 ** Asm::Magic::Memory::Bits_per::Word # 2^16 = 65536
+				end
+				def	valid?( An_Integer )
+					return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
+				end
+			end
+		end
+		
 =begin		# Asm::Magic::Loader
 =end		
         module	Loader
