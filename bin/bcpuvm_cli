@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# encoding: UTF-8
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../lib')
 
 # this file instantiates an Application instance & does the stuff
@@ -20,8 +19,8 @@ def start_bcpuvm
     end
 
     # Configuration loaded to a constant (hash)
-    # To access, APP_CONFIG['section']['key']
-    APP_CONFIG = YAML.load_file("config.yaml")
+    # To access, config_settings['section']['key']
+    config_settings = YAML.load_file('config.yaml')
     # Pass config file options to BCPU
 
 
@@ -51,3 +50,6 @@ def cli_options(options)
 end
 
 start_bcpuvm
+
+# encoding: UTF-8
+# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=ruby

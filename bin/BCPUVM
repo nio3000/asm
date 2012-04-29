@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
-# encoding: UTF-8
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../lib')
 
 # this file instantiates an Application instance & does the stuff
 #require	'Asm/require_all.rb'
 
-didnt_have_breakfast	= Asm::Application.new( )
+#didnt_have_breakfast	= Asm::Application.new( )
 
 puts 'herro wald'
 
+# encoding: UTF-8
+# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=ruby
