@@ -177,7 +177,7 @@ module Asm
 			def bitwise_OR!( An_object )	# TODO verify this preserves size
 				# switch case on type; fuck duck typing.
 				if Asm::Boilerplate::true_if_type( An_object ,Asm::Virtual_Machine::Word )
-					@the_bits | An_object.the_bits	# non borken usage case; Bitset instances are same size
+					@the_bits | An_object.the_bits	# non broken usage case; Bitset instances are same size
 				elsif Asm::Boilerplate::true_if_type( An_object ,Bitset )
 					assert( !(An_object.size < @the_bits.size) , "implementation fault: Bitset's | operation is broken in the case you tried to use it in; ask for a workaround asap." )
 					@the_bits | An_object
