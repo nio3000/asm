@@ -105,43 +105,46 @@ module Asm
         def decin( dest_reg, reg_a, reg_b)
         end
 
-        # RD <- RA if RB == 0 (zero)
-        def movez( dest_reg, reg_a, reg_b)
+		# RD <- RA if RB == 0 (zero)
+		def movez( dest_reg, reg_a, reg_b)
 			if self.get_memory_value( reg_b ).to_i == 0
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter
 			end
-        end
+		end
 
-        # RD <- RA if RB != 0 (not zero)
-        def movex( dest_reg, reg_a, reg_b)
+		# RD <- RA if RB != 0 (not zero)
+		def movex( dest_reg, reg_a, reg_b)
 			if self.get_memory_value( reg_b ).to_i != 0
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter
 			end
-        end
+		end
 
-        # RD <- RA if RB15 == 0 (positive)
-        def movep( dest_reg, reg_a, reg_b)
+		# RD <- RA if RB15 == 0 (positive)
+		def movep( dest_reg, reg_a, reg_b)
 			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 0
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter
 			end
-        end
+		end
 
-        # RD <- RA if RB15 == 1 (negative)
-        def moven( dest_reg, reg_a, reg_b)
+		# RD <- RA if RB15 == 1 (negative)
+		def moven( dest_reg, reg_a, reg_b)
 			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 1
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter
 			end
-        end
+		end
 		# R15 <- R15 + 1
-		def increment_program_counter
+		def increment_program_counter( An_Integer )
+			rhs	= Asm::BCPU::Word.new( An_Integer )
+			lhs = self.get_memory_value( Asm::Magic::Register::Location::program_counter )
+			rhs.the_bits
 			# TODO implement this
 		end
 	public

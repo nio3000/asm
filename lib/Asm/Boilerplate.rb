@@ -51,6 +51,11 @@ module Asm
 =end
 			class Syntax < Exception
 			end
+=begin		# Asm::Boilerplate::Exception::Overflow
+			* DOCIT
+=end
+			class Overflow < Exception
+			end
 		end
 	end
 end

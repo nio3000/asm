@@ -23,7 +23,7 @@ module Asm
 				* see the repo for Bitset for details & methods available if you need to get at indivudal bits in the Bitset
 =end
 			# get @the_bits
-			attr_reader :the_bits
+			attr_writer :the_bits
 			# initializing constructor, implicitly default constructor
 			#
 			# argument - see Asm::BCPU::Word::assign for restrictions
@@ -168,7 +168,7 @@ module Asm
 				self.bitwise_OR!( A_Bitset )	# 1s from A_Bitset will appear in @the_bits
 				return
 			end
-		private
+		public
 =begin		implementation details
 =end
 			# Bitset's bitwise-or (aka '|') is broken (in one usage case only), don't use it.
@@ -194,6 +194,37 @@ module Asm
 				@the_bits.to_s
 				# TODO check for consistency between endianness in Word.new( '01' ) and Word.new( '01' ).to_s
 			end
+			# DOCIT
+			def to_i( Force_twos_complement = true )
+				result	= 0
+				for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
+					result += @the_bits[index] * ( 2 ** index )
+				end
+				if Force_twos_complement
+					result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result
+				end
+				result
+			end
+			# Performs addition given another Asm::BCPU::Word instance
+			#
+			# Raises Asm::Boilerplate::Exception::Overflow when overflow or other failure occurs
+			# Returns nothing
+			def add_Word!( rhs_BCPU_Word ,Force_twos_complement = true )
+				# paranoid type checking
+				Asm::Boilerplate::raise_unless_type( rhs_BCPU_Word ,Asm::BCPU::Word )
+				# utilize to_i to implement addition
+				lhs	= self.to_i( Force_twos_complement )
+				rhs	= rhs_BCPU_Word.to_i( Force_twos_complement )
+				result	= lhs + rhs
+				# assign will attempt to represent the result in 16 bits; failure indicates overflow
+				begin
+					self.assign( result ,Force_twos_complement )
+				else
+					self.assign( 0 )
+					raise Asm::Boilerplate::Exception::Overflow.new( 'arithmetic failed; \'0\' assigned as result of arithmetic operation.' )
+				end
+				return
+			end
 		end
 		# DOCIT
 		module Memory
@@ -211,7 +242,7 @@ module Asm
 				#
 				# Returns an integer
 				def to_i( )
-					# TODO implement this
+					super( false )
 				end
 				# DOCIT
 				def to_s( )
@@ -250,7 +281,7 @@ module Asm
 				#
 				# Returns an integer
 				def to_i( )
-					# TODO implement this
+					super( true )
 				end
 			end
 			# DOCIT
