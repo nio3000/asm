@@ -27,7 +27,7 @@ module Asm
 				Word	    = 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
 				Halfword	= 8
 				Quarterword	= 4
-			end
+            end
 =begin			# Asm::Magic::Memory::Index
 			* minimums & maximums in inclusive & exclusive flavours
 =end			
@@ -40,8 +40,8 @@ module Asm
 					Minimum	= Asm::Magic::Memory::Index::Inclusive::Minimum - 1
 					Maximum	= Asm::Magic::Memory::Index::Inclusive::Maximum + 1	# 2^16 = 65536
 				end
-			end
-		end
+            end
+        end
 =begin	# Asm::Magic::Binary
 =end
         module	Binary
@@ -63,7 +63,7 @@ module Asm
 =begin		# Asm::Magic::Binary::Unsigned
 =end		
 			module	Unsigned
-				module	Exclusive
+                module	Exclusive
 					Maximum	= 2 ** Asm::Magic::Memory::Bits_per::Word # 2^16 = 65536
                 end
 				module	Inclusive
@@ -77,7 +77,7 @@ module Asm
 				#	return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				#end
 			end
-		end
+        end
 		
 =begin		# Asm::Magic::Loader
 =end		
@@ -85,7 +85,7 @@ module Asm
 			# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
 			# TODO remove explicit dependence on this variable.
 			example_invalid_load_index	= Asm::Magic::Memory::Index::Exclusive::Minimum
-		end
+        end
 
 
 
@@ -96,7 +96,7 @@ module Asm
 			* memory indicies of unique special function registers
 			* minimums & maximums in inclusive & exclusive flavours
 =end			
-            module	Index
+            module Index
 				module	Inclusive
 					Minimum	= 0
 					Maximum	= 15
@@ -106,28 +106,28 @@ module Asm
 					Maximum	= Asm::Magic::Register::Index::Inclusive::Maximum + 1	# 2^4 = 16
 				end
 				Program_counter	= Asm::Magic::Register::Index::Inclusive::Maximum	# 15
-			end
+            end
 =begin		# Asm::Magic::Register::Indicies
 			    * memory indicies of categories of special function registers
 =end			
-            module	Indicies
+            module Indicies
 				Input_registers	 = [ 6 ]
 				Output_registers = [ 13 ,14 ]
-			end
+            end
 
 =begin		# Asm::Magic::Register::Location
 			    * memory locations of unique special function registers
 =end			
-            module	Location 
-			end
+            module Location 
+            end
 
 =begin			
             # Asm::Magic::Register::Locations
                 * memory locations of ategories of special function registers
 =end			
-            module	Locations 
-			end
-		end
+            module Locations 
+            end
+        end
 =begin	
 		# Asm::Magic::Regexp_String
 		* DOCIT
@@ -138,7 +138,7 @@ module Asm
 			Delimiter	= ','	# a comma
 			Beginning_of_line	= '^' << Whitespace	# forces regex match to start from the beginning of the input text; also consumes whitespace
 			Directive	= '#' << Whitespace	# directive symbol followed by optional whitespace
-		end
+        end
 =begin	
 		# Asm::Magic::ISA
 		* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
@@ -170,7 +170,7 @@ module Asm
 				end
 			end
 #=end
-			module Integer
+            module Integer
 =begin	
 			Integer OpCodes corresponding to 
 			* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
@@ -212,7 +212,8 @@ module Asm
                             'moven' => "%04d" % MOVEN.to_s(2)}
             end
         end
-	end
+    end
 end
 
+$LOAD_PATH << '.'
 #require	'Asm/require_all.rb'
