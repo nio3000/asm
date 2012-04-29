@@ -74,7 +74,10 @@ module Asm
         end
 
         # RD <- RA + RB
-        def add( dest_reg, reg_a, reg_b)
+        def add( dest_reg, reg_a, reg_b) 
+            ra = self.get_memory_value(reg_a) 
+            rb = self.get_memory_value(reg_b)
+			self.move( dest_reg , ra.add_Word!(rb))
         end
 
         # RD <- RA - RB
