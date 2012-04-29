@@ -7,7 +7,7 @@
 =end
 module Asm
 	# DOCIT
-	module BCPU
+    module BCPU
 =begin	# Asm::BCPU::Word
 		* a Word is the fundamental data type in the BCPU
 			* Asm::BCPU::Memory::Location inherits from Asm::BCPU::Word
@@ -271,6 +271,7 @@ module Asm
 					self.assign( result ,force_twos_complement )
                 #TODO: Else without rescue is useless according to:
                 # $ ruby -wc thisFile.rb
+                rescue 
 				else
 					self.assign( 0 )
 					raise Asm::Boilerplate::Exception::Overflow.new( 'arithmetic failed; \'0\' assigned as result of arithmetic operation.' )
@@ -369,7 +370,7 @@ module Asm
             module	Locations 
 				Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
 				Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
-		    end
+            end
         end
     end
 end

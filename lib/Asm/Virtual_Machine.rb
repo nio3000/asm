@@ -64,7 +64,7 @@ module Asm
         def not( dest_reg, reg_a)
             ra = self.get_memory_value(reg_a)
             rb = self.get_memory_value(reg_b)
-            self.set_location_to_value(dest_reg, ra ~ rb)
+            self.set_location_to_value(dest_reg, ra.not(rb))
         end
         
         # RD <- RA bitwise AND RB
@@ -114,22 +114,22 @@ module Asm
 
 		# RD <- RD + 4bit data if RB == 0 (zero)
 		def inciz( dest_reg, reg_fourbit, reg_b)
-			RD_altered	= false
+			dest_reg_altered	= false
 			if self.get_memory_value( reg_b ).to_i == 0
 				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( reg_fourbit.to_i ) )
-				RD_altered	= true
+				dest_reg_altered	= true
 			end
-			self.increment_program_counter( dest_reg ,RD_altered )
+			self.increment_program_counter( dest_reg ,dest_reg_altered )
 		end
 
 		# RD <- RD - 4bit data if RB15 == 1 (neg)
 		def decin( dest_reg, reg_fourbit, reg_b )
-			RD_altered	= false
+			dest_reg_altered	= false
 			if self.get_memory_value( reg_b ).to_i >= 0
 				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
-				RD_altered	= true
+				dest_reg_altered	= true
 			end
-			self.increment_program_counter( dest_reg ,RD_altered )
+			self.increment_program_counter( dest_reg ,dest_reg_altered )
 		end
 
 		# RD <- RA if RB == 0 (zero)
@@ -168,8 +168,8 @@ module Asm
 			end
 		end
 		# R15 <- R15 + 1
-		def increment_program_counter( RD ,RD_altered = false ,an_Integer = 1 )
-			unless	( RD.equals?( Asm::Magic::Register::Location::program_counter ) && RD_altered )
+		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
+			unless	( dest_reg.equals?( Asm::Magic::Register::Location::program_counter ) && dest_reg_altered )
 				lhs = self.get_memory_value( Asm::Magic::Register::Location::program_counter )
 				lhs.add!( Asm::BCPU::Word.new( an_Integer ) )
 				self.set_location_to_value( Asm::Magic::Register::Location::program_counter ,lhs )
