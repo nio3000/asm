@@ -217,7 +217,7 @@ module Asm
 			#
 			# Raises on unrecognized input type
 			def add!( an_Object ,force_twos_complement = true )
-				if if Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Word )
+				if Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Word )
 					self.add_Word!( an_Object ,force_twos_complement )
 				elsif if Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Value )
 					raise 'invalid invocation' unless force_twos_complement
@@ -269,6 +269,8 @@ module Asm
 				# assign will attempt to represent the result in 16 bits; failure indicates overflow
 				begin
 					self.assign( result ,force_twos_complement )
+                #TODO: Else without rescue is useless according to:
+                # $ ruby -wc thisFile.rb
 				else
 					self.assign( 0 )
 					raise Asm::Boilerplate::Exception::Overflow.new( 'arithmetic failed; \'0\' assigned as result of arithmetic operation.' )
@@ -347,26 +349,27 @@ module Asm
 		* any claim made in documentation ought to have a unit tests
 			* TODO implement the unit tests
 =end		
-        class Test < Test::Unit::TestCase
-        end
+        #class Test < Test::Unit::TestCase
+        #end
+    end
 end
 
 module Asm
-  module Magic
-    module Register
+    module Magic
+        module Register
 =begin		# Asm::Magic::Register::Location
 			    * memory locations of unique special function registers
 =end			
-      module	Location 
+            module Location 
 				Program_counter	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::Program_counter )
-			      end
+            end
 =begin      # Asm::Magic::Register::Locations
                 * memory locations of ategories of special function registers
 =end			
             module	Locations 
 				Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
 				Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
-			end
+		    end
         end
     end
 end
