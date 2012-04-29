@@ -94,6 +94,49 @@ module Asm
 				output_registers	= Asm::Magic::Register::Indicies::output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
 			end
 		end
+
+        module ISA
+            # OpCodes
+            MOVE  = 0
+            NOT   = 1
+            AND   = 2
+            OR    = 3
+            ADD   = 4
+            SUB   = 5
+            ADDI  = 6
+            SUBI  = 7
+            SET   = 8
+            SETH  = 9
+            INCIZ = 10
+            DECIN = 11
+            MOVEZ = 12
+            MOVEX = 13
+            MOVEP = 14
+            MOVEN = 15
+
+            instructions = {'move'  => MOVE.to_s(2),
+                            'not'   => NOT.to_s(2),
+                            'and'   => AND.to_s(2),
+                            'or'    => OR.to_s(2),
+                            'add'   => ADD.to_s(2),
+                            'sub'   => SUB.to_s(2),
+                            'addi'  => ADDI.to_s(2),
+                            'subi'  => SUBI.to_s(2),
+                            'set'   => SET.to_s(2),
+                            'seth'  => SETH.to_s(2),
+                            'inciz' => INCIZ.to_s(2),
+                            'decin' => DECIN.to_s(2),
+                            'movez' => MOVEZ.to_s(2),
+                            'movex' => MOVEX.to_s(2),
+                            'movep' => MOVEP.to_s(2),
+                            'moven' => MOVEN.to_s(2)}
+
+            def int_to_string(integer)
+                while 
+                end
+            end
+            
+        end
 	end
 end
 
