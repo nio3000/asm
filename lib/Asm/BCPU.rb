@@ -219,13 +219,13 @@ module Asm
 			def add!( an_Object ,force_twos_complement = true )
 				if Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Word )
 					self.add_Word!( an_Object ,force_twos_complement )
-				elsif if Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Value )
+				elsif Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Value )
 					raise 'invalid invocation' unless force_twos_complement
 					self.add_Value!( an_Object )
-				elsif if Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Location )
+				elsif Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Location )
 					raise 'invalid invocation' unless !force_twos_complement
 					self.add_Location!( an_Object )
-				elsif if Asm::Boilerplate::true_if_type( an_Object ,Integer )
+				elsif Asm::Boilerplate::true_if_type( an_Object ,Integer )
 					self.add_Integer!( an_Object ,force_twos_complement )
 				else
 					raise	'Chiiiii'
