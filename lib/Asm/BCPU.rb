@@ -362,6 +362,7 @@ module Asm
 			    * memory locations of unique special function registers
 =end			
             module Location 
+                # TODO: Fix 'uninitialized constant' caused by Program_counter
 				Program_counter	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::Program_counter )
             end
 =begin      # Asm::Magic::Register::Locations

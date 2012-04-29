@@ -245,10 +245,10 @@ module Asm
 		* all the major instructions needs unit tests
 			* TODO implement the unit tests
 =end		
-        class Test < Test::Unit::TestCase
-        end # Test
-    end # Virtual_Machine
-end # Asm
+        #class Test < Test::Unit::TestCase
+        #end
+    end
+end
 
 #require	'Asm/require_all.rb'
 $LOAD_PATH << '.'

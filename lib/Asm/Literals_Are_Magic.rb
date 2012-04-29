@@ -101,9 +101,11 @@ module Asm
 				end
 				module	Exclusive
 					Minimum	= Asm::Magic::Register::Index::Inclusive::Minimum - 1
-					Maximum	= Asm::Magic::Register::Index::Inclusive::Maximum + 1	# 2^4 = 16
+                    # 2^4 = 16
+					Maximum	= Asm::Magic::Register::Index::Inclusive::Maximum + 1
 				end
-				Program_counter	= Asm::Magic::Register::Index::Inclusive::Maximum	# 15
+                #15
+				Program_counter	= Asm::Magic::Register::Index::Inclusive::Maximum
             end
 =begin		# Asm::Magic::Register::Indicies
 			    * memory indicies of categories of special function registers

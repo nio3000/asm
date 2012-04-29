@@ -163,8 +163,8 @@ module Asm
 		* interpretation of each instruction ought to have a unit test
 		* interpretation of strange language features ought to have stress tests
 =end		
-        class Test < Test::Unit::TestCase
-        end
+        #class Test < Test::Unit::TestCase
+        #end
     end
 end
 
