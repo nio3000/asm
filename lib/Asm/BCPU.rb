@@ -66,9 +66,9 @@ module Asm
 				Asm::Boilerplate::raise_unless_type( A_String ,String )
 				# delegation
 				if A_String.size == A_String.count( '01' ) # T: binary String
-					self.assign_decimal_String( A_String ,Force_twos_complement )
-				elsif A_String.size == A_String.count( '+-0123456789' )	# T: decimal or binary String
 					self.assign_binary_String( A_String )
+				elsif A_String.size == A_String.count( '+-0123456789' )	# T: decimal or binary String
+					self.assign_decimal_String( A_String ,Force_twos_complement )
 				else
 					assert( false ,"the string contains characters not in the subset expected by the method." )	;
 				end
@@ -207,9 +207,11 @@ module Asm
 				def initialize( argument = nil )
 					self.assign( argument )
 				end
-				# DOCIT
+				# Interprets self as the unsigned binary encoding of an integer value
+				#
+				# Returns an integer
 				def to_i( )
-					# TODO implement this; assume unsigned encoding of binary values
+					# TODO implement this
 				end
 				# DOCIT
 				def to_s( )
@@ -244,8 +246,10 @@ module Asm
 			end
 			# DOCIT
 			class Value < Asm::BCPU::Word
-				# DOCIT
-				def to_i( signed = true )
+				# Interprets self as the twos complement encoding of an integer value
+				#
+				# Returns an integer
+				def to_i( )
 					# TODO implement this
 				end
 			end
