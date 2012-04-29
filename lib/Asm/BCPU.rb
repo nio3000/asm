@@ -58,6 +58,8 @@ module Asm
 					self.assign_Bitset( An_object )
 				elsif Asm::Boilerplate::true_if_type( An_object ,Asm::BCPU::Word )
 					self.assign_BCPU_Word( An_object )
+				else
+					raise 'Waku waku!'
 				end
 			end
 			# Assign the bits in self to be number represented in the String; supports signed decimal integers (+|-)?[0-9] and binary [01]+
@@ -110,10 +112,8 @@ module Asm
 				# paranoid type checking
 				# TODO force integer compatible type
 				# twos complement range checking
-				Exclusive_max	= 2 ** (Asm::Magic::Memory::Bits_per::Word - 1)
-				Exclusive_min	= -(Exclusive_max + 1)
-				assert( An_integer < Exclusive_max ,'The integer is too positive for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
-				assert( Exclusive_min < An_integer ,'The integer is too negative for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				assert( An_integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum ,'The integer is too positive for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < An_integer ,'The integer is too negative for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
 				# convert to binary String twos complement encoding
 				A_String	= An_integer.to_s
 				# TODO verify whether or not the binary String faithfully represents negative values in twos complement (I don't think it does)
@@ -126,10 +126,8 @@ module Asm
 				# paranoid type checking
 				# TODO force integer compatible type
 				# unsigned range checking
-				Exclusive_max	= 2 ** (Asm::Magic::Memory::Bits_per::Word)
-				Exclusive_min	= -1
-				assert( An_integer < Exclusive_max ,'The integer is too positive for unsigned binary encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
-				assert( Exclusive_min < An_integer ,'The integer is too negative for unsigned binary encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				assert( An_integer < Asm::Magic::Binary::Unsigned::Exclusive::Maximum ,'The integer is too positive for unsigned binary encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < An_integer ,'The integer is too negative for unsigned binary encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
 				# convert to binary String unsigned binary encoding
 				A_String	= An_integer.to_s
 				assert( A_String.size == A_String.count( '01' ) ,'faulty implementation: an integer converted to a binary string did not produce just 0s and 1s.' )
@@ -194,7 +192,13 @@ module Asm
 				@the_bits.to_s
 				# TODO check for consistency between endianness in Word.new( '01' ) and Word.new( '01' ).to_s
 			end
-			# DOCIT
+			# computes the Integer representation of @the_bits
+			#
+			# Force_twos_complement - T: forces interpretation of @the_bits as a twos complement encoded binary value
+			# 	F: forces interpretation of @the_bits as an unsigned binary encoded value
+			#
+			# Raises if something really wierd happens
+			# Returns Integer
 			def to_i( Force_twos_complement = true )
 				result	= 0
 				for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
@@ -202,28 +206,56 @@ module Asm
 				end
 				if Force_twos_complement
 					result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result
+					assert( result < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
+					assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
+				else
+					assert( result < Asm::Magic::Binary::Unsigned::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
+					assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
 				end
 				result
 			end
-			# Performs addition given another Asm::BCPU::Word instance
+			# Performs addition given an object
+			# delegates alot
 			#
-			# Raises Asm::Boilerplate::Exception::Overflow when overflow or other failure occurs
-			# Returns nothing
-			def add_Word!( rhs_BCPU_Word ,Force_twos_complement = true )
-				# paranoid type checking
-				Asm::Boilerplate::raise_unless_type( rhs_BCPU_Word ,Asm::BCPU::Word )
-				# utilize to_i to implement addition
-				lhs	= self.to_i( Force_twos_complement )
-				rhs	= rhs_BCPU_Word.to_i( Force_twos_complement )
-				result	= lhs + rhs
-				# assign will attempt to represent the result in 16 bits; failure indicates overflow
-				begin
-					self.assign( result ,Force_twos_complement )
+			# Raises on unrecognized input type
+			def add!( An_object ,Force_twos_complement = true )
+				if if Asm::Boilerplate::true_if_type( An_object ,Asm::BCPU::Word )
+					self.add_Word!( An_object ,Force_twos_complement )
+				elsif if Asm::Boilerplate::true_if_type( An_object ,Asm::BCPU::Value )
+					raise 'invalid invocation' unless Force_twos_complement
+					self.add_Value!( An_object )
+				elsif if Asm::Boilerplate::true_if_type( An_object ,Asm::BCPU::Location )
+					raise 'invalid invocation' unless !Force_twos_complement
+					self.add_Location!( An_object )
+				elsif if Asm::Boilerplate::true_if_type( An_object ,Integer )
+					self.add_Integer!( An_object ,Force_twos_complement )
 				else
-					self.assign( 0 )
-					raise Asm::Boilerplate::Exception::Overflow.new( 'arithmetic failed; \'0\' assigned as result of arithmetic operation.' )
+					raise	'Chiiiii'
 				end
-				return
+			end
+			# Performs addition given another Asm::BCPU::Word instance
+			def add_Word!( Rhs_BCPU_Word ,Force_twos_complement = true )
+				# paranoid type checking
+				Asm::Boilerplate::raise_unless_type( Rhs_BCPU_Word ,Asm::BCPU::Word )
+				# utilize to_i to implement addition
+				rhs	= Rhs_BCPU_Word.to_i( Force_twos_complement )
+				self.add_Integer!( rhs ,Force_twos_complement )
+			end
+			# Performs addition given another Asm::BCPU::Word instance
+			def add_Value!( Rhs_Memory_Value )
+				# paranoid type checking
+				Asm::Boilerplate::raise_unless_type( Rhs_Memory_Value ,Asm::BCPU::Memory::Value )
+				# utilize to_i to implement addition
+				rhs	= Rhs_Memory_Value.to_i( )
+				self.add_Integer!( rhs ,true )
+			end
+			# Performs addition given another Asm::BCPU::Word instance
+			def add_Location!( Rhs_Memory_Location ,Force_twos_complement = true )
+				# paranoid type checking
+				Asm::Boilerplate::raise_unless_type( Rhs_Memory_Location ,Asm::BCPU::Memory::Location )
+				# utilize to_i to implement addition
+				rhs	= Rhs_Memory_Location.to_i( Force_twos_complement )
+				self.add_Integer!( rhs ,Force_twos_complement )
 			end
 			# Performs addition given another Asm::BCPU::Word instance
 			#
