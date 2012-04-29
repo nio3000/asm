@@ -30,7 +30,8 @@ module Asm
 			@the_Loader.load( a_file )
 			# TODO integrate this with the GUI via callbacks or whatnot
 		end
-	end
+    end
 end
 
-require	'Asm/require_all.rb'
+$LOAD_PATH << '.'
+#require	'Asm/require_all.rb'

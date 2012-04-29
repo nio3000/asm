@@ -39,10 +39,10 @@ module Asm
 		# invoke Loader instance with a given file of BCPU assembly
 		#
 		# Returns an array of the first exception encountered for each line of text in the given file
-		def load( Path )
+		def load( path )
 			messages	= []
 			line_count	= 0
-			code	= File.open( Path ,'r' )
+			code	= File.open( path ,'r' )
 			# parse individually each line in the file
 			code.each_line do |line|
 				line_count += 1
@@ -67,19 +67,19 @@ module Asm
 		#
 		# Returns nothing
 		def handle( line_of_text )
-			# check if 'keyword RD RA RB' instruction format consumes line
+			# check if 'keyword dest_reg reg_a reg_b' instruction format consumes line
 			# dispatch with information from named captures
 			
-			# check if 'keyword RD RA' instruction format consumes line
+			# check if 'keyword dest_reg reg_a' instruction format consumes line
 			# dispatch with information from named captures
 			
-			# check if 'keyword RD literal' instruction format consumes line
+			# check if 'keyword dest_reg literal' instruction format consumes line
 			# dispatch with information from named captures
 			
-			# check if 'keyword RD literal RA' instruction format consumes line
+			# check if 'keyword dest_reg literal reg_a' instruction format consumes line
 			# dispatch with information from named captures
 			
-			# check if 'keyword RD RA literal' instruction format consumes line
+			# check if 'keyword dest_reg reg_a literal' instruction format consumes line
 			# dispatch with information from named captures
 			
 			# check if '# memory_location_literal = memory_value_literal' directive consumes line
@@ -96,48 +96,49 @@ module Asm
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD RA RB 
+		# dispatches BCPU assembly syntax case: # keyword dest_reg reg_a reg_b 
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_RA_RB( keyword ,RD ,RA ,RB )
+		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, RA 
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, reg_a 
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_RA( keyword ,RD ,RA )
+		def instruction_format__keyword_RD_RA( keyword ,dest_reg ,reg_a )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, RA, literal
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, reg_a, literal
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_RA_literal( keyword ,RD ,RA ,literal )
+		def instruction_format__keyword_RD_RA_literal( keyword ,dest_reg ,reg_a ,literal )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, literal, RA
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, literal, reg_a
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_literal_RA( keyword ,RD ,literal ,RA )
+		def instruction_format__keyword_RD_literal_RA( keyword ,dest_reg ,literal ,reg_a )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, literal
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, literal
 		# DOCIT
-		# # Returns nothing def instruction_format__keyword_RD_literal( keyword ,RD ,literal )
+		# # Returns nothing 
+        def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
 			# TODO implement this
 			return
-		end
+        end
 		# initialize the VM
 		# handles BCPU assembly syntax case: # memory_location_literal = memory_value_literal
 		# DOCIT
@@ -162,9 +163,11 @@ module Asm
 			* TODO implement the unit tests
 		* interpretation of each instruction ought to have a unit test
 		* interpretation of strange language features ought to have stress tests
-=end		class Test < Test::Unit::TestCase
-		end
-	end
+=end		
+        class Test < Test::Unit::TestCase
+        end
+    end
 end
 
-require	'Asm/require_all.rb'
+$LOAD_PATH << '.'
+#require	'Asm/require_all.rb'
