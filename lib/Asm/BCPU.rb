@@ -36,7 +36,7 @@ module Asm
 			def clone
 				return	Asm::BCPU::Word.new( self )
 			end
-		private
+		public
 =begin		implementation details, assignment
 =end
 			# Assign the bits in self to be the bits represented by the given object.
