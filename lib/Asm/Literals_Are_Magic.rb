@@ -94,8 +94,53 @@ module Asm
 				output_registers	= Asm::Magic::Register::Indicies::output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
 			end
 		end
-
+=begin	
+		# Asm::Magic::Regexp_String
+		* DOCIT
+=end
+        module Regexp_String
+			Whitespace	= '\s*'	# whitespace character zero or more times
+			Comment	= '' << Whitespace << '//.*$'	# optional whitespace followed by a comment followed by optional anything; also forced consume until end of line or fail to match
+			Delimiter	= ','	# a comma
+			Beginning_of_line	= '^' << Whitespace	# forces regex match to start from the beginning of the input text; also consumes whitespace
+			Directive	= '#' << Whitespace	# directive symbol followed by optional whitespace
+		end
+=begin	
+		# Asm::Magic::ISA
+		* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
+=end
         module ISA
+#=begin
+			class Instruction
+				def initialize( )
+					@opcode	= -1
+					@text	= 'Kya~'
+					@format_text	= []
+					@format_regex	= []
+				end
+				
+				def opcode_as_binary_String
+					# TODO implement
+				end
+				def keyword_as_String
+					@text
+				end
+				def format_as_String
+					@format_text
+				end
+				def format_as_String_regex
+					result	= ''
+					@format_regex.each do |literal_regex|
+						
+					end
+				end
+			end
+#=end
+			module Integer
+=begin	
+			Integer OpCodes corresponding to 
+			* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
+=end
             # Integer OpCodes
             MOVE  = 0
             NOT   = 1
