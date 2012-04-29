@@ -111,15 +111,21 @@ module Asm
         def seth( dest_reg, reg_eightbit)
         end
 
-        # RD <- RD + 4bit data if RB == 0 (zero)
-        def inciz( dest_reg, reg_fourbit, reg_b)
-        end
+		# RD <- RD + 4bit data if RB == 0 (zero)
+		def inciz( dest_reg, reg_fourbit, reg_b)
+			RD_altered	= false
+			if self.get_memory_value( reg_b ).to_i == 0
+				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( reg_fourbit.to_i ) )
+				RD_altered	= true
+			end
+			self.increment_program_counter( dest_reg ,RD_altered )
+		end
 
 		# RD <- RD - 4bit data if RB15 == 1 (neg)
 		def decin( dest_reg, reg_fourbit, reg_b )
 			RD_altered	= false
 			if self.get_memory_value( reg_b ).to_i >= 0
-				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( reg_fourbit.to_i ) )
+				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
 				RD_altered	= true
 			end
 			self.increment_program_counter( dest_reg ,RD_altered )
