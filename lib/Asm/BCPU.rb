@@ -282,23 +282,16 @@ module Asm
 		module Memory
 			# DOCIT
 			class Location < Asm::BCPU::Word
-				# DOCIT
-				#
-				# argument - DOCIT
-				#
-				# DOCIT
-				def initialize( argument = nil )
-					self.assign( argument )
+				# initializing constructor
+				# see Asm::BCPU::Word::initialize
+				def initialize( An_object = nil )
+					self.assign( An_object )
 				end
 				# Interprets self as the unsigned binary encoding of an integer value
 				#
 				# Returns an integer
 				def to_i( )
 					super( false )
-				end
-				# DOCIT
-				def to_s( )
-					# TODO implement this; assume unsigned encoding of binary values
 				end
 				# DOCIT
 				def less_than?( rhs )

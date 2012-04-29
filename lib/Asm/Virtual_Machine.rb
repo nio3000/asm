@@ -114,13 +114,25 @@ module Asm
         def seth( dest_reg, reg_eightbit)
         end
 
-        # RD <- RD + 4bit data if RB == 0 (zero)
-        def inciz( dest_reg, reg_fourbit, reg_b)
-        end
+		# RD <- RD + 4bit data if RB == 0 (zero)
+		def inciz( dest_reg, reg_fourbit, reg_b)
+			RD_altered	= false
+			if self.get_memory_value( reg_b ).to_i == 0
+				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( reg_fourbit.to_i ) )
+				RD_altered	= true
+			end
+			self.increment_program_counter( dest_reg ,RD_altered )
+		end
 
-        # RD <- RD - 4bit data if RB15 == 1 (neg)
-        def decin( dest_reg, reg_fourbit, reg_b)
-        end
+		# RD <- RD - 4bit data if RB15 == 1 (neg)
+		def decin( dest_reg, reg_fourbit, reg_b )
+			RD_altered	= false
+			if self.get_memory_value( reg_b ).to_i >= 0
+				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
+				RD_altered	= true
+			end
+			self.increment_program_counter( dest_reg ,RD_altered )
+		end
 
 		# RD <- RA if RB == 0 (zero)
 		def movez( dest_reg, reg_a, reg_b)
@@ -158,11 +170,12 @@ module Asm
 			end
 		end
 		# R15 <- R15 + 1
-		def increment_program_counter( An_Integer )
-			rhs	= Asm::BCPU::Word.new( An_Integer )
-			lhs = self.get_memory_value( Asm::Magic::Register::Location::program_counter )
-			rhs.the_bits
-			# TODO implement this
+		def increment_program_counter( RD ,RD_altered = false ,An_Integer = 1 )
+			unless	( RD.equals?( Asm::Magic::Register::Location::program_counter ) && RD_altered )
+				lhs = self.get_memory_value( Asm::Magic::Register::Location::program_counter )
+				lhs.add!( Asm::BCPU::Word.new( An_Integer ) )
+				self.set_location_to_value( Asm::Magic::Register::Location::program_counter ,lhs )
+			end
 		end
 	public
 =begin		BCPU memory manipulation
