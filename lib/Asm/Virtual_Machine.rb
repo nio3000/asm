@@ -59,6 +59,7 @@ module Asm
 		# DOCIT
         # RD <- RA
 		def move( dest_reg, reg_a)
+           self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
 		end
         
         # RD <- bitwise NOT RA
@@ -67,45 +68,55 @@ module Asm
         
         # RD <- RA bitwise AND RB
         def and( dest_reg, reg_a, reg_b)
+            ra = self.get_memory_value(reg_a)
+            rb = self.get_memory_value(reg_b)
+            
         end
         
-        # RD <- bitwise OR RB
+        # RD <- RA bitwise OR RB
         def or( dest_reg, reg_a, reg_b)
+            ra = self.get_memory_value(reg_a)
+            rb = self.get_memory_value(reg_b)
+            self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
         end
 
         # RD <- RA + RB
         def add( dest_reg, reg_a, reg_b) 
             ra = self.get_memory_value(reg_a) 
             rb = self.get_memory_value(reg_b)
-			self.move( dest_reg , ra.add_Word!(rb))
+			self.set_location_to_value( dest_reg , ra.add_Word!(rb))
         end
 
         # RD <- RA - RB
         def sub( dest_reg, reg_a, reg_b)
+            ra = self.get_memory_value(reg_a).to_i
+            rb = self.get_memory_value(reg_b).to_i
+            self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
         end
 
         # RD <- RA + 4bit data
-        def addi( dest_reg, reg_a, reg_b)
+        def addi( dest_reg, reg_a, reg_fourbit)
         end
 
         # RD <- RA - 4bit data
-        def subi( dest_reg, reg_a, reg_b)
+        def subi( dest_reg, reg_a, reg_fourbit)
         end
         
         # RD <- 8 0's followed by 8 bit data
-        def set( dest_reg, reg_a)
+        def set( dest_reg, reg_eightbit)
+            self.set_location_to_value(dest_reg, 
         end
 
         # RD <- 8bit data follow by RD7, RD6, ... RD0
-        def seth( dest_reg, reg_a)
+        def seth( dest_reg, reg_eightbit)
         end
 
         # RD <- RD + 4bit data if RB == 0 (zero)
-        def inciz( dest_reg, reg_a, reg_b)
+        def inciz( dest_reg, reg_fourbit, reg_b)
         end
 
         # RD <- RD - 4bit data if RB15 == 1 (neg)
-        def decin( dest_reg, reg_a, reg_b)
+        def decin( dest_reg, reg_fourbit, reg_b)
         end
 
 		# RD <- RA if RB == 0 (zero)
