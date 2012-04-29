@@ -1,5 +1,5 @@
-# encoding UTF-8
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
+
 =begin
 # /lib/Asm/require_all.rb
 * hardcoded require for each file containing code under module Asm
@@ -20,3 +20,7 @@ require 'Asm/Virtual_Machine.rb'
 # application specific functionality
 require 'Asm/Program_Options.rb'
 require 'Asm/Application.rb'
+
+# encoding: UTF-8
+# vim: ai ts=2 sts=2 et sw=2 ft=ruby
+# vim: autoindent tabstop=2 shiftwidth=2 expandtab softtabstop=2 filetype=ruby

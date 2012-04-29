@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 =begin
 # /lib/Asm/Loader.rb
 * complete definition of class Asm::Loader
@@ -50,7 +48,8 @@ module Asm
 					self.handle( line )
 				rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
 					messages.push 'syntax error on line' << line_count << ': \"' << a_syntax_error.message << '\"'
-				else => an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
+				else 
+                    an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
 					messages.push 'unexpected error on line' << line_count << ': \"' << an_error.message << '\"'
 				end
             end
@@ -169,5 +168,8 @@ module Asm
     end
 end
 
-$LOAD_PATH << '.'
 #require	'Asm/require_all.rb'
+$LOAD_PATH << '.'
+# encoding: UTF-8
+# vim: ai ts=2 sts=2 et sw=2 ft=ruby
+# vim: autoindent tabstop=2 shiftwidth=2 expandtab softtabstop=2 filetype=ruby

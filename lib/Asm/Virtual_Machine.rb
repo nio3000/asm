@@ -4,7 +4,6 @@
 * unit tests on an instance of Asm::Virtual_Machine
 =end
 
-require	'Asm/require_all.rb'
 
 =begin
 # Asm
@@ -54,9 +53,8 @@ module Asm
 			# call advance_once number_of_times
 		end
 	private
-=begin		execute simulated BCPU execution
+=begin	execute simulated BCPU execution
 =end
-		# DOCIT
         # RD <- RA
 		def move( dest_reg, reg_a)
             self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
@@ -220,7 +218,7 @@ module Asm
 		#
 		# Raises exceptions when the memory range is invalid
 		# Returns memory-location-ordered array of memory values
-		def get_memory_range( inclusive_minimum ,exclusive_maximum )
+        def get_memory_range( inclusive_minimum ,exclusive_maximum )
 			# paranoid type checking
 			# TODO force integer-compatible types
 			assert( inclusive_minimum < exclusive_maximum ,"The minimum is not less than the maximum" )
@@ -239,7 +237,7 @@ module Asm
 			locations.each { |key| values.push @the_memory[key] }
 			# return sorted values
 			values
-		end
+        end
 =begin
 		# Unit tests on this class
 		* any claim made in documentation ought to have a unit tests
@@ -248,8 +246,12 @@ module Asm
 			* TODO implement the unit tests
 =end		
         class Test < Test::Unit::TestCase
-            test "" do
-            end
-		end # Test
-	end # Virtual_Machine
+        end # Test
+    end # Virtual_Machine
 end # Asm
+
+#require	'Asm/require_all.rb'
+$LOAD_PATH << '.'
+# encoding: UTF-8
+# vim: ai ts=2 sts=2 et sw=2 ft=ruby
+# vim: autoindent tabstop=2 shiftwidth=2 expandtab softtabstop=2 filetype=ruby
