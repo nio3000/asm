@@ -225,6 +225,26 @@ module Asm
 				end
 				return
 			end
+			# Performs addition given another Asm::BCPU::Word instance
+			#
+			# Raises Asm::Boilerplate::Exception::Overflow when overflow or other failure occurs
+			# Returns nothing
+			def add_Integer!( rhs_Integer ,Force_twos_complement = true )
+				# paranoid type checking
+				# TODO force Integer compatible type
+				# utilize to_i to implement addition
+				lhs	= self.to_i( Force_twos_complement )
+				rhs	= rhs_Integer
+				result	= lhs + rhs
+				# assign will attempt to represent the result in 16 bits; failure indicates overflow
+				begin
+					self.assign( result ,Force_twos_complement )
+				else
+					self.assign( 0 )
+					raise Asm::Boilerplate::Exception::Overflow.new( 'arithmetic failed; \'0\' assigned as result of arithmetic operation.' )
+				end
+				return
+			end
 		end
 		# DOCIT
 		module Memory
