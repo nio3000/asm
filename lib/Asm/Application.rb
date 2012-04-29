@@ -17,11 +17,13 @@ module Asm
 =end	
     class Application
 		# DOCIT
+        # TODO: Pass APP_CONFIG to here from bin/bcpuvm-cli?
 		def initialize
 			@the_BCPU	= Asm::Virtual_Machine.new
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 		end
 		# DOCIT
+        # TODO: Pass asm file here from bin/bcpuvm-cli?
 		def run
 			a_file	= ""	# TODO get a filename
 			#
