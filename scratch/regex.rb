@@ -4,7 +4,7 @@
 #
 # The script takes a command and registers as input
 # Example:
-#   $ irb RegExMod.rb MOVE R1,R2
+#   $ ruby RegExMod.rb MOVE R1,R2
 #
 # Note: This script is not white space friendly so make sure 
 # register values contain no white spaces. The program will not 

@@ -11,7 +11,8 @@ require	'Asm/require_all.rb'
 * highest-level namespace for the project.
 =end
 module Asm
-=begin	# Asm::Virtual_Machine
+=begin
+	# Asm::Virtual_Machine
 	* persistant BCPU internal state.
 		* BCPU memory locations mapped to BCPU memory values
 		* BCPU register literals mapped to BCPU memory locations
@@ -26,38 +27,102 @@ module Asm
 	### implementation details
 	* BCPU memory is represented as an associative array (Ruby Hash)
 	* memory_values are allocated on demand & behavior is compatible with preallocation, but will be more memory efficient in the (expected) case of low memory utilization.
-=end	class	Virtual_Machine
-=begin		public: structors & accessors
+=end	
+    class	Virtual_Machine
+	public
+=begin		structors & accessors
 		* the instance variable @the_memory is a private implementation detail
 		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
 =end
-		# initializing default constructor
+        # Initialize the virtual machine.
 		def initialize( )
-			# @the_memory is a hash (collection of key -> value pairs)
+			# @the_memory is a hash
 			@the_memory	= { }
 		end
-=begin		public: invoke simulated BCPU execution
+	public
+=begin		invoke simulated BCPU execution
 =end
 		# DOCIT
 		def advance_once
-			# TODO implement
-			# read the memory value of the program counter
+			# TODO implement # read the memory value of the program counter
 			# dispatch based on opcode
 				# make boilerplate code for splitting based on format
 		end
 		# DOCIT
-		def advance( number_of_times )
+		def advance( steps )
 			# TODO implement
 			# call advance_once number_of_times
 		end
-=begin		private: execute simulated BCPU execution
+	private
+=begin		execute simulated BCPU execution
 =end
 		# DOCIT
-		def MOVE( destination_register ,registerA )
-			# TODO implement
+        # RD <- RA
+		def move( dest_reg, reg_a)
 		end
-		# TODO define all opcode cases
-=begin		public: BCPU memory manipulation
+        
+        # RD <- bitwise NOT RA
+        def not( dest_reg, reg_a)
+        end
+        
+        # RD <- RA bitwise AND RB
+        def and( dest_reg, reg_a, reg_b)
+        end
+        
+        # RD <- bitwise OR RB
+        def or( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA + RB
+        def add( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA - RB
+        def sub( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA + 4bit data
+        def addi( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA - 4bit data
+        def subi( dest_reg, reg_a, reg_b)
+        end
+        
+        # RD <- 8 0's followed by 8 bit data
+        def set( dest_reg, reg_a)
+        end
+
+        # RD <- 8bit data follow by RD7, RD6, ... RD0
+        def seth( dest_reg, reg_a)
+        end
+
+        # RD <- RD + 4bit data if RB == 0 (zero)
+        def inciz( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RD - 4bit data if RB15 == 1 (neg)
+        def decin( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA if RB == 0 (zero)
+        def movez( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA if RB != 0 (not zero)
+        def movex( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA if RB15 == 0 (positive)
+        def movep( dest_reg, reg_a, reg_b)
+        end
+
+        # RD <- RA if RB15 == 1 (negative)
+        def moven( dest_reg, reg_a, reg_b)
+        end
+
+	public
+=begin		BCPU memory manipulation
 		* strict type checking is intended
 			* incorrect types will raise exceptions.
 =end
@@ -125,7 +190,10 @@ module Asm
 			* TODO implement the unit tests
 		* all the major instructions needs unit tests
 			* TODO implement the unit tests
-=end		class Test < Test::Unit::TestCase
-		end
-	end
-end
+=end		
+        class Test < Test::Unit::TestCase
+            test "" do
+            end
+		end # Test
+	end # Virtual_Machine
+end # Asm
