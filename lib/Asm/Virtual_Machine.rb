@@ -59,18 +59,21 @@ module Asm
 		# DOCIT
         # RD <- RA
 		def move( dest_reg, reg_a)
-           self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
+            self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
 		end
         
         # RD <- bitwise NOT RA
         def not( dest_reg, reg_a)
+            ra = self.get_memory_value(reg_a)
+            rb = self.get_memory_value(reg_b)
+            self.set_location_to_value(dest_reg, ra ~ rb)
         end
         
         # RD <- RA bitwise AND RB
         def and( dest_reg, reg_a, reg_b)
             ra = self.get_memory_value(reg_a)
             rb = self.get_memory_value(reg_b)
-            
+            self.set_location_to_value(dest_reg, ra & rb)
         end
         
         # RD <- RA bitwise OR RB
@@ -104,7 +107,7 @@ module Asm
         
         # RD <- 8 0's followed by 8 bit data
         def set( dest_reg, reg_eightbit)
-            self.set_location_to_value(dest_reg, 
+            #self.set_location_to_value(dest_reg, 
         end
 
         # RD <- 8bit data follow by RD7, RD6, ... RD0

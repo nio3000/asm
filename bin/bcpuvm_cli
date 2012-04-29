@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../lib')
 
 # this file instantiates an Application instance & does the stuff
 require 'optparse'
 require 'yaml'
-require	'Asm/require_all.rb'
+#require	'Asm/require_all.rb'
 
 def start_bcpuvm
     # Setup the option parser.

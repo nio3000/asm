@@ -360,4 +360,24 @@ module Asm
         end
 end
 
+module Asm
+    module Magic
+        module Register
+=begin		# Asm::Magic::Register::Location
+			    * memory locations of unique special function registers
+=end			
+            module	Location 
+				Program_counter	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::Program_counter )
+			end
+=begin      # Asm::Magic::Register::Locations
+                * memory locations of ategories of special function registers
+=end			
+            module	Locations 
+				Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
+				Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
+			end
+        end
+    end
+end
+
 require	'Asm/require_all.rb'

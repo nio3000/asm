@@ -37,7 +37,7 @@ module Asm
 =end
 		module Bitset
 			# boilerplate for resizing an instance of Bitset
-			def	resize( Desired_size )
+			def	resize( desired_size )
 				# TODO implement this
 			end
 		end

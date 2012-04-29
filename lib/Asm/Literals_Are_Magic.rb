@@ -17,38 +17,65 @@ module Asm
 		* this design choice is for reading them
 =end	
     module Magic
+
+=begin		# Asm::Magic::Memory
+=end		
+        module	Memory
+=begin			# Asm::Magic::Memory::Bits_per
+=end			
+            module	Bits_per
+				Word	    = 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
+				Halfword	= 8
+				Quarterword	= 4
+			end
+=begin			# Asm::Magic::Memory::Index
+			* minimums & maximums in inclusive & exclusive flavours
+=end			
+            module	Index
+				module	Inclusive
+					Minimum	= 0
+					Maximum	= 65535
+				end
+				module	Exclusive
+					Minimum	= Asm::Magic::Memory::Index::Inclusive::Minimum - 1
+					Maximum	= Asm::Magic::Memory::Index::Inclusive::Maximum + 1	# 2^16 = 65536
+				end
+			end
+		end
 =begin	# Asm::Magic::Binary
 =end
         module	Binary
 =begin		# Asm::Magic::Binary::Twos_complement
 =end		
 			module	Twos_complement
-				module	Inclusive
-					Minimum	= Asm::Magic::Binary::Twos_complement::Exclusive::minimum + 1
-					Maximum	= Asm::Magic::Binary::Twos_complement::Exclusive::maximum - 1
-				end
 				module	Exclusive
-					Minimum	= -(Asm::Magic::Binary::Twos_complement::Exclusive::maximum + 1)
 					Maximum	= 2 ** (Asm::Magic::Memory::Bits_per::Word - 1) # 2^15 = ???
+					Minimum	= -(Asm::Magic::Binary::Twos_complement::Exclusive::Maximum + 1)
 				end
-				def	valid?( An_Integer )
-					return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
+				module	Inclusive
+					Minimum	= Asm::Magic::Binary::Twos_complement::Exclusive::Minimum + 1
+					Maximum	= Asm::Magic::Binary::Twos_complement::Exclusive::Maximum - 1
 				end
+				#def	valid?( An_Integer )
+				#	return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
+				#end
 			end
 =begin		# Asm::Magic::Binary::Unsigned
 =end		
 			module	Unsigned
+				module	Exclusive
+					Maximum	= 2 ** Asm::Magic::Memory::Bits_per::Word # 2^16 = 65536
+                end
 				module	Inclusive
 					Minimum	= 0
-					Maximum	= Asm::Magic::Binary::Unsigned::Exclusive::maximum - 1
+					Maximum	= Asm::Magic::Binary::Unsigned::Exclusive::Maximum - 1
 				end
 				module	Exclusive
-					Minimum	= Asm::Magic::Binary::Unsigned::Inclusive::minimum - 1
-					Maximum	= 2 ** Asm::Magic::Memory::Bits_per::Word # 2^16 = 65536
+					Minimum	= Asm::Magic::Binary::Unsigned::Inclusive::Minimum - 1
 				end
-				def	valid?( An_Integer )
-					return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
-				end
+				#def	valid?( An_Integer )
+				#	return	( An_Integer > Exclusive::Minimum ) && ( An_Integer < Exclusive::Maximum )
+				#end
 			end
 		end
 		
@@ -57,34 +84,10 @@ module Asm
         module	Loader
 			# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
 			# TODO remove explicit dependence on this variable.
-			example_invalid_load_index	= Asm::Magic::Memory::Index::Exclusive::minimum
+			example_invalid_load_index	= Asm::Magic::Memory::Index::Exclusive::Minimum
 		end
 
-=begin		# Asm::Magic::Memory
-=end		
 
-        module	Memory
-=begin			# Asm::Magic::Memory::Bits_per
-=end			
-            module	Bits_per
-				Word	= 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
-				Halfword	= 8
-				Quarterword	= 4
-			end
-=begin			# Asm::Magic::Memory::Index
-			* minimums & maximums in inclusive & exclusive flavours
-=end			
-        module	Index
-				module	Inclusive
-					minimum	= 0
-					maximum	= 65535
-				end
-				module	Exclusive
-					minimum	= Asm::Magic::Memory::Index::Inclusive::minimum - 1
-					maximum	= Asm::Magic::Memory::Index::Inclusive::maximum + 1	# 2^16 = 65536
-				end
-			end
-		end
 
 =begin		# Asm::Magic::Register
 =end		
@@ -94,29 +97,28 @@ module Asm
 			* minimums & maximums in inclusive & exclusive flavours
 =end			
             module	Index
-				program_counter	= Asm::Magic::Register::Index::Inclusive::maximum	# 15
 				module	Inclusive
-					minimum	= 0
-					maximum	= 15
+					Minimum	= 0
+					Maximum	= 15
 				end
 				module	Exclusive
-					minimum	= Asm::Magic::Register::Index::Inclusive::minimum - 1
-					maximum	= Asm::Magic::Register::Index::Inclusive::maximum + 1	# 2^4 = 16
+					Minimum	= Asm::Magic::Register::Index::Inclusive::Minimum - 1
+					Maximum	= Asm::Magic::Register::Index::Inclusive::Maximum + 1	# 2^4 = 16
 				end
+				Program_counter	= Asm::Magic::Register::Index::Inclusive::Maximum	# 15
 			end
 =begin		# Asm::Magic::Register::Indicies
 			    * memory indicies of categories of special function registers
 =end			
             module	Indicies
-				input_registers	= [ 6 ]
-				output_registers	= [ 13 ,14 ]
+				Input_registers	 = [ 6 ]
+				Output_registers = [ 13 ,14 ]
 			end
 
 =begin		# Asm::Magic::Register::Location
 			    * memory locations of unique special function registers
 =end			
             module	Location 
-				program_counter	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::program_counter )
 			end
 
 =begin			
@@ -124,8 +126,6 @@ module Asm
                 * memory locations of ategories of special function registers
 =end			
             module	Locations 
-				input_registers	= Asm::Magic::Register::Indicies::input_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
-				output_registers	= Asm::Magic::Register::Indicies::output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
 			end
 		end
 =begin	
@@ -148,7 +148,7 @@ module Asm
 			class Instruction
 				def initialize( )
 					@opcode	= -1
-					@text	= 'Kya~'
+					@text	= 'Kya~' # exclaimed Pyrrha
 					@format_text	= []
 					@format_regex	= []
 				end
@@ -215,4 +215,4 @@ module Asm
 	end
 end
 
-require	'Asm/require_all.rb'
+#require	'Asm/require_all.rb'
