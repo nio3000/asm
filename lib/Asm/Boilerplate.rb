@@ -43,7 +43,7 @@ module Asm
 		end
 =begin	# Asm::Boilerplate::Exception
 =end
-		module Exception
+		class Exception
 =begin		# Asm::Boilerplate::Exception::Syntax
 			* if code generates a BCPU assembly syntax error, then raise an exception of this type with a message explaining the error
 				* you don't need to add line number information, that happens when the Syntax object is rescued
@@ -56,8 +56,10 @@ module Asm
 =end
 			class Overflow < Exception
 			end
+
 		end
-	end
+    end
 end
 
-require	'Asm/require_all.rb'
+$LOAD_PATH << '.'
+#require	'Asm/require_all.rb'
