@@ -9,10 +9,11 @@
 =end
 module Asm
 
-=begin	# Asm::Application
+=begin
+    # Asm::Application
 	* a complete and self-contained application object for a BCPU VM
 	* will handle GUI details or something like that
-=end	
+=end
     class Application
 		# DOCIT
         # TODO: Pass APP_CONFIG to here from bin/bcpuvm-cli?
@@ -23,7 +24,8 @@ module Asm
 		# DOCIT
         # TODO: Pass asm file here from bin/bcpuvm-cli?
 		def run
-			a_file	= ""	# TODO get a filename
+            # TODO get a filename
+			a_file	= ""
 			#
 			@the_Loader.load( a_file )
 			# TODO integrate this with the GUI via callbacks or whatnot

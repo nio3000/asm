@@ -5,7 +5,7 @@
 
 module Asm
 
-=begin 
+=begin
     # Asm::Magic
 	    * hardcoded immutable values # TODO figure out how to make them immutable
 	## design choice
@@ -13,22 +13,25 @@ module Asm
 		* indulge in ludicrously explanatory variable names
 		* I don't care if it takes you forever to type the full nested name
 		* this design choice is for reading them
-=end	
+=end
     module Magic
 
-=begin		# Asm::Magic::Memory
-=end		
+=begin
+        # Asm::Magic::Memory
+=end
         module	Memory
-=begin			# Asm::Magic::Memory::Bits_per
-=end			
+=begin
+            # Asm::Magic::Memory::Bits_per
+=end
             module	Bits_per
 				Word	    = 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
 				Halfword	= 8
 				Quarterword	= 4
             end
-=begin			# Asm::Magic::Memory::Index
-			* minimums & maximums in inclusive & exclusive flavours
-=end			
+=begin
+        # Asm::Magic::Memory::Index
+		* minimums & maximums in inclusive & exclusive flavours
+=end
             module	Index
 				module	Inclusive
 					Minimum	= 0
@@ -40,11 +43,13 @@ module Asm
 				end
             end
         end
-=begin	# Asm::Magic::Binary
+=begin
+        # Asm::Magic::Binary
 =end
         module	Binary
-=begin		# Asm::Magic::Binary::Twos_complement
-=end		
+=begin
+            # Asm::Magic::Binary::Twos_complement
+=end
 			module	Twos_complement
 				module	Exclusive
 					Maximum	= 2 ** (Asm::Magic::Memory::Bits_per::Word - 1) # 2^15 = ???
@@ -58,8 +63,9 @@ module Asm
 				#	return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				#end
 			end
-=begin		# Asm::Magic::Binary::Unsigned
-=end		
+=begin
+            # Asm::Magic::Binary::Unsigned
+=end
 			module	Unsigned
                 module	Exclusive
 					Maximum	= 2 ** Asm::Magic::Memory::Bits_per::Word # 2^16 = 65536
@@ -76,9 +82,9 @@ module Asm
 				#end
 			end
         end
-		
-=begin		# Asm::Magic::Loader
-=end		
+=begin
+        # Asm::Magic::Loader
+=end
         module	Loader
 			# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
 			# TODO remove explicit dependence on this variable.
@@ -87,13 +93,15 @@ module Asm
 
 
 
-=begin		# Asm::Magic::Register
-=end		
+=begin
+        # Asm::Magic::Register
+=end
         module	Register
-=begin			# Asm::Magic::Register::Index
+=begin
+            # Asm::Magic::Register::Index
 			* memory indicies of unique special function registers
 			* minimums & maximums in inclusive & exclusive flavours
-=end			
+=end
             module Index
 				module	Inclusive
 					Minimum	= 0
@@ -107,28 +115,30 @@ module Asm
                 #15
 				Program_counter	= Asm::Magic::Register::Index::Inclusive::Maximum
             end
-=begin		# Asm::Magic::Register::Indicies
-			    * memory indicies of categories of special function registers
-=end			
+=begin
+        # Asm::Magic::Register::Indicies
+		* memory indicies of categories of special function registers
+=end
             module Indicies
 				Input_registers	 = [ 6 ]
 				Output_registers = [ 13 ,14 ]
             end
 
-=begin		# Asm::Magic::Register::Location
-			    * memory locations of unique special function registers
-=end			
-            module Location 
+=begin
+            # Asm::Magic::Register::Location
+			* memory locations of unique special function registers
+=end
+            module Location
             end
 
-=begin			
+=begin
             # Asm::Magic::Register::Locations
-                * memory locations of ategories of special function registers
-=end			
-            module Locations 
+            * memory locations of ategories of special function registers
+=end
+            module Locations
             end
         end
-=begin	
+=begin
 		# Asm::Magic::Regexp_String
 		* DOCIT
 =end
@@ -139,12 +149,11 @@ module Asm
 			Beginning_of_line	= '^' << Whitespace	# forces regex match to start from the beginning of the input text; also consumes whitespace
 			Directive	= '#' << Whitespace	# directive symbol followed by optional whitespace
         end
-=begin	
+=begin
 		# Asm::Magic::ISA
 		* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
 =end
         module ISA
-#=begin
 			class Instruction
 				def initialize( )
 					@opcode	= -1
@@ -152,7 +161,7 @@ module Asm
 					@format_text	= []
 					@format_regex	= []
 				end
-				
+
 				def opcode_as_binary_String
 					# TODO implement
 				end
@@ -165,14 +174,13 @@ module Asm
 				def format_as_String_regex
 					result	= ''
 					@format_regex.each do |literal_regex|
-						
+
 					end
 				end
 			end
-#=end
             module Integer
-=begin	
-			Integer OpCodes corresponding to 
+=begin
+			Integer OpCodes corresponding to
 			* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
 =end
             # Integer OpCodes
