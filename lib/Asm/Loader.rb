@@ -12,8 +12,8 @@ module Asm
 =begin	# Asm::Loader
 	* initializes an instance of Asm::Virtual_Machine
 	* maintains internal state related to loading machine code into an instance of Asm::Virtual_Machine
-=end	
-    class	Loader
+=end
+	class	Loader
 	public
 =begin	structors & accessors
 =end
@@ -48,11 +48,11 @@ module Asm
 					self.handle( line )
 				rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
 					messages.push 'syntax error on line' << line_count << ': \"' << a_syntax_error.message << '\"'
-				else 
-                    an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
+				else
+					an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
 					messages.push 'unexpected error on line' << line_count << ': \"' << an_error.message << '\"'
 				end
-            end
+			end
 			messages
 		end
 	private
@@ -68,34 +68,34 @@ module Asm
 		def handle( line_of_text )
 			# check if 'keyword dest_reg reg_a reg_b' instruction format consumes line
 			# dispatch with information from named captures
-			
+
 			# check if 'keyword dest_reg reg_a' instruction format consumes line
 			# dispatch with information from named captures
-			
+
 			# check if 'keyword dest_reg literal' instruction format consumes line
 			# dispatch with information from named captures
-			
+
 			# check if 'keyword dest_reg literal reg_a' instruction format consumes line
 			# dispatch with information from named captures
-			
+
 			# check if 'keyword dest_reg reg_a literal' instruction format consumes line
 			# dispatch with information from named captures
-			
+
 			# check if '# memory_location_literal = memory_value_literal' directive consumes line
 			# dispatch with information from named captures
-			
+
 			# check if '# memory_location_literal = asm' directive consumes line
 			# dispatch with information from named captures
-			
+
 			# check if '//' format consumes line
 			# ignore by doing nothing
-			
+
 			# else
 			raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword dest_reg reg_a reg_b 
+		# dispatches BCPU assembly syntax case: # keyword dest_reg reg_a reg_b
 		# DOCIT
 		#
 		# Returns nothing
@@ -104,7 +104,7 @@ module Asm
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword dest_reg, reg_a 
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, reg_a
 		# DOCIT
 		#
 		# Returns nothing
@@ -133,11 +133,11 @@ module Asm
 		# initialize the VM
 		# dispatches BCPU assembly syntax case: # keyword dest_reg, literal
 		# DOCIT
-		# # Returns nothing 
-        def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
+		# # Returns nothing
+		def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
 			# TODO implement this
 			return
-        end
+		end
 		# initialize the VM
 		# handles BCPU assembly syntax case: # memory_location_literal = memory_value_literal
 		# DOCIT
@@ -162,13 +162,12 @@ module Asm
 			* TODO implement the unit tests
 		* interpretation of each instruction ought to have a unit test
 		* interpretation of strange language features ought to have stress tests
-=end		
-        #class Test < Test::Unit::TestCase
-        #end
-    end
+=end
+		#class Test < Test::Unit::TestCase
+		#end
+	end
 end
 
 #require	'Asm/require_all.rb'
 $LOAD_PATH << '.'
 # encoding: UTF-8
-# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=ruby

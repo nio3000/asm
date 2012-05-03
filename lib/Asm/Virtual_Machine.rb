@@ -26,24 +26,24 @@ module Asm
 	### implementation details
 	* BCPU memory is represented as an associative array (Ruby Hash)
 	* memory_values are allocated on demand & behavior is compatible with preallocation,
-        but will be more memory efficient in the (expected) case of low memory utilization.
+		but will be more memory efficient in the (expected) case of low memory utilization.
 =end
-    class	Virtual_Machine
+	class	Virtual_Machine
 	public
 =begin
-        structors & accessors
+		structors & accessors
 		* the instance variable @the_memory is a private implementation detail
 		* the program counter is not an instance variable;
-            it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
+			it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
 =end
-        # Initialize the virtual machine.
+		# Initialize the virtual machine.
 		def initialize( )
 			# @the_memory is a hash
 			@the_memory	= { }
 		end
 	public
 =begin
-        invoke simulated BCPU execution
+		invoke simulated BCPU execution
 =end
 		# DOCIT
 		def advance_once
@@ -59,62 +59,62 @@ module Asm
 	private
 =begin	execute simulated BCPU execution
 =end
-        # RD <- RA
+		# RD <- RA
 		def move( dest_reg, reg_a)
-            self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
+			self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
 		end
 
-        # RD <- bitwise NOT RA
-        def not( dest_reg, reg_a)
-            ra = self.get_memory_value(reg_a)
-            rb = self.get_memory_value(reg_b)
-            self.set_location_to_value(dest_reg, ra.not(rb))
-        end
+		# RD <- bitwise NOT RA
+		def not( dest_reg, reg_a)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			self.set_location_to_value(dest_reg, ra.not(rb))
+		end
 
-        # RD <- RA bitwise AND RB
-        def and( dest_reg, reg_a, reg_b)
-            ra = self.get_memory_value(reg_a)
-            rb = self.get_memory_value(reg_b)
-            self.set_location_to_value(dest_reg, ra & rb)
-        end
+		# RD <- RA bitwise AND RB
+		def and( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			self.set_location_to_value(dest_reg, ra & rb)
+		end
 
-        # RD <- RA bitwise OR RB
-        def or( dest_reg, reg_a, reg_b)
-            ra = self.get_memory_value(reg_a)
-            rb = self.get_memory_value(reg_b)
-            self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
-        end
+		# RD <- RA bitwise OR RB
+		def or( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
+		end
 
-        # RD <- RA + RB
-        def add( dest_reg, reg_a, reg_b)
-            ra = self.get_memory_value(reg_a)
-            rb = self.get_memory_value(reg_b)
+		# RD <- RA + RB
+		def add( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value( dest_reg , ra.add_Word!(rb))
-        end
+		end
 
-        # RD <- RA - RB
-        def sub( dest_reg, reg_a, reg_b)
-            ra = self.get_memory_value(reg_a).to_i
-            rb = self.get_memory_value(reg_b).to_i
-            self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
-        end
+		# RD <- RA - RB
+		def sub( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a).to_i
+			rb = self.get_memory_value(reg_b).to_i
+			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
+		end
 
-        # RD <- RA + 4bit data
-        def addi( dest_reg, reg_a, reg_fourbit)
-        end
+		# RD <- RA + 4bit data
+		def addi( dest_reg, reg_a, reg_fourbit)
+		end
 
-        # RD <- RA - 4bit data
-        def subi( dest_reg, reg_a, reg_fourbit)
-        end
+		# RD <- RA - 4bit data
+		def subi( dest_reg, reg_a, reg_fourbit)
+		end
 
-        # RD <- 8 0's followed by 8 bit data
-        def set( dest_reg, reg_eightbit)
-            #self.set_location_to_value(dest_reg,
-        end
+		# RD <- 8 0's followed by 8 bit data
+		def set( dest_reg, reg_eightbit)
+			#self.set_location_to_value(dest_reg,
+		end
 
-        # RD <- 8bit data follow by RD7, RD6, ... RD0
-        def seth( dest_reg, reg_eightbit)
-        end
+		# RD <- 8bit data follow by RD7, RD6, ... RD0
+		def seth( dest_reg, reg_eightbit)
+		end
 
 		# RD <- RD + 4bit data if RB == 0 (zero)
 		def inciz( dest_reg, reg_fourbit, reg_b)
@@ -181,7 +181,7 @@ module Asm
 		end
 	public
 =begin
-        BCPU memory manipulation
+		BCPU memory manipulation
 		* strict type checking is intended
 		* incorrect types will raise exceptions.
 =end
@@ -222,7 +222,7 @@ module Asm
 		#
 		# Raises exceptions when the memory range is invalid
 		# Returns memory-location-ordered array of memory values
-        def get_memory_range( inclusive_minimum ,exclusive_maximum )
+		def get_memory_range( inclusive_minimum ,exclusive_maximum )
 			# paranoid type checking
 			# TODO force integer-compatible types
 			assert( inclusive_minimum < exclusive_maximum ,"The minimum is not less than the maximum" )
@@ -236,13 +236,13 @@ module Asm
 				end
 			end
 			# order the locations as is natural for them
-            # TODO test that the ordering is correctly accomplished here
+			# TODO test that the ordering is correctly accomplished here
 			locations.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }
 			# retrieve for values for each location (preserves ordering)
 			locations.each { |key| values.push @the_memory[key] }
 			# return sorted values
 			values
-        end
+		end
 =begin
 		# Unit tests on this class
 		* any claim made in documentation ought to have a unit tests
@@ -250,12 +250,11 @@ module Asm
 		* all the major instructions needs unit tests
 		* TODO implement the unit tests
 =end
-        #class Test < Test::Unit::TestCase
-        #end
-    end
+		#class Test < Test::Unit::TestCase
+		#end
+	end
 end
 
 #require	'Asm/require_all.rb'
 $LOAD_PATH << '.'
 # encoding: UTF-8
-# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=ruby

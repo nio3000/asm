@@ -1,31 +1,30 @@
 =begin
 # /lib/Asm/BCPU.rb
 * complete definition of class Asm::BCPU::Word and inheritors
-    Asm::BCPU::Memory::Location and Asm::BCPU::Memory::Value
+	Asm::BCPU::Memory::Location and Asm::BCPU::Memory::Value
 * isloated helper methods under modules
-    Asm::BCPU::Memory::Index and Asm::BCPU::Register
+	Asm::BCPU::Memory::Index and Asm::BCPU::Register
 * unit tests on instances of Asm::BCPU::Word,Asm::BCPU::Memory::Location,
-    and Asm::BCPU::Memory::Value
+	and Asm::BCPU::Memory::Value
 * largely undocumented and unimplemented
 =end
 module Asm
 	# DOCIT
-    module BCPU
+	module BCPU
 =begin
-        # Asm::BCPU::Word
+		# Asm::BCPU::Word
 		* a Word is the fundamental data type in the BCPU
 		* Asm::BCPU::Memory::Location inherits from Asm::BCPU::Word
 		* memory locations have a subtly different context for
-            assignment operations (no two's complement)
+			assignment operations (no two's complement)
 		* Asm::BCPU::Memory::Value inherits from Asm::BCPU::Word
 =end
 		class Word
 		public
 =begin
-            structors & accessors
+			structors & accessors
 			* the instance variable @the_bits is a Bitset
-			* see the repo for Bitset for details & methods available
-                if you need to get at indivudal bits in the Bitset
+			* see the repo for Bitset for details & methods available if you need to get at indivudal bits in the Bitset
 =end
 			# get @the_bits
 			attr_writer :the_bits
@@ -36,20 +35,20 @@ module Asm
 				self.assign( an_Object ,force_twos_complement )
 			end
 			# Creates a new instance of Asm::BCPU::Word,
-            # initialized to the values in self
+			# initialized to the values in self
 			# const copy constructor
 			def clone
 				return	Asm::BCPU::Word.new( self )
 			end
 		public
 =begin
-            implementation details, assignment
+			implementation details, assignment
 =end
 			# Assign the bits in self to be the bits represented by the given object.
 			# dispatches to type-specific assign methods, see those methods for constraints & behavior
 			# an_Object - String, Integer-compatible, Bitset, or Asm::BCPU::Word
 			# force_twos_complement - T: whenever possible,
-            # force the encoding choice to be twos complement.
+			# force the encoding choice to be twos complement.
 			# Raises when input is invalid
 			# Returns nothing
 			def assign( an_Object = nil ,force_twos_complement = true )
@@ -57,7 +56,7 @@ module Asm
 					@the_bits	= Bitset.new( Asm::Magic::Memory::Bits_per::Word )
 				elsif Asm::Boilerplate::true_if_type( an_Object ,String )
 					self.assign_String( an_Object ,force_twos_complement )
-                # TODO double check that this catches all integer compatible types
+				# TODO double check that this catches all integer compatible types
 				elsif Asm::Boilerplate::true_if_type( an_Object ,Integer )
 					self.assign_Integer( an_Object ,force_twos_complement )
 				elsif Asm::Boilerplate::true_if_type( an_Object ,Bitset )
@@ -69,14 +68,14 @@ module Asm
 				end
 			end
 			# Assign the bits in self to be number represented in the String;
-            # supports signed decimal integers (+|-)?[0-9] and binary [01]+
+			# supports signed decimal integers (+|-)?[0-9] and binary [01]+
 			def assign_String( a_String ,force_twos_complement = true )
 				# paranoid type checking
 				Asm::Boilerplate::raise_unless_type( a_String ,String )
 				# delegation
 				if a_String.size == a_String.count( '01' ) # T: binary String
 					self.assign_binary_String( a_String )
-                #T: decimal or binary string
+				#T: decimal or binary string
 				elsif a_String.size == a_String.count( '+-0123456789' )
 					self.assign_decimal_String( a_String ,force_twos_complement )
 				else
@@ -88,8 +87,7 @@ module Asm
 				# paranoid type checking
 				Asm::Boilerplate::raise_unless_type( a_String ,String )
 				# pure decimal string checking
-				assert( a_String.size == a_String.count( '+-0123456789' ) ,
-                       'the decimal string does not contain only \'+\', \'-\', and [0-9].' )
+				assert( a_String.size == a_String.count( '+-0123456789' ) ,'the decimal string does not contain only \'+\', \'-\', and [0-9].' )
 				# convert to Integer
 				an_Integer	= a_String.to_i( 10 )
 				# dispatch to new method
@@ -98,8 +96,8 @@ module Asm
 			# Assign the bits in self to be the binary representation of the given integer
 			#
 			# force_twos_complement
-			# 	T: will delegate assignment to Asm::BCPU::Word::assign_integer_as_twos_complement
-			# 	F: will delegate assignment to Asm::BCPU::Word::assign_integer_as_twos_complement iff an_Integer < 0; else will delegate assignment to Asm::BCPU::Word::assign_integer_as_unsigned
+			#	T: will delegate assignment to Asm::BCPU::Word::assign_integer_as_twos_complement
+			#	F: will delegate assignment to Asm::BCPU::Word::assign_integer_as_twos_complement iff an_Integer < 0; else will delegate assignment to Asm::BCPU::Word::assign_integer_as_unsigned
 			def assign_integer( an_Integer ,force_twos_complement = true )
 				# paranoid type checking
 				# TODO force integer compatible type
@@ -121,15 +119,12 @@ module Asm
 				# paranoid type checking
 				# TODO force integer compatible type
 				# twos complement range checking
-				assert( an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum ,
-                       'The integer is too positive for twos complement encoded in '<<
-                        Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				assert( an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum ,'The integer is too positive for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
 				assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer ,'The integer is too negative for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
 				# convert to binary String twos complement encoding
 				a_String	= an_Integer.to_s
 				# TODO verify whether or not the binary String faithfully represents negative values in twos complement (I don't think it does)
-				assert( a_String.size == a_String.count( '01' ) ,
-                       'faulty implementation: an integer converted to a binary string did not produce just 0s and 1s.' )
+				assert( a_String.size == a_String.count( '01' ) , 'faulty implementation: an integer converted to a binary string did not produce just 0s and 1s.' )
 				# dispatch to new method
 				self.assign_binary_String( a_String )
 			end
@@ -139,12 +134,10 @@ module Asm
 				# TODO force integer compatible type
 				# unsigned range checking
 				assert( an_Integer < Asm::Magic::Binary::Unsigned::Exclusive::Maximum ,'The integer is too positive for unsigned binary encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
-				assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum <
-                       an_Integer ,'The integer is too negative for unsigned binary encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < an_Integer ,'The integer is too negative for unsigned binary encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
 				# convert to binary String unsigned binary encoding
 				a_String	= an_Integer.to_s
-				assert( a_String.size == a_String.count( '01' ) ,
-                       'faulty implementation: an integer converted to a binary string did not produce just 0s and 1s.' )
+				assert( a_String.size == a_String.count( '01' ) ,'faulty implementation: an integer converted to a binary string did not produce just 0s and 1s.' )
 				# dispatch to new method
 				self.assign_binary_String( a_String )
 			end
@@ -153,8 +146,7 @@ module Asm
 				# paranoid type checking
 				Asm::Boilerplate::raise_unless_type( a_String ,String )
 				# pure binary string checking
-				assert( a_String.size == a_String.count( '01' ) ,
-                       'faulty implementation: an integer converted to a binary string did not produce just 0s and 1s.' )
+				assert( a_String.size == a_String.count( '01' ) ,'faulty implementation: an integer converted to a binary string did not produce just 0s and 1s.' )
 				# convert to Bitset; this may or may not be the appropriate length, but dispatch will correct for that
 				a_Bitset	= Bitset.from_s( a_String )
 				# dispatch to new method
@@ -175,10 +167,7 @@ module Asm
 				# paranoid type checking
 				Asm::Boilerplate::raise_unless_type( a_Bitset ,Bitset )
 				# content preservation checking
-				assert( a_Bitset.size <= Asm::Magic::Memory::Bits_per::Word ,
-                       "The bitset contains more than "<<
-                        Asm::Magic::Memory::Bits_per::Word<<
-                        "bits; assigning it may lose information in an unintended way." )
+				assert( a_Bitset.size <= Asm::Magic::Memory::Bits_per::Word , "The bitset contains more than "<<Asm::Magic::Memory::Bits_per::Word<<"bits; assigning it may lose information in an unintended way." )
 				# make the assignment to @the_bits
 				@the_bits	= Bitset.new( Asm::Magic::Memory::Bits_per::Word )	# 0000 0000 0000 0000
 				self.bitwise_OR!( a_Bitset )	# 1s from a_Bitset will appear in @the_bits
@@ -186,7 +175,7 @@ module Asm
 			end
 		public
 =begin
-            implementation details
+			implementation details
 =end
 			# Bitset's bitwise-or (aka '|') is broken (in one usage case only), don't use it.
 			# If for some reason you need that, then use this instead.
@@ -195,12 +184,10 @@ module Asm
 			# Returns nothing
 			def bitwise_OR!( an_Object )	# TODO verify this preserves size
 				# switch case on type; fuck duck typing.
-				if Asm::Boilerplate::true_if_type( an_Object ,
-                                                  Asm::Virtual_Machine::Word )
+				if Asm::Boilerplate::true_if_type( an_Object ,Asm::Virtual_Machine::Word )
 					@the_bits | an_Object.the_bits	# non broken usage case; Bitset instances are same size
 				elsif Asm::Boilerplate::true_if_type( an_Object ,Bitset )
-					assert( !(an_Object.size < @the_bits.size) , 
-                           "implementation fault: Bitset's | operation is broken in the case you tried to use it in; ask for a workaround asap." )
+					assert( !(an_Object.size < @the_bits.size) , "implementation fault: Bitset's | operation is broken in the case you tried to use it in; ask for a workaround asap." )
 					@the_bits | an_Object
 					# TODO (Bitset lhs) | (Bitset rhs) is broken when rhs.size < lhs.size
 				else
@@ -216,7 +203,7 @@ module Asm
 			# computes the Integer representation of @the_bits
 			#
 			# force_twos_complement - T: forces interpretation of @the_bits as a twos complement encoded binary value
-			# 	F: forces interpretation of @the_bits as an unsigned binary encoded value
+			#	F: forces interpretation of @the_bits as an unsigned binary encoded value
 			#
 			# Raises if something really wierd happens
 			# Returns Integer
@@ -292,9 +279,9 @@ module Asm
 				# assign will attempt to represent the result in 16 bits; failure indicates overflow
 				begin
 					self.assign( result ,force_twos_complement )
-                #TODO: Else without rescue is useless according to:
-                # $ ruby -wc thisFile.rb
-                rescue
+				#TODO: Else without rescue is useless according to:
+				# $ ruby -wc thisFile.rb
+				rescue
 				else
 					self.assign( 0 )
 					raise Asm::Boilerplate::Exception::Overflow.new( 'arithmetic failed; \'0\' assigned as result of arithmetic operation.' )
@@ -368,40 +355,32 @@ module Asm
 				# TODO make an instance of Memory::Location based on /R[0-9]+/
 			end
 		end
-=begin
-		# Unit tests on this class
-		* any claim made in documentation ought to have a unit tests
-			* TODO implement the unit tests
-=end
-        #class Test < Test::Unit::TestCase
-        #end
-    end
+	end
 end
 
 module Asm
-    module Magic
-        module Register
+	module Magic
+		module Register
 =begin
-            # Asm::Magic::Register::Location
+			# Asm::Magic::Register::Location
 			* memory locations of unique special function registers
 =end
-            module Location
-                # TODO: Fix 'uninitialized constant' caused by Program_counter
+			module Location
+				# TODO: Fix 'uninitialized constant' caused by Program_counter
 				Program_counter	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::Program_counter )
-            end
+			end
 =begin
-            # Asm::Magic::Register::Locations
-            * memory locations of ategories of special function registers
+			# Asm::Magic::Register::Locations
+			* memory locations of ategories of special function registers
 =end
-            module	Locations
+			module	Locations
 				Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
 				Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
-            end
-        end
-    end
+			end
+		end
+	end
 end
 
 #require	'Asm/require_all.rb'
 $LOAD_PATH << '.'
 # encoding: UTF-8
-# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=ruby

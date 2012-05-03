@@ -22,4 +22,3 @@ require 'Asm/Program_Options.rb'
 require 'Asm/Application.rb'
 
 # encoding: UTF-8
-# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=ruby
