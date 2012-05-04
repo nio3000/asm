@@ -20,8 +20,8 @@ module Asm
 		# Rasies exception when the check fails.
 		# Returns nothing.
 		def	raise_unless_type( argument ,type )
-			raise "argument's type is " << argument.kind?() << ", not " <<
-				type.inspect() << "." unless argument.kind? == type
+			raise "argument's type is " << argument.kind_of? << ", not " <<
+				type.inspect() << "." unless argument.kind_of? type
 			return
 		end
 		# paranoid typechecking boilerplate
@@ -30,8 +30,8 @@ module Asm
 		# type - the type which argument's type must be for the check to not fail.
 		#
 		# Returns true iff arugment is of type type.
-		def	true_if_type( argument ,type )
-			return	argument.kind? == type
+		def	self.true_if_type( argument ,type )
+			return	argument.kind_of? type
 		end
 =begin
 		# Asm::Boilerplate::Bitset

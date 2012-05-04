@@ -7,6 +7,14 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.incl
 	* no, don't bother just requiring the individual files you think you need.
 =end
 
+# test and assertion functionality
+require 'test/unit/assertions'
+module Asm
+	class Tests
+		include Test::Unit::Assertions
+	end
+end
+
 # misc functionality for consistency
 require 'Asm/Literals_Are_Magic.rb'
 require 'Asm/version.rb'

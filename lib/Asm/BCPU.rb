@@ -19,7 +19,8 @@ module Asm
 			assignment operations (no two's complement)
 		* Asm::BCPU::Memory::Value inherits from Asm::BCPU::Word
 =end
-		class Word
+		# Adds some assert methods
+		class Word < Asm::Tests
 		public
 =begin
 			structors & accessors
@@ -58,7 +59,7 @@ module Asm
 					self.assign_String( an_Object ,force_twos_complement )
 				# TODO double check that this catches all integer compatible types
 				elsif Asm::Boilerplate::true_if_type( an_Object ,Integer )
-					self.assign_Integer( an_Object ,force_twos_complement )
+					self.assign_integer( an_Object ,force_twos_complement )
 				elsif Asm::Boilerplate::true_if_type( an_Object ,Bitset )
 					self.assign_Bitset( an_Object )
 				elsif Asm::Boilerplate::true_if_type( an_Object ,Asm::BCPU::Word )
@@ -87,7 +88,16 @@ module Asm
 				# paranoid type checking
 				Asm::Boilerplate::raise_unless_type( a_String ,String )
 				# pure decimal string checking
-				assert( a_String.size == a_String.count( '+-0123456789' ) ,'the decimal string does not contain only \'+\', \'-\', and [0-9].' )
+
+				# --dap023 Showing an example of assert_equal and exceptions. Joseph, your should work as well.
+				# For other assert methods provided available, see:
+				# http://www.ruby-doc.org/stdlib-1.9.3/libdoc/minitest/unit/rdoc/MiniTest/Assertions.html
+				# NOTE: For these assertions to work, you may need to 'gem install minitest'
+				#assert( a_String.size == a_String.count( '+-0123456789' ) ,'the decimal string does not contain only \'+\', \'-\', and [0-9].' )
+				assert_equal true, a_String.size == a_String.count( '+-0123456789' )
+				unless a_String.size == a_String.count( '+-0123456789' )
+					raise StandardError, 'the decimal string does not contain only \'+\', \'-\', and [0-9].'
+				end
 				# convert to Integer
 				an_Integer	= a_String.to_i( 10 )
 				# dispatch to new method
@@ -119,8 +129,22 @@ module Asm
 				# paranoid type checking
 				# TODO force integer compatible type
 				# twos complement range checking
-				assert( an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum ,'The integer is too positive for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
-				assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer ,'The integer is too negative for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+
+				### Replaced malformed asserts with example asserts and exceptions
+				#assert( an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum ,'The integer is too positive for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				# Assert int < max
+				assert_equal true, an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum
+				# Throw standard error
+				unless an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum
+					raise StandardError, 'The integer is too positive for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.'
+				end
+
+				#assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer ,'The integer is too negative for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.' )
+				assert_equal true, Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer
+				unless Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer
+					raise StandardError, 'The integer is too negative for twos complement encoded in '<<Asm::Magic::Memory::Bits_per::Word<<'bits.'
+				end
+
 				# convert to binary String twos complement encoding
 				a_String	= an_Integer.to_s
 				# TODO verify whether or not the binary String faithfully represents negative values in twos complement (I don't think it does)
