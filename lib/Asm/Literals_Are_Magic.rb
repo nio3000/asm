@@ -142,6 +142,26 @@ module Asm
 			Directive	= '#' << Whitespace	# directive symbol followed by optional whitespace
 		end
 =begin
+		# Asm::Magic::GUI
+		* constants involved in the GUI
+=end
+		module GUI
+			module Names
+				xrc_file	= './../lib/asm/gui/gui.xrc'
+				top_level	= 'Main_frame'
+				module Loader
+					frame	= 'Loader_frame'
+					console	= 'Loader_console'
+					filepath	= 'Loader_filepath'
+				end
+				module VM
+					frame	= 'VM_frame'
+					memory	= 'VM_memory'
+					registers	= 'VM_registers'
+				end
+			end
+		end
+=begin
 		# Asm::Magic::ISA
 		* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
 =end

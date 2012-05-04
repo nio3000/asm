@@ -3,10 +3,8 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../lib')
 
 # this file instantiates an Application instance & does the stuff
-#require	'Asm/require_all.rb'
+require	'Asm/require_all.rb'
 
-#didnt_have_breakfast	= Asm::Application.new( )
-
-puts 'herro wald'
+the_app	= Asm::Application.new( ).main_loop( )
 
 # encoding: UTF-8

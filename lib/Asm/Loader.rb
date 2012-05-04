@@ -40,18 +40,22 @@ module Asm
 		def load( path )
 			messages	= []
 			line_count	= 0
-			code	= File.open( path ,'r' )
-			# parse individually each line in the file
-			code.each_line do |line|
-				line_count += 1
-				begin
-					self.handle( line )
-				rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
-					messages.push 'syntax error on line' << line_count << ': \"' << a_syntax_error.message << '\"'
-				else
-					an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
-					messages.push 'unexpected error on line' << line_count << ': \"' << an_error.message << '\"'
+			if	File.file?( path )
+				code	= File.open( path ,'r' )
+				# parse individually each line in the file
+				code.each_line do |line|
+					line_count += 1
+					begin
+						self.handle( line )
+					rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
+						messages.push 'syntax error on line' << line_count << ': \"' << a_syntax_error.message << '\"'
+					else
+						an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
+						messages.push 'unexpected error on line' << line_count << ': \"' << an_error.message << '\"'
+					end
 				end
+			else
+				messages.push '\'' << path << '\' is not a file.'
 			end
 			messages
 		end
