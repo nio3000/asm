@@ -194,8 +194,10 @@ module Asm::BCPU
 				@the_bits | an_Object.the_bits	# non broken usage case; Bitset instances are same size
 			elsif an_Object.instance_of?( ::Bitset )
 				if an_Object.size < @the_bits.size
-					raise 'implementation fault: Bitset\'s | operation is broken in the case you tried to use it in; ask for a workaround asap.'
-					# TODO (Bitset lhs) | (Bitset rhs) is broken when rhs.size < lhs.size
+					#raise 'implementation fault: Bitset\'s | operation is broken in the case you tried to use it in; ask for a workaround asap.'
+					for index in (0..an_Object.size - 1)
+						@the_bits[index]	= @the_bits[index] |  an_Object[index]
+					end
 				else
 					@the_bits | an_Object
 				end

@@ -10,6 +10,9 @@
 # 3rd party dependencies
 require 'bitset'
 require 'minitest/unit'
+# 	TODO I'm not 100% sure whether or why the include statement is suggested in 'http://rubyonwindows.blogspot.com/2007/11/getting-started-with-wxruby-gui-toolkit.html'
+require 'wx'
+include Wx
 
 # misc functionality for consistency
 require 'Asm/Literals_Are_Magic.rb'
@@ -22,7 +25,6 @@ require 'Asm/Loader.rb'
 require 'Asm/Virtual_Machine.rb'
 
 # application specific functionality
-require 'Asm/Program_Options.rb'
 require 'Asm/Application.rb'
 
 # encoding: UTF-8
