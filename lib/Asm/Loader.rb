@@ -226,8 +226,16 @@ module Asm
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
 			# TODO implement this
+			wordRD = self.Word_from_register_literal(dest_reg)
+			wordRA = self.Word_from_register_literal(reg_a)
+			wordRB = self.Word_from_register_literal(reg_b)
+			value = Asm::BPCU::Memory::Value.new
+			self.Map_bits_to_bits( 0..3, wordRD, 8..11, value)
+			self.Map_bits_to_bits( 0..3, wordRA, 4..7, value)
+			self.Map_bits_to_bits( 0..3, wordRB, 0..3, value)
+			
 			if keyword == andCOMM
-				self.the_virtual_machine.and(dest_reg, reg_a, reg_b)
+				value.the_bits[13] = True
 			elsif keyword == orCOMM
 				self.the_virtual_machine.or(dest_reg, reg_a, reg_b)
 			elsif keyword == add
