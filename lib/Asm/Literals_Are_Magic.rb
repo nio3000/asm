@@ -151,8 +151,8 @@ module Asm
 		# Asm::Magic::Loader
 =end
 		module	Loader
-			module	load
-				module	index
+			module	Load
+				module	Index
 					# True iff the given load index is in a valid state
 					def self.valid?( an_Integer )
 						raise 'an_Integer is not an integer' unless an_Integer.integer?
@@ -169,7 +169,7 @@ module Asm
 						return
 					end
 					# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
-					invalid	= Asm::Magic::Memory::Index::Exclusive::Minimum
+					Invalid	= Asm::Magic::Memory::Index::Exclusive::Minimum
 				end
 			end
 		end

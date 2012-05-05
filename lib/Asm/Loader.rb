@@ -96,10 +96,10 @@ module Asm
 		# the_Virtual_Machine	- reference to a Virtual_Machine instance
 		def initialize( the_Virtual_Machine )
 			# paranoid type checking of arguments.
-			raise_unless_type( the_Virtual_Machine ,Asm::Virtual_Machine )
+			Asm::Boilerplate.raise_unless_type( the_Virtual_Machine ,Asm::Virtual_Machine )
 			# initialize all persistant member variables.
 			@the_Virtual_Machine	= the_Virtual_Machine
-			@load_index	= Asm::Literals_Are_Magic::Loader::example_invalid_load_index
+			self.invalidateLoadIndex
 		end
 		# Returns the load index interpretted as an instance of Asm::BCPU::Memory::Location
 		def getLocationFromLoadIndex
@@ -125,7 +125,7 @@ module Asm
 		#
 		# Returns nothing
 		def invalidateLoadIndex
-			self.load_index	= Asm::Magic::Loader::Load::Index.invalid
+			self.load_index	= Asm::Magic::Loader::Load::Index::Invalid
 			return
 		end
 		# Sets the load index
@@ -136,6 +136,101 @@ module Asm
 				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid attempt to set load index state; \'' << an_integer << '\' is not a valid index for a memory location.' )
 			else
 				self.load_index	= an_integer
+			end
+			return
+		end
+		# DOCIT
+		def word_from_register_literal( a_register_literal )
+			# TODO refactor these & merge with other regex constants
+			register_flag	= 'd{,1}'
+			base10_number	= '[+\-]{,1}[0-9]+'
+			register_literal	= '^' << '(?<flag>' << register_flag << ')' << '(?<value>' << base10_number << ')' << '$'
+			#
+			capture_register_literal	= Regexp.new( register_literal )
+			match_info	= capture_register_literal.match( a_register_literal )
+			raise 'register literal expected from \'' << a_register_literal << '\'' if !match_info
+			Asm::BCPU::Word.new().assign_decimal_String( match_info[value] )
+		end
+		# DOCIT
+		def word_from_numeric_literal( a_numeric_literal )
+			# TODO refactor these & merge with other regex constants
+			binary_flag	= '0[bB]'
+			binary_number	= '[01]+'
+			base10_flag	= 'd{,1}'
+			base10_number	= '[+\-]{,1}[0-9]+'
+			binary_literal	= '^' << '(?<flag>' << binary_flag << ')' << '(?<value>' << binary_number << ')$'
+			decimal_literal	= '^' << '(?<flag>' << decimal_flag << ')' << '(?<value>' << decimal_number << ')$'
+			#
+			binary_match_info	= Regexp.new( binary_literal ).match( a_numeric_literal )
+			decimal_match_info	= Regexp.new( decimal_literal ).match( a_numeric_literal )
+			#
+			if !binary_match_info && decimal_match_info
+				return	Asm::BCPU::Word.new().assign_decimal_String( decimal_match_info[value] )
+			elsif binary_match_info && !decimal_match_info
+				return	Asm::BCPU::Word.new().assign_binary_String( binary_match_info[value] )
+			elsif binary_match_info && decimal_match_info
+				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\', but it\'s too ambiguous to tell which'
+			else
+				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\''
+			end
+		end
+		# DOCIT
+		def location_from_numeric_literal( a_numeric_literal )
+			# TODO refactor these & merge with other regex constants
+			binary_flag	= '0[bB]'
+			binary_number	= '[01]+'
+			base10_flag	= 'd{,1}'
+			base10_number	= '[+\-]{,1}[0-9]+'
+			binary_literal	= '^' << '(?<flag>' << binary_flag << ')' << '(?<value>' << binary_number << ')$'
+			decimal_literal	= '^' << '(?<flag>' << decimal_flag << ')' << '(?<value>' << decimal_number << ')$'
+			#
+			binary_match_info	= Regexp.new( binary_literal ).match( a_numeric_literal )
+			decimal_match_info	= Regexp.new( decimal_literal ).match( a_numeric_literal )
+			#
+			if !binary_match_info && decimal_match_info
+				return	Asm::BCPU::Memory::Location.new().assign_decimal_String( decimal_match_info[value] )
+			elsif binary_match_info && !decimal_match_info
+				return	Asm::BCPU::Memory::Location.new().assign_binary_String( binary_match_info[value] )
+			elsif binary_match_info && decimal_match_info
+				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\', but it\'s too ambiguous to tell which'
+			else
+				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\''
+			end
+		end
+		# maps bits from part of one bitset to part of another; can do range checking on literals for the BCPU
+		#
+		# from_Range - the range of integer indicies in the source Bitset
+		# from_Word - the source Bitset; does not get modified by this method
+		# to_Range - the range of integer indicies in the destination Bitset
+		# to_Word - the destination Bitset; does get modified by this method
+		#
+		# Raises if from_Bitset is nonzero outside of from_Range and if BCPU_range_checking is true 
+		# Raises if the range's don't match up in cardinality
+		# Returns nothing
+		def map_bits_to_bits( from_Range ,from_Word ,to_Range ,to_Word ,bCPU_range_checking = true )
+			# paranoid type checking
+			Asm::Boilerplate::raise_unless_type( from_Range ,::Range )
+			Asm::Boilerplate::raise_unless_type( to_Range ,::Range )
+			Asm::Boilerplate::raise_unless_type( from_Word ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( to_Word ,::Asm::BCPU::Word )
+			# paranoid range checking
+			raise ('shenanigans; \'' << (from_Word.the_bits.size - 1) << '\' is not in \''<< from_Range.to_s << '\'') unless from_Range.include?( from_Word.the_bits.size - 1 )
+			raise ('shenanigans; \'' << (to_Word.the_bits.size - 1) << '\' is not in \''<< to_Range.to_s << '\'') unless to_Range.include?( to_Word.the_bits.size - 1 )
+			raise 'invalid mapping' unless	(from_Range.size == to_Range.size)
+			# BCPU range checking
+			if bCPU_range_checking
+				(0..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |from_index|
+					if !(from_Range.include?( from_index )) && (from_Word.the_bits[from_index] == false )
+						raise Asm::Boilerplate::Exception::Syntax.new( 'literal translates to binary value outside of supported range.' )
+					end
+				end
+			end
+			# do the mapping
+			adjustment	= to_Range.begin - from_Range.begin
+			from_Range.each do |from_index|
+				to_index	= from_index + adjustment
+				raise 'shenanigans' unless to_Range.include?( to_index )
+				to_Word.the_bits[to_index]	= from_Word.the_bits[from_index]
 			end
 			return
 		end
