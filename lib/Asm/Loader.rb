@@ -94,10 +94,10 @@ module Asm
 		# the_Virtual_Machine	- reference to a Virtual_Machine instance
 		def initialize( the_Virtual_Machine )
 			# paranoid type checking of arguments.
-			raise_unless_type( the_Virtual_Machine ,Asm::Virtual_Machine )
+			Asm::Boilerplate.raise_unless_type( the_Virtual_Machine ,Asm::Virtual_Machine )
 			# initialize all persistant member variables.
 			@the_Virtual_Machine	= the_Virtual_Machine
-			@load_index	= Asm::Literals_Are_Magic::Loader::example_invalid_load_index
+			self.invalidateLoadIndex
 		end
 		# Returns the load index interpretted as an instance of Asm::BCPU::Memory::Location
 		def getLocationFromLoadIndex
@@ -123,7 +123,7 @@ module Asm
 		#
 		# Returns nothing
 		def invalidateLoadIndex
-			self.load_index	= Asm::Magic::Loader::Load::Index.invalid
+			self.load_index	= Asm::Magic::Loader::Load::Index::invalid
 			return
 		end
 		# Sets the load index

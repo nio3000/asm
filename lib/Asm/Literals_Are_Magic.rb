@@ -151,8 +151,8 @@ module Asm
 		# Asm::Magic::Loader
 =end
 		module	Loader
-			module	load
-				module	index
+			module	Load
+				module	Index
 					# True iff the given load index is in a valid state
 					def self.valid?( an_Integer )
 						raise 'an_Integer is not an integer' unless an_Integer.integer?
