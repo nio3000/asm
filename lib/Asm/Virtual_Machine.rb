@@ -28,7 +28,7 @@ module Asm
 	* memory_values are allocated on demand & behavior is compatible with preallocation,
 		but will be more memory efficient in the (expected) case of low memory utilization.
 =end
-	class	Virtual_Machine < Asm::Tests
+	class	Virtual_Machine
 	public
 =begin
 		structors & accessors
