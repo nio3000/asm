@@ -99,31 +99,43 @@ module Asm
 			@the_Virtual_Machine	= the_Virtual_Machine
 			@load_index	= Asm::Literals_Are_Magic::Loader::example_invalid_load_index
 		end
-		
-		#
-		#
-		# Returns the load index interpter as Asm::BCPU::Memory::Location
-		def getLocationFromLoadIndex()
-			
+		# Returns the load index interpretted as an instance of Asm::BCPU::Memory::Location
+		def getLocationFromLoadIndex
+			# if the load index is in an invalid state when this method is called, raise an error
+			if	Asm::Magic::Loader::Load::Index.valid?( self.load_index )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following \'# loc = asm\' invalidate the load index state.' )
+			end
+			# return the Asm::BCPU::Memory::Location corresponding to the load index
+			return	Asm::BCPU::Memory::Location.new( self.load_index )
 		end
-		
-		# Increment the load index OR
+		# Increment the load index OR 
 		# raise error if load index is a invalid value
 		# Returns nothing
-		def incrementLoadIndex()
-			
+		def incrementLoadIndex
+			# if the load index is in an invalid state when this method is called, raise an error
+			if	Asm::Magic::Loader::Load::Index.valid?( self.load_index )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following \'# loc = asm\' invalidate the load index state.' )
+			end
+			self.load_index	+= 1
+			return
 		end
-		
 		# Sets load index to a invalid state
 		#
 		# Returns nothing
-		def invalidateLoadIndex()
+		def invalidateLoadIndex
+			self.load_index	= Asm::Magic::Loader::Load::Index.invalid
+			return
 		end
-		
 		# Sets the load index
 		#
 		# Returns nothing
 		def setLoadIndex( an_integer )
+			if	Asm::Magic::Loader::Load::Index.valid?( an_integer )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid attempt to set load index state; \'' << an_integer << '\' is not a valid index for a memory location.' )
+			else
+				self.load_index	= an_integer
+			end
+			return
 		end
 	public
 =begin	interface related to telling the Loader to load into the virtual machine
