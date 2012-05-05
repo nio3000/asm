@@ -1,8 +1,18 @@
+# This code still freezes for me with:
+# Gtk-CRITICAL **: gtk_widget_get_direction: assertion `GTK_IS_WIDGET (widget)' failed
+# The only relevent links I could find on the issue (related to wx) was:
+# http://forums.wxwidgets.org/viewtopic.php?f=23&t=20535
+# Leads me to believe that I am forgetting to declare/set something... I've been fighting with it all day. No luck.
+
+# Ignore the temporary changes, I wanted to work primarily on the GUI and didn't have time to fix all the uninitialized constants, NameErrors and other issues.
+# The code as it stands works up to the point of GTK failing assertions. Prior tomy changes it wouldn't even run (Ruby errors). Feel free to fix the other problems in references to Asm:: classes...
+
 =begin
 # /lib/Asm/Application.rb
 * complete definition of class Asm::Application
 =end
-
+require 'wx'
+include Wx
 =begin
 # Asm
 * highest-level namespace for the project.
@@ -13,28 +23,32 @@ module Asm
 	* a complete and self-contained application object for a BCPU VM
 	* derives from Wx::App; implements an application object for a WxRuby application.
 =end
-	class Application < Wx::App
+	class Application < ::Wx::App
 	public
 =begin		Wx::App callbacks
 =end
 		# WxRuby callback, no need to register; program initialization
 		def on_init
 			# application-specific initialization
-			@the_BCPU	= Asm::Virtual_Machine.new
-			@the_Loader	= Asm::Loader.new( @the_BCPU )
-			self.set_name( "BCPU" )
+			#@the_BCPU	= Asm::Virtual_Machine.new
+			#@the_Loader	= Asm::Loader.new( @the_BCPU )
+			self.app_name = "BCPU"
 			# DOCIT
-			Wx::init_all_image_handlers()
-			xml	= Wx::XmlResource.get()
-			xml.init_all_handlers()
-			xml.load( Asm::Magic::GUI::xrc_file )
+			# init_all_image_handlers => NoMethodError
+			#::Wx::init_all_image_handlers();
+			$xml = ::Wx::XmlResource.get();
+			$xml.init_all_handlers();
+			#xml.load( Asm::Magic::GUI::xrc_file )
+			$xml.load('gui.xrc')
 			# obtain an object for the main sheet in the GUI
-			xml.load_frame( @main_GUI_sheet ,Asm::Magic::GUI::top_level )
+			#xml.load_frame( @main_GUI_sheet ,Asm::Magic::GUI::top_level )
+			@main_GUI_sheet = ::Wx::Frame.new
+			$xml.load_frame( @main_GUI_sheet , 'Main_frame' )
 			# TODO setup the callbacks
 			#	Loader
 			#		console
 			#		filepath
-			evt_text_enter( @main_GUI_sheet.find_window( Asm::Magic::GUI::Loader::filepath ) ) Asm::Wx::Callback.instance_method(:handle_compile_code)
+			#evt_text_enter( @main_GUI_sheet.find_window( Asm::Magic::GUI::Loader::filepath ) ) Asm::Wx::Callback.instance_method(:handle_compile_code)
 			#	VM
 			#		Control
 			#			advance n
@@ -49,7 +63,7 @@ module Asm
 			# TODO these callbacks; scroll up, scroll down, changed lower bound, changed upper bound
 			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_???)
 			# show the GUI
-			@main_GUI_sheet.show
+			@main_GUI_sheet.show(true)
 		end
 		# WxRuby callback, no need to register; program start
 		#def on_run
@@ -114,5 +128,8 @@ module Asm
 	end
 end
 
-require	'Asm/require_all.rb'
+# temporary for testing (I don't have time to debug the whole application right now)
+the_app	= Asm::Application.new().main_loop()
+
+#require	'Asm/require_all.rb'
 # encoding: UTF-8
