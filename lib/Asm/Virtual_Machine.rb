@@ -4,7 +4,6 @@
 * unit tests on an instance of Asm::Virtual_Machine
 =end
 
-require	'Asm/require_all.rb'
 
 =begin
 # Asm
@@ -17,30 +16,34 @@ module Asm
 		* BCPU memory locations mapped to BCPU memory values
 		* BCPU register literals mapped to BCPU memory locations
 	* invokable inplace modifications to simulate execution affecting BCPU internal state.
-	
+
 	### representing BCPU memory locations as objects
 	see Asm::BCPU::Memory::Location
-	
+
 	### representing BCPU memory values as objects
 	see Asm::BCPU::Memory::Value
-	
+
 	### implementation details
 	* BCPU memory is represented as an associative array (Ruby Hash)
-	* memory_values are allocated on demand & behavior is compatible with preallocation, but will be more memory efficient in the (expected) case of low memory utilization.
-=end	
-    class	Virtual_Machine
-	public
-=begin		structors & accessors
-		* the instance variable @the_memory is a private implementation detail
-		* the program counter is not an instance variable; it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
+	* memory_values are allocated on demand & behavior is compatible with preallocation,
+		but will be more memory efficient in the (expected) case of low memory utilization.
 =end
-        # Initialize the virtual machine.
+	class	Virtual_Machine
+	public
+=begin
+		structors & accessors
+		* the instance variable @the_memory is a private implementation detail
+		* the program counter is not an instance variable;
+			it is the Asm::BCPU::Memory::Value associated with Asm::Magic::Register::Location::program_counter
+=end
+		# Initialize the virtual machine.
 		def initialize( )
 			# @the_memory is a hash
 			@the_memory	= { }
 		end
 	public
-=begin		invoke simulated BCPU execution
+=begin
+		invoke simulated BCPU execution
 =end
 		# DOCIT
 		def advance_once
@@ -54,80 +57,135 @@ module Asm
 			# call advance_once number_of_times
 		end
 	private
-=begin		execute simulated BCPU execution
+=begin	execute simulated BCPU execution
 =end
-		# DOCIT
-        # RD <- RA
+		# RD <- RA
 		def move( dest_reg, reg_a)
+			self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
 		end
-        
-        # RD <- bitwise NOT RA
-        def not( dest_reg, reg_a)
-        end
-        
-        # RD <- RA bitwise AND RB
-        def and( dest_reg, reg_a, reg_b)
-        end
-        
-        # RD <- bitwise OR RB
-        def or( dest_reg, reg_a, reg_b)
-        end
 
-        # RD <- RA + RB
-        def add( dest_reg, reg_a, reg_b)
-        end
+		# RD <- bitwise NOT RA
+		def not( dest_reg, reg_a)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			self.set_location_to_value(dest_reg, ra.not(rb))
+		end
 
-        # RD <- RA - RB
-        def sub( dest_reg, reg_a, reg_b)
-        end
+		# RD <- RA bitwise AND RB
+		def and( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			self.set_location_to_value(dest_reg, ra & rb)
+		end
 
-        # RD <- RA + 4bit data
-        def addi( dest_reg, reg_a, reg_b)
-        end
+		# RD <- RA bitwise OR RB
+		def or( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
+		end
 
-        # RD <- RA - 4bit data
-        def subi( dest_reg, reg_a, reg_b)
-        end
-        
-        # RD <- 8 0's followed by 8 bit data
-        def set( dest_reg, reg_a)
-        end
+		# RD <- RA + RB
+		def add( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			self.set_location_to_value( dest_reg , ra.add_Word!(rb))
+		end
 
-        # RD <- 8bit data follow by RD7, RD6, ... RD0
-        def seth( dest_reg, reg_a)
-        end
+		# RD <- RA - RB
+		def sub( dest_reg, reg_a, reg_b)
+			ra = self.get_memory_value(reg_a).to_i
+			rb = self.get_memory_value(reg_b).to_i
+			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
+		end
 
-        # RD <- RD + 4bit data if RB == 0 (zero)
-        def inciz( dest_reg, reg_a, reg_b)
-        end
+		# RD <- RA + 4bit data
+		def addi( dest_reg, reg_a, reg_fourbit)
+		end
 
-        # RD <- RD - 4bit data if RB15 == 1 (neg)
-        def decin( dest_reg, reg_a, reg_b)
-        end
+		# RD <- RA - 4bit data
+		def subi( dest_reg, reg_a, reg_fourbit)
+		end
 
-        # RD <- RA if RB == 0 (zero)
-        def movez( dest_reg, reg_a, reg_b)
-        end
+		# RD <- 8 0's followed by 8 bit data
+		def set( dest_reg, reg_eightbit)
+			#self.set_location_to_value(dest_reg,
+		end
 
-        # RD <- RA if RB != 0 (not zero)
-        def movex( dest_reg, reg_a, reg_b)
-        end
+		# RD <- 8bit data follow by RD7, RD6, ... RD0
+		def seth( dest_reg, reg_eightbit)
+		end
 
-        # RD <- RA if RB15 == 0 (positive)
-        def movep( dest_reg, reg_a, reg_b)
-        end
+		# RD <- RD + 4bit data if RB == 0 (zero)
+		def inciz( dest_reg, reg_fourbit, reg_b)
+			dest_reg_altered	= false
+			if self.get_memory_value( reg_b ).to_i == 0
+				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( reg_fourbit.to_i ) )
+				dest_reg_altered	= true
+			end
+			self.increment_program_counter( dest_reg ,dest_reg_altered )
+		end
 
-        # RD <- RA if RB15 == 1 (negative)
-        def moven( dest_reg, reg_a, reg_b)
-        end
+		# RD <- RD - 4bit data if RB15 == 1 (neg)
+		def decin( dest_reg, reg_fourbit, reg_b )
+			dest_reg_altered	= false
+			if self.get_memory_value( reg_b ).to_i >= 0
+				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
+				dest_reg_altered	= true
+			end
+			self.increment_program_counter( dest_reg ,dest_reg_altered )
+		end
 
+		# RD <- RA if RB == 0 (zero)
+		def movez( dest_reg, reg_a, reg_b)
+			if self.get_memory_value( reg_b ).to_i == 0
+				self.move( dest_reg ,reg_a )
+			else
+				self.increment_program_counter
+			end
+		end
+
+		# RD <- RA if RB != 0 (not zero)
+		def movex( dest_reg, reg_a, reg_b)
+			if self.get_memory_value( reg_b ).to_i != 0
+				self.move( dest_reg ,reg_a )
+			else
+				self.increment_program_counter
+			end
+		end
+
+		# RD <- RA if RB15 == 0 (positive)
+		def movep( dest_reg, reg_a, reg_b)
+			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 0
+				self.move( dest_reg ,reg_a )
+			else
+				self.increment_program_counter
+			end
+		end
+
+		# RD <- RA if RB15 == 1 (negative)
+		def moven( dest_reg, reg_a, reg_b)
+			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 1
+				self.move( dest_reg ,reg_a )
+			else
+				self.increment_program_counter
+			end
+		end
+		# R15 <- R15 + 1
+		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
+			unless	( dest_reg.equals?( Asm::Magic::Register::Location::program_counter ) && dest_reg_altered )
+				lhs = self.get_memory_value( Asm::Magic::Register::Location::program_counter )
+				lhs.add!( Asm::BCPU::Word.new( an_Integer ) )
+				self.set_location_to_value( Asm::Magic::Register::Location::program_counter ,lhs )
+			end
+		end
 	public
-=begin		BCPU memory manipulation
+=begin
+		BCPU memory manipulation
 		* strict type checking is intended
-			* incorrect types will raise exceptions.
+		* incorrect types will raise exceptions.
 =end
 		# Maps the memory location (@param location) to the memory value (@param value)
-		#
 		# Returns nothing
 		def set_location_to_value( location ,value )
 			# paranoid type checking
@@ -178,7 +236,8 @@ module Asm
 				end
 			end
 			# order the locations as is natural for them
-			locations.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }	# TODO test that the ordering is correctly accomplished here
+			# TODO test that the ordering is correctly accomplished here
+			locations.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }
 			# retrieve for values for each location (preserves ordering)
 			locations.each { |key| values.push @the_memory[key] }
 			# return sorted values
@@ -187,13 +246,15 @@ module Asm
 =begin
 		# Unit tests on this class
 		* any claim made in documentation ought to have a unit tests
-			* TODO implement the unit tests
+		* TODO implement the unit tests
 		* all the major instructions needs unit tests
-			* TODO implement the unit tests
-=end		
-        class Test < Test::Unit::TestCase
-            test "" do
-            end
-		end # Test
-	end # Virtual_Machine
-end # Asm
+		* TODO implement the unit tests
+=end
+		#class Test < Test::Unit::TestCase
+		#end
+	end
+end
+
+#require	'Asm/require_all.rb'
+#$LOAD_PATH << '.'
+# encoding: UTF-8

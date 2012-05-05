@@ -1,0 +1,5 @@
+require 'test/unit/assertions'
+
+message = "Hi"
+
+assert_equal true, message

@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 =begin
 # /lib/Asm/Loader.rb
 * complete definition of class Asm::Loader
@@ -14,8 +12,8 @@ module Asm
 =begin	# Asm::Loader
 	* initializes an instance of Asm::Virtual_Machine
 	* maintains internal state related to loading machine code into an instance of Asm::Virtual_Machine
-=end	
-    class	Loader
+=end
+	class	Loader
 	public
 =begin	structors & accessors
 =end
@@ -107,21 +105,26 @@ module Asm
 		# invoke Loader instance with a given file of BCPU assembly
 		#
 		# Returns an array of the first exception encountered for each line of text in the given file
-		def load( Path )
+		def load( path )
 			messages	= []
 			line_count	= 0
-			code	= File.open( Path ,'r' )
-			# parse individually each line in the file
-			code.each_line do |line|
-				line_count += 1
-				begin
-					self.handle( line )
-				rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
-					messages.push 'syntax error on line' << line_count << ': \"' << a_syntax_error.message << '\"'
-				else => an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
-					messages.push 'unexpected error on line' << line_count << ': \"' << an_error.message << '\"'
+			if	File.file?( path )
+				code	= File.open( path ,'r' )
+				# parse individually each line in the file
+				code.each_line do |line|
+					line_count += 1
+					begin
+						self.handle( line )
+					rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
+						messages.push 'syntax error on line' << line_count << ': \"' << a_syntax_error.message << '\"'
+					else
+						an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
+						messages.push 'unexpected error on line' << line_count << ': \"' << an_error.message << '\"'
+					end
 				end
-            end
+			else
+				messages.push '\'' << path << '\' is not a file.'
+			end
 			messages
 		end
 	private
@@ -171,50 +174,51 @@ module Asm
 
 			
 			else
-			raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
 			end
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD RA RB 
+		# dispatches BCPU assembly syntax case: # keyword dest_reg reg_a reg_b
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_RA_RB( keyword ,RD ,RA ,RB )
+		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, RA 
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, reg_a
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_RA( keyword ,RD ,RA )
+		def instruction_format__keyword_RD_RA( keyword ,dest_reg ,reg_a )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, RA, literal
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, reg_a, literal
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_RA_literal( keyword ,RD ,RA ,literal )
+		def instruction_format__keyword_RD_RA_literal( keyword ,dest_reg ,reg_a ,literal )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, literal, RA
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, literal, reg_a
 		# DOCIT
 		#
 		# Returns nothing
-		def instruction_format__keyword_RD_literal_RA( keyword ,RD ,literal ,RA )
+		def instruction_format__keyword_RD_literal_RA( keyword ,dest_reg ,literal ,reg_a )
 			# TODO implement this
 			return
 		end
 		# initialize the VM
-		# dispatches BCPU assembly syntax case: # keyword RD, literal
+		# dispatches BCPU assembly syntax case: # keyword dest_reg, literal
 		# DOCIT
-		# # Returns nothing def instruction_format__keyword_RD_literal( keyword ,RD ,literal )
+		# # Returns nothing
+		def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
 			# TODO implement this
 			return
 		end
@@ -242,9 +246,12 @@ module Asm
 			* TODO implement the unit tests
 		* interpretation of each instruction ought to have a unit test
 		* interpretation of strange language features ought to have stress tests
-=end		class Test < Test::Unit::TestCase
-		end
+=end
+		#class Test < Test::Unit::TestCase
+		#end
 	end
 end
 
-require	'Asm/require_all.rb'
+#require	'Asm/require_all.rb'
+#$LOAD_PATH << '.'
+# encoding: UTF-8

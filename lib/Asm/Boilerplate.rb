@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 =begin
 # /lib/Asm/Boilerplate.rb
 * refactored boilerplate code living under module Asm::Boilerplate
@@ -10,9 +8,10 @@
 * highest-level namespace for the project.
 =end
 module Asm
-=begin	# Asm::Boilerplate
-=end	
-    module Boilerplate
+=begin
+	# Asm::Boilerplate
+=end
+	module Asm::Boilerplate
 		# paranoid typechecking boilerplate
 		#
 		# argument - an object whose type is being checked
@@ -20,8 +19,9 @@ module Asm
 		#
 		# Rasies exception when the check fails.
 		# Returns nothing.
-		def	raise_unless_type( argument ,type )
-			raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
+		def	self.raise_unless_type( argument ,type )
+			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
+			raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.instance_of?( type )
 			return
 		end
 		# paranoid typechecking boilerplate
@@ -30,29 +30,40 @@ module Asm
 		# type - the type which argument's type must be for the check to not fail.
 		#
 		# Returns true iff arugment is of type type.
-		def	true_if_type( argument ,type )
-			return	argument.kind? == type
-		end
-=begin	# Asm::Boilerplate::Bitset
+		#def	self.true_if_type( argument ,type )
+		#	return	argument.kind_of? type
+		#end
+=begin
+		# Asm::Boilerplate::Bitset
 =end
-		module Bitset
+		#module Asm::Boilerplate::Bitset
 			# boilerplate for resizing an instance of Bitset
-			def	resize( Desired_size )
+			#self.def	resize( a_Bitset ,desired_size )
 				# TODO implement this
+			#end
+		#end
+=begin
+		# Asm::Boilerplate::Exception
+=end
+		class Asm::Boilerplate::Exception
+=begin
+		# Asm::Boilerplate::Exception::Syntax
+		* if code generates a BCPU assembly syntax error,
+			then raise an exception of this type with a message explaining the error
+		* you don't need to add line number information,
+			that happens when the Syntax object is rescued
+		* example: `raise Asm::Boilerplate::Exception::Syntax.new( 'gibberish input; not an instruction, directive, comment, or blank line.' )`
+=end
+			class Asm::Boilerplate::Exception::Syntax < Exception
 			end
-		end
-=begin	# Asm::Boilerplate::Exception
+=begin
+			# Asm::Boilerplate::Exception::Overflow
+			* DOCIT
 =end
-		module Exception
-=begin		# Asm::Boilerplate::Exception::Syntax
-			* if code generates a BCPU assembly syntax error, then raise an exception of this type with a message explaining the error
-				* you don't need to add line number information, that happens when the Syntax object is rescued
-				* example: `raise Asm::Boilerplate::Exception::Syntax.new( 'gibberish input; not an instruction, directive, comment, or blank line.' )`
-=end
-			class Syntax < Exception
+			class Asm::Boilerplate::Exception::Overflow < Exception
 			end
 		end
 	end
 end
 
-require	'Asm/require_all.rb'
+# encoding: UTF-8
