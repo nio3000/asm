@@ -19,6 +19,74 @@ module Asm
 	public
 =begin	structors & accessors
 =end
+		#The following are the name captures/regular expressions for capturing machines instructions
+		#Literals
+		registry = "(r|R)[0-9]+"
+		decimal = "[d]{,1}[\+\-]{,1}[0-9]+"
+		binary = "(0)(b|B)[\+\-]{,1}[0-1]+" #Accepts other digits but doesn't capture
+		decimalUnsigned = "[0-9]+"
+		
+		captureBOL = "(?<begin of line>^)" #^
+		captureEOL = '(?<end of line>$)' #$
+		
+		captureKeyword0 = "(?<keyword>(MOVE)|(NOT))" #0 Corresponds
+		captureKeyword1 = "(?<keyword>((AND)|(OR)|(ADD)|(SUB)|(MOVEZ)|(MOVEX)|(MOVEP)|(MOVEN)))"
+		captureKeyword2 = "(?<keyword>(ADDI)|(SUBI))"
+		captureKeyword3 = "(?<keyword>(SET)|(SETH))"
+		captureKeyword4 = "(?<keyword>(INCIZ)|(DECIN))"
+		
+		captureWhitespace = "(?<whitespace>[\s\t]*)"
+		captureWhitespaceReg = "(?<whitespace>[\s\t]+)"
+		captureRegLiteral = "(?<registry literal>" + registry +")"
+		captureLiteral = "(?<literal>(" + decimal + ")|(" + binary + "))"
+		captureDelimiter = "(?<delimiter>[,])"
+		captureComment = "(?<Comment>(//)*)" 
+		
+		captureASM = "(?<ASM>(ASM))"
+		poundLiteral = "(?<literal>(#)(" + decimalUnsigned + "))" 
+		equalDelimiter = "(?<delimiter>[=])"
+		
+		dev0 = captureBOL + captureWhitespace + poundLiteral + captureWhitespace + equalDelimiter + captureWhitespace \
+		 + captureLiteral + captureWhitespace + captureComment
+		 
+		dev1 = captureBOL + captureWhitespace + poundLiteral + captureWhitespace + equalDelimiter + captureWhitespace \
+		 + captureASM + captureWhitespace + captureComment
+		
+		format0 = captureBOL + captureWhitespace + captureKeyword0 + captureWhitespaceReg + captureRegLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
+		 + captureComment #+ captureEOL
+		 
+		format1 = captureBOL + captureWhitespace + captureKeyword1 + captureWhitespaceReg + captureRegLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
+		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment
+		 
+		format2 = captureBOL + captureWhitespace + captureKeyword2 + captureWhitespaceReg + captureRegLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
+		 + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment
+		 
+		format3 = captureBOL + captureWhitespace + captureKeyword3 + captureWhitespaceReg + captureRegLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment
+		 
+		format4 = captureBOL + captureWhitespace + captureKeyword4 + captureWhitespaceReg + captureRegLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace \
+		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment
+		 
+		formatComment = captureBOL + captureWhitespace + captureComment
+		formatWhite = captureBOL + captureWhitespace
+		
+		#New Expressions
+		format0RegEx = Regexp.new(format0)
+		format1RegEx = Regexp.new(format1)
+		format2RegEx = Regexp.new(format2)
+		format3RegEx = Regexp.new(format3)
+		format4RegEx = Regexp.new(format4)
+		
+		dev0RegEx = Regexp.new(dev0)
+		dev1RegEx = Regexp.new(dev1)
+		
+		commentRegEx = Regexp.new(formatComment)
+		whiteRegEx = Regexp.new(formatWhite)
+		
 		# get & set the_Virtual_Machine; is an instance of Asm::Virtual_Machine
 		attr_accessor :the_Virtual_Machine
 		# get & set the memory index at which the Loader will load machine code into the Virtual_Machine's memory; is an Integer
@@ -67,32 +135,44 @@ module Asm
 		#
 		# Returns nothing
 		def handle( line_of_text )
-			# check if 'keyword RD RA RB' instruction format consumes line
-			# dispatch with information from named captures
-			
 			# check if 'keyword RD RA' instruction format consumes line
 			# dispatch with information from named captures
+			if format0RegEx.match(input)
 			
-			# check if 'keyword RD literal' instruction format consumes line
+			# check if 'keyword RD RA RB' instruction format consumes line
 			# dispatch with information from named captures
-			
-			# check if 'keyword RD literal RA' instruction format consumes line
-			# dispatch with information from named captures
+			elsif format1RegEx.match(input)
 			
 			# check if 'keyword RD RA literal' instruction format consumes line
 			# dispatch with information from named captures
+			elsif format2RegEx.match(input)
+			
+			# check if 'keyword RD literal' instruction format consumes line
+			# dispatch with information from named captures
+			elsif format3RegEx.match(input)
+			
+			# check if 'keyword RD literal RA' instruction format consumes line
+			# dispatch with information from named captures
+			elsif format4RegEx.match(input)
 			
 			# check if '# memory_location_literal = memory_value_literal' directive consumes line
 			# dispatch with information from named captures
+			elsif dev0RegEx.match(input)
 			
 			# check if '# memory_location_literal = asm' directive consumes line
 			# dispatch with information from named captures
+			elsif dev1RegEx.match(input)
 			
 			# check if '//' format consumes line
 			# ignore by doing nothing
+			elsif commentRegEx.match(input)
+
+			elsif whiteRegEx.match(input)
+
 			
-			# else
+			else
 			raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
+			end
 			return
 		end
 		# initialize the VM
