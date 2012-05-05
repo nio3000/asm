@@ -19,30 +19,30 @@ module Asm
 =end
 		#The following are the name captures/regular expressions for capturing machines instructions
 		#Literals
-		registry = "(r|R)[0-9]+"
-		decimal = "[d]{,1}[\+\-]{,1}[0-9]+"
-		binary = "(0)(b|B)[\+\-]{,1}[0-1]+" #Accepts other digits but doesn't capture
-		decimalUnsigned = "[0-9]+"
+		registry = '(r|R)[0-9]+'
+		decimal = '[d]{,1}[\+\-]{,1}[0-9]+'
+		binary = '(0)(b|B)[\+\-]{,1}[0-1]+' #Accepts other digits but doesn't capture
+		decimalUnsigned = '[0-9]+'
 		
-		captureBOL = "(?<begin of line>^)" #^
+		captureBOL = '(?<begin of line>^)' #^
 		captureEOL = '(?<end of line>$)' #$
 		
-		captureKeyword0 = "(?<keyword>(MOVE)|(NOT))" #0 Corresponds
-		captureKeyword1 = "(?<keyword>((AND)|(OR)|(ADD)|(SUB)|(MOVEZ)|(MOVEX)|(MOVEP)|(MOVEN)))"
-		captureKeyword2 = "(?<keyword>(ADDI)|(SUBI))"
-		captureKeyword3 = "(?<keyword>(SET)|(SETH))"
-		captureKeyword4 = "(?<keyword>(INCIZ)|(DECIN))"
+		captureKeyword0 = '(?<keyword>(MOVE)|(NOT))' #0 Corresponds
+		captureKeyword1 = '(?<keyword>((AND)|(OR)|(ADD)|(SUB)|(MOVEZ)|(MOVEX)|(MOVEP)|(MOVEN)))'
+		captureKeyword2 = '(?<keyword>(ADDI)|(SUBI))'
+		captureKeyword3 = '(?<keyword>(SET)|(SETH))'
+		captureKeyword4 = '(?<keyword>(INCIZ)|(DECIN))'
 		
-		captureWhitespace = "(?<whitespace>[\s\t]*)"
-		captureWhitespaceReg = "(?<whitespace>[\s\t]+)"
-		captureRegLiteral = "(?<registry literal>" + registry +")"
-		captureLiteral = "(?<literal>(" + decimal + ")|(" + binary + "))"
-		captureDelimiter = "(?<delimiter>[,])"
-		captureComment = "(?<Comment>(//)*)" 
+		captureWhitespace = '(?<whitespace>[\s\t]*)'
+		captureWhitespaceReg = '(?<whitespace>[\s\t]+)'
+		captureRegLiteral = '(?<registry literal>' + registry +')'
+		captureLiteral = '(?<literal>(' + decimal + ')|(' + binary + '))'
+		captureDelimiter = '(?<delimiter>[,])'
+		captureComment = '(?<Comment>(//.*){,1})' 
 		
-		captureASM = "(?<ASM>(ASM))"
-		poundLiteral = "(?<literal>(#)(" + decimalUnsigned + "))" 
-		equalDelimiter = "(?<delimiter>[=])"
+		captureASM = '(?<ASM>(ASM))'
+		poundLiteral = '(?<literal>(#)(' + decimalUnsigned + '))' 
+		equalDelimiter = '(?<delimiter>[=])'
 		
 		dev0 = captureBOL + captureWhitespace + poundLiteral + captureWhitespace + equalDelimiter + captureWhitespace \
 		 + captureLiteral + captureWhitespace + captureComment
@@ -52,22 +52,22 @@ module Asm
 		
 		format0 = captureBOL + captureWhitespace + captureKeyword0 + captureWhitespaceReg + captureRegLiteral \
 		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
-		 + captureComment #+ captureEOL
+		 + captureComment + captureEOL
 		 
 		format1 = captureBOL + captureWhitespace + captureKeyword1 + captureWhitespaceReg + captureRegLiteral \
 		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment
+		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment + captureEOL
 		 
 		format2 = captureBOL + captureWhitespace + captureKeyword2 + captureWhitespaceReg + captureRegLiteral \
 		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment
+		 + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment + captureEOL
 		 
 		format3 = captureBOL + captureWhitespace + captureKeyword3 + captureWhitespaceReg + captureRegLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment + captureEOL
 		 
 		format4 = captureBOL + captureWhitespace + captureKeyword4 + captureWhitespaceReg + captureRegLiteral \
 		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment
+		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment + captureEOL
 		 
 		formatComment = captureBOL + captureWhitespace + captureComment
 		formatWhite = captureBOL + captureWhitespace
@@ -98,6 +98,32 @@ module Asm
 			# initialize all persistant member variables.
 			@the_Virtual_Machine	= the_Virtual_Machine
 			@load_index	= Asm::Literals_Are_Magic::Loader::example_invalid_load_index
+		end
+		
+		#
+		#
+		# Returns the load index interpter as Asm::BCPU::Memory::Location
+		def getLocationFromLoadIndex()
+			
+		end
+		
+		# Increment the load index OR
+		# raise error if load index is a invalid value
+		# Returns nothing
+		def incrementLoadIndex()
+			
+		end
+		
+		# Sets load index to a invalid state
+		#
+		# Returns nothing
+		def invalidateLoadIndex()
+		end
+		
+		# Sets the load index
+		#
+		# Returns nothing
+		def setLoadIndex( an_integer )
 		end
 	public
 =begin	interface related to telling the Loader to load into the virtual machine
@@ -140,37 +166,37 @@ module Asm
 		def handle( line_of_text )
 			# check if 'keyword RD RA' instruction format consumes line
 			# dispatch with information from named captures
-			if format0RegEx.match(input)
+			if format0RegEx.match(line_of_text)
 			
 			# check if 'keyword RD RA RB' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format1RegEx.match(input)
+			elsif format1RegEx.match(line_of_text)
 			
 			# check if 'keyword RD RA literal' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format2RegEx.match(input)
+			elsif format2RegEx.match(line_of_text)
 			
 			# check if 'keyword RD literal' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format3RegEx.match(input)
+			elsif format3RegEx.match(line_of_text)
 			
 			# check if 'keyword RD literal RA' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format4RegEx.match(input)
+			elsif format4RegEx.match(line_of_text)
 			
 			# check if '# memory_location_literal = memory_value_literal' directive consumes line
 			# dispatch with information from named captures
-			elsif dev0RegEx.match(input)
+			elsif dev0RegEx.match(line_of_text)
 			
 			# check if '# memory_location_literal = asm' directive consumes line
 			# dispatch with information from named captures
-			elsif dev1RegEx.match(input)
+			elsif dev1RegEx.match(line_of_text)
 			
 			# check if '//' format consumes line
 			# ignore by doing nothing
-			elsif commentRegEx.match(input)
+			elsif commentRegEx.match(line_of_text)
 
-			elsif whiteRegEx.match(input)
+			elsif whiteRegEx.match(line_of_text)
 
 			
 			else
@@ -185,6 +211,7 @@ module Asm
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
 			# TODO implement this
+			self.the_virtual_
 			return
 		end
 		# initialize the VM
