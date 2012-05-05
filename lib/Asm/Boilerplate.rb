@@ -31,8 +31,7 @@ module Asm
 		#
 		# Returns true iff arugment is of type type.
 		#def	self.true_if_type( argument ,type )
-			#return	argument.kind? == type
-			#return	argument.instance_of?( type )
+		#	return	argument.kind_of? type
 		#end
 =begin
 		# Asm::Boilerplate::Bitset
