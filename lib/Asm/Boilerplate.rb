@@ -11,7 +11,7 @@ module Asm
 =begin
 	# Asm::Boilerplate
 =end
-	module Boilerplate
+	module Asm::Boilerplate
 		# paranoid typechecking boilerplate
 		#
 		# argument - an object whose type is being checked
@@ -19,9 +19,9 @@ module Asm
 		#
 		# Rasies exception when the check fails.
 		# Returns nothing.
-		def	raise_unless_type( argument ,type )
-			raise "argument's type is " << argument.kind?() << ", not " <<
-				type.inspect() << "." unless argument.kind? == type
+		def	self.raise_unless_type( argument ,type )
+			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
+			raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.instance_of?( type )
 			return
 		end
 		# paranoid typechecking boilerplate
@@ -30,22 +30,23 @@ module Asm
 		# type - the type which argument's type must be for the check to not fail.
 		#
 		# Returns true iff arugment is of type type.
-		def	true_if_type( argument ,type )
-			return	argument.kind? == type
-		end
+		#def	self.true_if_type( argument ,type )
+			#return	argument.kind? == type
+			#return	argument.instance_of?( type )
+		#end
 =begin
 		# Asm::Boilerplate::Bitset
 =end
-		module Bitset
+		#module Asm::Boilerplate::Bitset
 			# boilerplate for resizing an instance of Bitset
-			def	resize( desired_size )
+			#self.def	resize( a_Bitset ,desired_size )
 				# TODO implement this
-			end
-		end
+			#end
+		#end
 =begin
 		# Asm::Boilerplate::Exception
 =end
-		class Exception
+		class Asm::Boilerplate::Exception
 =begin
 		# Asm::Boilerplate::Exception::Syntax
 		* if code generates a BCPU assembly syntax error,
@@ -54,18 +55,16 @@ module Asm
 			that happens when the Syntax object is rescued
 		* example: `raise Asm::Boilerplate::Exception::Syntax.new( 'gibberish input; not an instruction, directive, comment, or blank line.' )`
 =end
-			class Syntax < Exception
+			class Asm::Boilerplate::Exception::Syntax < Exception
 			end
 =begin
 			# Asm::Boilerplate::Exception::Overflow
 			* DOCIT
 =end
-			class Overflow < Exception
+			class Asm::Boilerplate::Exception::Overflow < Exception
 			end
 		end
 	end
 end
 
-#require	'Asm/require_all.rb'
-$LOAD_PATH << '.'
 # encoding: UTF-8

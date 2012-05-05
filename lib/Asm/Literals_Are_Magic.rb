@@ -56,12 +56,23 @@ module Asm
 					Minimum	= Asm::Magic::Binary::Twos_complement::Exclusive::Minimum + 1
 					Maximum	= Asm::Magic::Binary::Twos_complement::Exclusive::Maximum - 1
 				end
-				#def	valid?( an_Integer )
-				#	return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
-				#end
+				# twos complement range checking
+				def	self.valid?( an_Integer )
+					return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
+				end
+				# twos complement range checking
+				def	self.assert_valid( an_Integer )
+					if !(an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum)
+						raise 'The integer, \'' << an_Integer << '\',  is too positive for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+					elsif !(Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer)
+						raise 'The integer, \'' << an_Integer << '\',  is too negative for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+					end
+					return
+				end
 			end
 =begin
 			# Asm::Magic::Binary::Unsigned
+			
 =end
 			module	Unsigned
 				module	Exclusive
@@ -74,9 +85,66 @@ module Asm
 				module	Exclusive
 					Minimum	= Asm::Magic::Binary::Unsigned::Inclusive::Minimum - 1
 				end
-				#def	valid?( an_Integer )
-				#	return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
-				#end
+				# unsigned binary range checking
+				def	self.valid?( an_Integer )
+					return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
+				end
+				# unsigned binary range checking
+				def	self.assert_valid( an_Integer )
+					if !(an_Integer < Asm::Magic::Binary::Unsigned::Exclusive::Maximum)
+						raise 'The integer, \'' << an_Integer << '\', is too positive for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+					elsif !(Asm::Magic::Binary::Unsigned::Exclusive::Minimum < an_Integer)
+						raise 'The integer, \'' << an_Integer << '\',  is too negative for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+					end
+					return
+				end
+			end
+			# DOCIT
+			module	String
+				# true if there is evidence that the given string is not a binary string.
+				def	self.valid?( a_String )
+					return	(a_String.size == a_String.count( '01' )) && (a_String.size > 0)
+				end
+				# raise if there is evidence that the given string is not a binary string.
+				def	self.assert_valid( a_String )
+					if	!Asm::Magic::Binary::String::valid?( a_String )
+						raise 'the given string, \'' << a_String << '\', is not a binary String.'
+					end
+					return
+				end
+			end
+			# DOCIT
+			module	Bitset
+				# true if there is evidence that the given Bitset instance is not a BCPU compatible Bitset.
+				def	self.valid?( a_Bitset )
+					return	a_Bitset.size <= Asm::Magic::Memory::Bits_per::Word
+				end
+				# raise if there is evidence that the given string is not a binary string.
+				def	self.assert_valid( a_Bitset )
+					if	!Asm::Magic::Binary::Bitset::valid?( a_Bitset )
+						raise 'the given bitset, \'' << a_Bitset.to_s << '\', contains more than ' << Asm::Magic::Memory::Bits_per::Word << 'bits; assigning it may lose information in an unintended way.'
+					end
+					return
+				end
+			end
+		end
+=begin
+		# Asm::Magic::Base10
+=end
+		module Base10
+			# DOCIT
+			module	String
+				# true if there is evidence that the given string is not a base 10 string of digits.
+				def	self.valid?( a_String )
+					return	(a_String.size == a_String.count( '+-0123456789' )) && (a_String.size > 0)
+				end
+				# raise if there is evidence that the given string is not a base 10 string of digits.
+				def	self.assert_valid( a_String )
+					if	!Asm::Magic::Base10::String::valid?( a_String )
+						raise 'the given string, \'' << a_String << '\', is not a base 10 string of digits.'
+					end
+					return
+				end
 			end
 		end
 =begin
@@ -189,51 +257,51 @@ module Asm
 					end
 				end
 			end
-			module Integer
 =begin
 			Integer OpCodes corresponding to
 			* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
 =end
-			# Integer OpCodes
-			MOVE  = 0
-			NOT   = 1
-			AND   = 2
-			OR    = 3
-			ADD   = 4
-			SUB   = 5
-			ADDI  = 6
-			SUBI  = 7
-			SET   = 8
-			SETH  = 9
-			INCIZ = 10
-			DECIN = 11
-			MOVEZ = 12
-			MOVEX = 13
-			MOVEP = 14
-			MOVEN = 15
-
-			# instructions and their 4 bit binary codes
-			instructions = {'move'  => "%04d" % MOVE.to_s(2),
-							'not'   => "%04d" % NOT.to_s(2),
-							'and'   => "%04d" % AND.to_s(2),
-							'or'    => "%04d" % OR.to_s(2),
-							'add'   => "%04d" % ADD.to_s(2),
-							'sub'   => "%04d" % SUB.to_s(2),
-							'addi'  => "%04d" % ADDI.to_s(2),
-							'subi'  => "%04d" % SUBI.to_s(2),
-							'set'   => "%04d" % SET.to_s(2),
-							'seth'  => "%04d" % SETH.to_s(2),
-							'inciz' => "%04d" % INCIZ.to_s(2),
-							'decin' => "%04d" % DECIN.to_s(2),
-							'movez' => "%04d" % MOVEZ.to_s(2),
-							'movex' => "%04d" % MOVEX.to_s(2),
-							'movep' => "%04d" % MOVEP.to_s(2),
-							'moven' => "%04d" % MOVEN.to_s(2)}
+			module Integer
+				# Integer OpCodes
+				MOVE  = 0
+				NOT   = 1
+				AND   = 2
+				OR    = 3
+				ADD   = 4
+				SUB   = 5
+				ADDI  = 6
+				SUBI  = 7
+				SET   = 8
+				SETH  = 9
+				INCIZ = 10
+				DECIN = 11
+				MOVEZ = 12
+				MOVEX = 13
+				MOVEP = 14
+				MOVEN = 15
+	
+				# instructions and their 4 bit binary codes
+				instructions = {'move'  => "%04d" % MOVE.to_s(2),
+								'not'   => "%04d" % NOT.to_s(2),
+								'and'   => "%04d" % AND.to_s(2),
+								'or'    => "%04d" % OR.to_s(2),
+								'add'   => "%04d" % ADD.to_s(2),
+								'sub'   => "%04d" % SUB.to_s(2),
+								'addi'  => "%04d" % ADDI.to_s(2),
+								'subi'  => "%04d" % SUBI.to_s(2),
+								'set'   => "%04d" % SET.to_s(2),
+								'seth'  => "%04d" % SETH.to_s(2),
+								'inciz' => "%04d" % INCIZ.to_s(2),
+								'decin' => "%04d" % DECIN.to_s(2),
+								'movez' => "%04d" % MOVEZ.to_s(2),
+								'movex' => "%04d" % MOVEX.to_s(2),
+								'movep' => "%04d" % MOVEP.to_s(2),
+								'moven' => "%04d" % MOVEN.to_s(2)}
 			end
 		end
 	end
 end
 
 #require	'Asm/require_all.rb'
-$LOAD_PATH << '.'
+#$LOAD_PATH << '.'
 # encoding: UTF-8

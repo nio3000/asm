@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
+#$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
 
 =begin
 # /lib/Asm/require_all.rb
@@ -6,6 +6,10 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.incl
 * dependency on module Asm should be resolved by requiring this file
 	* no, don't bother just requiring the individual files you think you need.
 =end
+
+# 3rd party dependencies
+require 'bitset'
+require 'minitest/unit'
 
 # misc functionality for consistency
 require 'Asm/Literals_Are_Magic.rb'

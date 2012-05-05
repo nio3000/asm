@@ -114,5 +114,5 @@ module Asm
 	end
 end
 
-require	'Asm/require_all.rb'
+#require	'Asm/require_all.rb'
 # encoding: UTF-8
