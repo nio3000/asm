@@ -233,17 +233,17 @@ module Asm
 =end
 		module GUI
 			module Names
-				xrc_file	= './../lib/asm/gui/gui.xrc'
-				top_level	= 'Main_frame'
+				Xrc_file	= './../lib/asm/gui/gui.xrc'
+				Top_level	= 'Main_frame'
 				module Loader
-					frame	= 'Loader_frame'
-					console	= 'Loader_console'
-					filepath	= 'Loader_filepath'
+					Frame	= 'Loader_frame'
+					Console	= 'Loader_console'
+					Filepath	= 'Loader_filepath'
 				end
 				module VM
-					frame	= 'VM_frame'
-					memory	= 'VM_memory'
-					registers	= 'VM_registers'
+					Frame	= 'VM_frame'
+					Memory	= 'VM_memory'
+					Registers	= 'VM_registers'
 				end
 			end
 		end

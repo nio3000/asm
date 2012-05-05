@@ -24,12 +24,12 @@ module Asm
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 			#self.set_name( "BCPU" )
 			# DOCIT
-			Wx::init_all_image_handlers()
-			xml	= Wx::XmlResource.get()
+			#::Wx::init_all_image_handlers()	# may be depreciated
+			xml	= ::Wx::XmlResource.get()
 			xml.init_all_handlers()
-			xml.load( Asm::Magic::GUI::xrc_file )
+			xml.load( Asm::Magic::GUI::Names::Xrc_file )
 			# obtain an object for the main sheet in the GUI
-			xml.load_frame( @main_GUI_sheet ,Asm::Magic::GUI::top_level )
+			@main_GUI_sheet	= xml.load_frame( nil ,Asm::Magic::GUI::Names::Top_level )
 			# TODO setup the callbacks
 			#	Loader
 			#		console
@@ -77,14 +77,14 @@ module Asm
 			def handle_compile_code( a_CommandEvent )
 				# obtain a file path
 				# TODO obtain a file path from the event argument
-				a_file_path	= @main_GUI_sheet.find_window( Asm::Magic::GUI::Loader::filepath ).get_value
+				a_file_path	= @main_GUI_sheet.find_window( Asm::Magic::GUI::Names::Loader::Filepath ).get_value
 				# invoke load, capture returned messages
 				the_messages	= @the_Loader.load( a_file_path )
 				# process the messages
 				the_processed_message	= ''
 				the_messages.each { |this_message|	the_processed_message << the_messages << '\n'	}
 				# post the_messages to the GUI
-				@main_GUI_sheet.find_window( Asm::Magic::GUI::Loader::console ).change_value( the_processed_message )
+				@main_GUI_sheet.find_window( Asm::Magic::GUI::Names::Loader::Console ).change_value( the_processed_message )
 			end
 			# WxRuby callback; DOCIT
 			#
