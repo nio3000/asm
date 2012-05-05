@@ -151,9 +151,27 @@ module Asm
 		# Asm::Magic::Loader
 =end
 		module	Loader
-			# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
-			# TODO remove explicit dependence on this variable.
-			example_invalid_load_index	= Asm::Magic::Memory::Index::Exclusive::Minimum
+			module	load
+				module	index
+					# True iff the given load index is in a valid state
+					def self.valid?( an_Integer )
+						raise 'an_Integer is not an integer' unless an_Integer.integer?
+						return	(an_Integer >= Asm::Magic::Memory::Index::Inclusive::Minimum) && (an_Integer <= Asm::Magic::Memory::Index::Inclusive::Maximum)
+					end
+					# raise unless the given load index is in a valid state
+					def self.assert_valid( an_Integer )
+						raise 'an_Integer is not an integer' unless an_Integer.integer?
+						if !(an_Integer >= Asm::Magic::Memory::Index::Inclusive::Minimum)
+							raise 'the load index, \'' << an_Integer << '\', is less than \'' << Asm::Magic::Memory::Index::Inclusive::Minimum << '\''
+						elsif !(an_Integer <= Asm::Magic::Memory::Index::Inclusive::Maximum)
+							raise 'the load index, \'' << an_Integer << '\', is greater than \'' << Asm::Magic::Memory::Index::Inclusive::Maximum << '\''
+						end
+						return
+					end
+					# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
+					invalid	= Asm::Magic::Memory::Index::Exclusive::Minimum
+				end
+			end
 		end
 =begin
 		# Asm::Magic::Register

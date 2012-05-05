@@ -34,7 +34,7 @@ module Asm
 			#	Loader
 			#		console
 			#		filepath
-			evt_text_enter( @main_GUI_sheet.find_window( Asm::Magic::GUI::Loader::filepath ) ) Asm::Wx::Callback.instance_method(:handle_compile_code)
+			#evt_text_enter( @main_GUI_sheet.find_window( Asm::Magic::GUI::Loader::filepath ) ) Asm::Wx::Callback.instance_method(:handle_compile_code)
 			#	VM
 			#		Control
 			#			advance n
