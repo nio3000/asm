@@ -22,7 +22,7 @@ module Asm
 			# application-specific initialization
 			@the_BCPU	= Asm::Virtual_Machine.new
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
-			self.set_name( "BCPU" )
+			#self.set_name( "BCPU" )
 			# DOCIT
 			Wx::init_all_image_handlers()
 			xml	= Wx::XmlResource.get()

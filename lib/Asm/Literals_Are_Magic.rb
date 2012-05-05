@@ -169,7 +169,7 @@ module Asm
 						return
 					end
 					# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
-					invalid	= Asm::Magic::Memory::Index::Exclusive::Minimum
+					Invalid	= Asm::Magic::Memory::Index::Exclusive::Minimum
 				end
 			end
 		end
