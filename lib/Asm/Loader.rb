@@ -35,7 +35,9 @@ module Asm
 		
 		captureWhitespace = '(?<whitespace>[\s\t]*)'
 		captureWhitespaceReg = '(?<whitespace>[\s\t]+)'
-		captureRegLiteral = '(?<registry literal>' + registry +')'
+		captureRegALiteral = '(?<registry a>' + registry +')'
+		captureRegBLiteral = '(?<registry b>' + registry +')'
+		captureRegDESTLiteral = '(?<registry dest>' + registry +')'
 		captureLiteral = '(?<literal>(' + decimal + ')|(' + binary + '))'
 		captureDelimiter = '(?<delimiter>[,])'
 		captureComment = '(?<Comment>(//.*){,1})' 
@@ -50,24 +52,24 @@ module Asm
 		dev1 = captureBOL + captureWhitespace + poundLiteral + captureWhitespace + equalDelimiter + captureWhitespace \
 		 + captureASM + captureWhitespace + captureComment
 		
-		format0 = captureBOL + captureWhitespace + captureKeyword0 + captureWhitespaceReg + captureRegLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
+		format0 = captureBOL + captureWhitespace + captureKeyword0 + captureWhitespaceReg + captureRegDESTLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace \
 		 + captureComment + captureEOL
 		 
-		format1 = captureBOL + captureWhitespace + captureKeyword1 + captureWhitespaceReg + captureRegLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment + captureEOL
+		format1 = captureBOL + captureWhitespace + captureKeyword1 + captureWhitespaceReg + captureRegDESTLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace \
+		 + captureDelimiter + captureWhitespace + captureRegBLiteral + captureWhitespace + captureComment + captureEOL
 		 
-		format2 = captureBOL + captureWhitespace + captureKeyword2 + captureWhitespaceReg + captureRegLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace \
+		format2 = captureBOL + captureWhitespace + captureKeyword2 + captureWhitespaceReg + captureRegDESTLiteral \
+		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace \
 		 + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment + captureEOL
 		 
-		format3 = captureBOL + captureWhitespace + captureKeyword3 + captureWhitespaceReg + captureRegLiteral \
+		format3 = captureBOL + captureWhitespace + captureKeyword3 + captureWhitespaceReg + captureRegDESTLiteral \
 		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment + captureEOL
 		 
-		format4 = captureBOL + captureWhitespace + captureKeyword4 + captureWhitespaceReg + captureRegLiteral \
+		format4 = captureBOL + captureWhitespace + captureKeyword4 + captureWhitespaceReg + captureRegDESTLiteral \
 		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureRegLiteral + captureWhitespace + captureComment + captureEOL
+		 + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace + captureComment + captureEOL
 		 
 		formatComment = captureBOL + captureWhitespace + captureComment
 		formatWhite = captureBOL + captureWhitespace
@@ -166,37 +168,38 @@ module Asm
 		def handle( line_of_text )
 			# check if 'keyword RD RA' instruction format consumes line
 			# dispatch with information from named captures
-			if format0RegEx.match(line_of_text)
-			
+			if capture = format0RegEx.match(line_of_text)
+				
 			# check if 'keyword RD RA RB' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format1RegEx.match(line_of_text)
+			elsif capture = format1RegEx.match(line_of_text)
+				instruction_format__keyword_RD_RA_RB( capture['keyword'], capture['registry dest'], capture['registry a'], capture['registry b'] )
 			
 			# check if 'keyword RD RA literal' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format2RegEx.match(line_of_text)
+			elsif capture = format2RegEx.match(line_of_text)
 			
 			# check if 'keyword RD literal' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format3RegEx.match(line_of_text)
+			elsif capture = format3RegEx.match(line_of_text)
 			
 			# check if 'keyword RD literal RA' instruction format consumes line
 			# dispatch with information from named captures
-			elsif format4RegEx.match(line_of_text)
+			elsif capture = format4RegEx.match(line_of_text)
 			
 			# check if '# memory_location_literal = memory_value_literal' directive consumes line
 			# dispatch with information from named captures
-			elsif dev0RegEx.match(line_of_text)
+			elsif capture = dev0RegEx.match(line_of_text)
 			
 			# check if '# memory_location_literal = asm' directive consumes line
 			# dispatch with information from named captures
-			elsif dev1RegEx.match(line_of_text)
+			elsif capture = dev1RegEx.match(line_of_text)
 			
 			# check if '//' format consumes line
 			# ignore by doing nothing
-			elsif commentRegEx.match(line_of_text)
+			elsif capture = commentRegEx.match(line_of_text)
 
-			elsif whiteRegEx.match(line_of_text)
+			elsif capture = whiteRegEx.match(line_of_text)
 
 			
 			else
@@ -211,7 +214,26 @@ module Asm
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
 			# TODO implement this
-			self.the_virtual_
+			if keyword == andCOMM
+				self.the_virtual_machine.and(dest_reg, reg_a, reg_b)
+			elsif keyword == orCOMM
+				self.the_virtual_machine.or(dest_reg, reg_a, reg_b)
+			elsif keyword == add
+				self.the_virtual_machine.add(dest_reg, reg_a, reg_b)
+			elsif keyword == sub
+				self.the_virtual_machine.sub(dest_reg, reg_a, reg_b)
+			elsif keyword == movez
+				self.the_virtual_machine.movez(dest_reg, reg_a, reg_b)
+			elsif keyword == movex
+				self.the_virtual_machine.movex(dest_reg, reg_a, reg_b)
+			elsif keyword == movep
+				self.the_virtual_machine.movep(dest_reg, reg_a, reg_b)
+			elsif keyword == moven
+				self.the_virtual_machine.moven(dest_reg, reg_a, reg_b)
+			else
+				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
+			end
+			self.the_Virtual_Machine
 			return
 		end
 		# initialize the VM
