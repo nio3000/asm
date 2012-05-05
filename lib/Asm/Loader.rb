@@ -43,7 +43,7 @@ module Asm
 		captureComment = '(?<Comment>(//.*){,1})' 
 		
 		captureASM = '(?<ASM>(ASM))'
-		poundLiteral = '(?<literal>(#)(' + decimalUnsigned + '))' 
+		poundLiteral = '(?<memory literal>(#)(' + decimalUnsigned + '))' 
 		equalDelimiter = '(?<delimiter>[=])'
 		
 		dev0 = captureBOL + captureWhitespace + poundLiteral + captureWhitespace + equalDelimiter + captureWhitespace \
@@ -276,6 +276,7 @@ module Asm
 			# check if 'keyword RD RA' instruction format consumes line
 			# dispatch with information from named captures
 			if capture = format0RegEx.match(line_of_text)
+				instruction_format__keyword_RD_RA( capture['keyword'], capture['registry dest'], capture['registry a'] )
 				
 			# check if 'keyword RD RA RB' instruction format consumes line
 			# dispatch with information from named captures
@@ -285,22 +286,27 @@ module Asm
 			# check if 'keyword RD RA literal' instruction format consumes line
 			# dispatch with information from named captures
 			elsif capture = format2RegEx.match(line_of_text)
+				instruction_format__keyword_RD_RA_literal( capture['keyword'], capture['registry dest'], capture['registry a'], capture['literal'])
 			
 			# check if 'keyword RD literal' instruction format consumes line
 			# dispatch with information from named captures
 			elsif capture = format3RegEx.match(line_of_text)
+				instruction_format__keyword_RD_literal( capture['keyword'], capture['registry dest'], capture['literal'])
 			
 			# check if 'keyword RD literal RA' instruction format consumes line
 			# dispatch with information from named captures
 			elsif capture = format4RegEx.match(line_of_text)
+				instruction_format__keyword_RD_literal_RA( capture['keyword'], capture['registry dest'], capture['literal'], capture['registry a'])
 			
 			# check if '# memory_location_literal = memory_value_literal' directive consumes line
 			# dispatch with information from named captures
 			elsif capture = dev0RegEx.match(line_of_text)
+				directive__memory_value(capture['memory literal'], capture['literal'])
 			
 			# check if '# memory_location_literal = asm' directive consumes line
 			# dispatch with information from named captures
 			elsif capture = dev1RegEx.match(line_of_text)
+				directive__asm( capture['memory literal'] )
 			
 			# check if '//' format consumes line
 			# ignore by doing nothing
@@ -320,35 +326,46 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
-			# TODO implement this
-			wordRD = self.Word_from_register_literal(dest_reg)
-			wordRA = self.Word_from_register_literal(reg_a)
-			wordRB = self.Word_from_register_literal(reg_b)
+			wordRD = self.word_from_register_literal(dest_reg)
+			wordRA = self.word_from_register_literal(reg_a)
+			wordRB = self.word_from_register_literal(reg_b)
 			value = Asm::BPCU::Memory::Value.new
-			self.Map_bits_to_bits( 0..3, wordRD, 8..11, value)
-			self.Map_bits_to_bits( 0..3, wordRA, 4..7, value)
-			self.Map_bits_to_bits( 0..3, wordRB, 0..3, value)
+			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
+			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
+			self.map_bits_to_bits( 0..3, wordRB, 0..3, value)
 			
-			if keyword == andCOMM
+			if keyword == 'AND'
 				value.the_bits[13] = True
-			elsif keyword == orCOMM
-				self.the_virtual_machine.or(dest_reg, reg_a, reg_b)
-			elsif keyword == add
-				self.the_virtual_machine.add(dest_reg, reg_a, reg_b)
-			elsif keyword == sub
-				self.the_virtual_machine.sub(dest_reg, reg_a, reg_b)
-			elsif keyword == movez
-				self.the_virtual_machine.movez(dest_reg, reg_a, reg_b)
-			elsif keyword == movex
-				self.the_virtual_machine.movex(dest_reg, reg_a, reg_b)
-			elsif keyword == movep
-				self.the_virtual_machine.movep(dest_reg, reg_a, reg_b)
-			elsif keyword == moven
-				self.the_virtual_machine.moven(dest_reg, reg_a, reg_b)
+			elsif keyword == 'OR'
+				value.the_bits[12] = True
+				value.the_bits[13] = True
+			elsif keyword == 'ADD'
+				value.the_bits[14] = True
+			elsif keyword == 'SUB'
+				value.the_bits[14] = True
+				value.the_bits[12] = True
+			elsif keyword == 'MOVEZ'
+				value.the_bits[15] = True
+				value.the_bits[14] = True
+			elsif keyword == 'MOVEX'
+				value.the_bits[15] = True
+				value.the_bits[14] = True
+				value.the_bits[12] = True
+			elsif keyword == 'MOVEP'
+				value.the_bits[15] = True
+				value.the_bits[14] = True
+				value.the_bits[13] = True
+			elsif keyword == 'MOVEN'
+				value.the_bits[15] = True
+				value.the_bits[14] = True
+				value.the_bits[13] = True
+				value.the_bits[12] = True
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
-			self.the_Virtual_Machine
+			self.incrementLoadIndex()
+			location = self.getLocationFromLoadIndex()
+			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
 		# initialize the VM
@@ -357,7 +374,22 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA( keyword ,dest_reg ,reg_a )
-			# TODO implement this
+			wordRD = self.word_from_register_literal(dest_reg)
+			wordRA = self.word_from_register_literal(reg_a)
+			value = Asm::BPCU::Memory::Value.new
+			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
+			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
+			
+			if keyword == 'MOVE'
+				#Nothing to do, Opcode: 0000
+			elsif keyword == 'NOT'
+				value.the_bits[12] = True
+			else
+				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
+			end
+			self.incrementLoadIndex()
+			location = self.getLocationFromLoadIndex()
+			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
 		# initialize the VM
@@ -366,7 +398,27 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_literal( keyword ,dest_reg ,reg_a ,literal )
-			# TODO implement this
+			wordRD = self.word_from_register_literal(dest_reg)
+			wordRA = self.word_from_register_literal(reg_a)
+			wordLit = self.word_from_numeric_literal(literal)
+			value = Asm::BPCU::Memory::Value.new
+			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
+			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
+			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
+			
+			if keyword == 'ADDI'
+				value.the_bits[13] = True
+				value.the_bits[14] = True
+			elsif keyword == 'SUBI'
+				value.the_bits[13] = True
+				value.the_bits[14] = True
+				value.the_bits[12] = True
+			else
+				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
+			end
+			self.incrementLoadIndex()
+			location = self.getLocationFromLoadIndex()
+			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
 		# initialize the VM
@@ -375,7 +427,27 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_literal_RA( keyword ,dest_reg ,literal ,reg_a )
-			# TODO implement this
+			wordRD = self.word_from_register_literal(dest_reg)
+			wordRA = self.word_from_register_literal(reg_a)
+			wordLit = self.word_from_numeric_literal(literal)
+			value = Asm::BPCU::Memory::Value.new
+			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
+			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
+			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
+			
+			if keyword == 'INCIZ'
+				value.the_bits[13] = True
+				value.the_bits[14] = True
+			elsif keyword == 'DECIN'
+				value.the_bits[13] = True
+				value.the_bits[14] = True
+				value.the_bits[12] = True
+			else
+				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
+			end
+			self.incrementLoadIndex()
+			location = self.getLocationFromLoadIndex()
+			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
 		# initialize the VM
@@ -383,7 +455,25 @@ module Asm
 		# DOCIT
 		# # Returns nothing
 		def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
-			# TODO implement this
+			wordRD = self.word_from_register_literal(dest_reg)
+			wordLit = self.word_from_numeric_literal(literal)
+			value = Asm::BPCU::Memory::Value.new
+			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
+			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
+			
+			if keyword == 'SET'
+				value.the_bits[13] = True
+				value.the_bits[14] = True
+			elsif keyword == 'SETH'
+				value.the_bits[13] = True
+				value.the_bits[14] = True
+				value.the_bits[12] = True
+			else
+				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
+			end
+			self.incrementLoadIndex()
+			location = self.getLocationFromLoadIndex()
+			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
 		# initialize the VM
@@ -392,7 +482,11 @@ module Asm
 		#
 		# Returns nothing
 		def directive__memory_value( memory_location_literal ,memory_value_literal )
-			# TODO implement this
+			location = self.location_from_numeric_literal(memory_location_literal)
+			wordLit = self.word_from_numeric_literal(memory_value_literal)
+			value = Asm::BPCU::Memory::Value.new(wordLit.the_bits)
+			
+			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
 		# initialize the VM
@@ -401,7 +495,8 @@ module Asm
 		#
 		# Returns nothing
 		def directive__asm( memory_location_literal )
-			# TODO implement this
+			location = self.location_from_numeric_literal(memory_location_literal)
+			self.setLoadIndex(location.to_i)
 			return
 		end
 =begin
