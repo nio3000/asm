@@ -218,7 +218,6 @@ module Asm
 			elsif capture = commentRegEx.match(line_of_text)
 
 			elsif capture = whiteRegEx.match(line_of_text)
-
 			
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
