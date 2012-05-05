@@ -42,7 +42,7 @@ module Asm
 		captureDelimiter = '(?<delimiter>[,])'
 		captureComment = '(?<Comment>(//.*){,1})' 
 		
-		captureASM = '(?<ASM>(ASM))'
+		captureASM = '(?<ASM>[Aa][Ss][Mm])'
 		poundLiteral = '(?<memory literal>(#)(' + decimalUnsigned + '))' 
 		equalDelimiter = '(?<delimiter>[=])'
 		
@@ -325,6 +325,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
+			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordRB = self.word_from_register_literal(reg_b)
@@ -373,6 +374,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA( keyword ,dest_reg ,reg_a )
+			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			value = Asm::BPCU::Memory::Value.new
@@ -397,6 +399,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_literal( keyword ,dest_reg ,reg_a ,literal )
+			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordLit = self.word_from_numeric_literal(literal)
@@ -426,6 +429,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_literal_RA( keyword ,dest_reg ,literal ,reg_a )
+			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordLit = self.word_from_numeric_literal(literal)
@@ -454,6 +458,7 @@ module Asm
 		# DOCIT
 		# # Returns nothing
 		def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
+			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordLit = self.word_from_numeric_literal(literal)
 			value = Asm::BPCU::Memory::Value.new
