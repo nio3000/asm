@@ -217,15 +217,140 @@ module Asm
 			end
 		end
 =begin
-		# Asm::Magic::Regexp_String
+		# Asm::Magic::Regexp
 		* DOCIT
 =end
-		module Regexp_String
-			Whitespace	= '\s*'	# whitespace character zero or more times
-			Comment	= '' << Whitespace << '//.*$'	# optional whitespace followed by a comment followed by optional anything; also forced consume until end of line or fail to match
-			Delimiter	= ','	# a comma
-			Beginning_of_line	= '^' << Whitespace	# forces regex match to start from the beginning of the input text; also consumes whitespace
-			Directive	= '#' << Whitespace	# directive symbol followed by optional whitespace
+		module Regexp
+			# maintainable boilerplate for contructing a Regexp object; adds modifiers silently
+			def self.create( a_Regexp_String )
+				# Paranoid type checking
+				Asm::Boilerplate::raise_unless_type( a_Regexp_String ,::String )
+				# Regexp instantiation with modifiers
+				# * ::Regexp::IGNORECASE -> case insensitive Regexp instance
+				::Regexp.new( a_Regexp_String ,::Regexp::IGNORECASE )
+			end
+			module	String
+#=begin
+				# wraps a given String, a_Regexp_String, in a named capture block with name a_String_for_a_name
+				#
+				# Returns a new Regexp_String
+				def	self.named_capture( a_Regexp_String ,a_String_for_a_name )
+					return	'(?<' << a_String_for_a_name << '>' << a_Regexp_String << ')'
+				end
+				# DOCIT
+				#
+				# Returns a new Regexp_String
+				def	self.consume_capture( a_Regexp_String )
+					return	'^' << a_Regexp_String << '$'
+				end
+				module	::Asm::Magic::Regexp::String::Names
+					module	Register
+						A	= 'registry a'
+						B	= 'registry b'
+						D	= 'registry dest'
+					end
+					module	Numeric
+						Literal	= 'literal'
+					end
+					module	::Asm::Magic::Regexp::String::Names::Directive
+						LHS	= 'lhs'
+						RHS	= 'rhs'
+					end
+					Keyword	= 'keyword'
+					Flag	= 'flag'
+					Value	= 'value'
+				end
+				module	::Asm::Magic::Regexp::String::Optional
+					Whitespace	= '\s*'	# whitespace character zero or more times
+				end
+				Beginning_of_line	= '^' << ::Asm::Magic::Regexp::String::Optional::Whitespace	# forces regex match to start from the beginning of the input text; also consumes whitespace
+=begin
+				# Asm::Magic::Regexp::String::Asm
+				* Rexexp Strings pertaining to low level parts of BCPU assembly language features
+=end
+				module	::Asm::Magic::Regexp::String::Asm
+					Comment	= '' << ::Asm::Magic::Regexp::String::Optional::Whitespace << '//.*$'	# optional whitespace followed by a comment followed by optional anything; also forced consume until end of line or fail to match
+					module	::Asm::Magic::Regexp::String::Asm::Register
+						Flag	= '[rR]'
+						Value	= '[0-9]+'
+						Literal	= Flag + Value
+						module	Capture
+							RA	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Register::Literal ,::Asm::Magic::Regexp::String::Names::Register::A )
+							RB	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Register::Literal ,::Asm::Magic::Regexp::String::Names::Register::B )
+							RD	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Register::Literal ,::Asm::Magic::Regexp::String::Names::Register::D )
+							Flag_Value	= '' << ::Asm::Magic::Regexp::String.named_capture( Flag ,::Asm::Magic::Regexp::String::Names::Flag ) << ::Asm::Magic::Regexp::String.named_capture( Value ,::Asm::Magic::Regexp::String::Names::Value )
+						end
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Binary
+						Flag	= '0[bB]'
+						Value	= '[01]+'
+						Literal	= Flag + Value
+						module	Capture
+							Flag_Value	= '' << ::Asm::Magic::Regexp::String.named_capture( Flag ,::Asm::Magic::Regexp::String::Names::Flag ) << ::Asm::Magic::Regexp::String.named_capture( Value ,::Asm::Magic::Regexp::String::Names::Value )
+						end
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Base10
+						Flag	= '[dD]{,1}'
+						Value	= '[+\-]{,1}[0-9]+'
+						Literal	= Flag + Value
+						module	Capture
+							Flag_Value	= '' << ::Asm::Magic::Regexp::String.named_capture( Flag ,::Asm::Magic::Regexp::String::Names::Flag ) << ::Asm::Magic::Regexp::String.named_capture( Value ,::Asm::Magic::Regexp::String::Names::Value )
+						end
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Numeric
+						Literal	= '(' << ::Asm::Magic::Regexp::String::Asm::Base10::Literal << ')|(' << ::Asm::Magic::Regexp::String::Asm::Binary::Literal << ')'
+						module	::Asm::Magic::Regexp::String::Asm::Numeric::Capture
+							Literal	= '(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Literal ,::Asm::Magic::Regexp::String::Names::Numeric::Literal ) << ')|(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Literal ,::Asm::Magic::Regexp::String::Names::Numeric::Literal ) << ')'
+							Flag_Value	= ::Asm::Magic::Regexp::String::Asm::Binary::Capture::Flag_Value + '|' + ::Asm::Magic::Regexp::String::Asm::Base10::Capture::Flag_Value
+						end
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Keyword
+						Asm	= 'ASM'
+						RD_RA	= '(MOVE)|(NOT)'
+						RD_RA_RB	= '(AND)|(OR)|(ADD)|(SUB)|(MOVEZ)|(MOVEX)|(MOVEP)|(MOVEN)'
+						RD_RA_data	= '(ADDI)|(SUBI)'
+						RD_data_RB	= '(INCIZ)|(DECIN)'
+						RD_data	= '(SET)|(SETH)'
+						module	Capture
+							RD_RA	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Keyword::RD_RA ,::Asm::Magic::Regexp::String::Names::Keyword )
+							RD_RA_RB	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Keyword::RD_RA_RB ,::Asm::Magic::Regexp::String::Names::Keyword )
+							RD_RA_data	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Keyword::RD_RA_data ,::Asm::Magic::Regexp::String::Names::Keyword )
+							RD_data_RB	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Keyword::RD_data_RB ,::Asm::Magic::Regexp::String::Names::Keyword )
+							RD_data	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Keyword::RD_data ,::Asm::Magic::Regexp::String::Names::Keyword )
+						end
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Instruction
+						Prefix	= '' << Beginning_of_line
+						Delimiter	= '' << ::Asm::Magic::Regexp::String::Optional::Whitespace << ',' << ::Asm::Magic::Regexp::String::Optional::Whitespace	# a comma, optionally surrounded by whitespace; the delimiter in instructions
+						Suffix	= '' << Comment
+						module	::Asm::Magic::Regexp::String::Asm::Instruction::Format
+							RD_RA	= '' << Prefix << ::Asm::Magic::Regexp::String::Asm::Keyword::Capture::RD_RA << ::Asm::Magic::Regexp::String::Optional::Whitespace << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RD << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RA << Suffix
+							RD_RA_RB	= '' << Prefix << ::Asm::Magic::Regexp::String::Asm::Keyword::Capture::RD_RA_RB << ::Asm::Magic::Regexp::String::Optional::Whitespace << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RD << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RA << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RB << Suffix
+							RD_RA_data	= '' << Prefix << ::Asm::Magic::Regexp::String::Asm::Keyword::Capture::RD_RA_data << ::Asm::Magic::Regexp::String::Optional::Whitespace << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RD << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RA << Delimiter << ::Asm::Magic::Regexp::String::Asm::Numeric::Capture::Literal << Suffix
+							RD_data_RB	= '' << Prefix << ::Asm::Magic::Regexp::String::Asm::Keyword::Capture::RD_data_RB << ::Asm::Magic::Regexp::String::Optional::Whitespace << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RD << Delimiter << ::Asm::Magic::Regexp::String::Asm::Numeric::Capture::Literal << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RB << Suffix
+							RD_data	= '' << Prefix << ::Asm::Magic::Regexp::String::Asm::Keyword::Capture::RD_data << ::Asm::Magic::Regexp::String::Optional::Whitespace << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RD << Delimiter << ::Asm::Magic::Regexp::String::Asm::Numeric::Capture::Literal << Suffix
+						end
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Directive
+						Prefix	= '' << Beginning_of_line << '#' << ::Asm::Magic::Regexp::String::Optional::Whitespace	# directive symbol followed by optional whitespace
+						Delimiter	= '' << ::Asm::Magic::Regexp::String::Optional::Whitespace << '=' << ::Asm::Magic::Regexp::String::Optional::Whitespace
+						Suffix	= '' << Comment
+						LHS	= '' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Numeric::Literal ,::Asm::Magic::Regexp::String::Names::Directive::LHS )
+						#LHS	= '(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Literal ,::Asm::Magic::Regexp::String::Names::Directive::LHS ) << ')|(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Literal ,::Asm::Magic::Regexp::String::Names::Directive::LHS ) << ')'
+						#RHS	= '(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Literal ,::Asm::Magic::Regexp::String::Names::Directive::RHS ) << ')|(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Literal ,::Asm::Magic::Regexp::String::Names::Directive::RHS ) << ')'
+						RHS	= '' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Numeric::Literal ,::Asm::Magic::Regexp::String::Names::Directive::RHS )
+						module	::Asm::Magic::Regexp::String::Asm::Directive::Format
+							Asm	= '' << ::Asm::Magic::Regexp::String::Asm::Directive::Prefix << ::Asm::Magic::Regexp::String::Asm::Directive::LHS << ::Asm::Magic::Regexp::String::Asm::Directive::Delimiter << ::Asm::Magic::Regexp::String::Asm::Keyword::Asm << ::Asm::Magic::Regexp::String::Asm::Directive::Suffix	# # number = asm
+							Assignment	= '' << ::Asm::Magic::Regexp::String::Asm::Directive::Prefix << ::Asm::Magic::Regexp::String::Asm::Directive::LHS << ::Asm::Magic::Regexp::String::Asm::Directive::Delimiter << ::Asm::Magic::Regexp::String::Asm::Directive::RHS << ::Asm::Magic::Regexp::String::Asm::Directive::Suffix	# # number = number
+						end
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Ignore
+						Comment	= '' << Beginning_of_line << ::Asm::Magic::Regexp::String::Asm::Comment
+						Blank	= '' << Beginning_of_line << '$'
+					end
+				end
+#=end
+			end
 		end
 =begin
 		# Asm::Magic::GUI

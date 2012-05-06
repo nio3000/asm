@@ -21,7 +21,11 @@ module Asm
 		# Returns nothing.
 		def	self.raise_unless_type( argument ,type )
 			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
-			raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.instance_of?( type )
+			begin
+				raise 'argument\'s type is ' << argument.kind?() << ', not ' << type.inspect() << '; argument.inspect gives \'' << argument.inspect( ) << '\'.' unless argument.instance_of?( type )
+			rescue
+				raise 'argument\'s type is not ' << type.inspect() << '; argument.inspect gives \'' << argument.inspect( ) << '\'.' unless argument.instance_of?( type )
+			end
 			return
 		end
 		# paranoid typechecking boilerplate
@@ -54,13 +58,13 @@ module Asm
 			that happens when the Syntax object is rescued
 		* example: `raise Asm::Boilerplate::Exception::Syntax.new( 'gibberish input; not an instruction, directive, comment, or blank line.' )`
 =end
-			class Asm::Boilerplate::Exception::Syntax < Exception
+			class Asm::Boilerplate::Exception::Syntax < ::Exception
 			end
 =begin
 			# Asm::Boilerplate::Exception::Overflow
 			* DOCIT
 =end
-			class Asm::Boilerplate::Exception::Overflow < Exception
+			class Asm::Boilerplate::Exception::Overflow < ::Exception
 			end
 		end
 	end

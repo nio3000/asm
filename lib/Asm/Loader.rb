@@ -17,6 +17,7 @@ module Asm
 	public
 =begin	structors & accessors
 =end
+=begin
 		#The following are the name captures/regular expressions for capturing machines instructions
 		#Literals
 		registry = '(r|R)[0-9]+'
@@ -75,18 +76,18 @@ module Asm
 		formatWhite = captureBOL + captureWhitespace
 		
 		#New Expressions
-		format0RegEx = Regexp.new(format0)
-		format1RegEx = Regexp.new(format1)
-		format2RegEx = Regexp.new(format2)
-		format3RegEx = Regexp.new(format3)
-		format4RegEx = Regexp.new(format4)
+		format0RegEx = ::Asm::Magic::Regexp.create( format0 ) # Regexp.new(format0)
+		format1RegEx = ::Asm::Magic::Regexp.create( format1 ) # Regexp.new(format1)
+		format2RegEx = ::Asm::Magic::Regexp.create( format2 ) # Regexp.new(format2)
+		format3RegEx = ::Asm::Magic::Regexp.create( format3 ) # Regexp.new(format3)
+		format4RegEx = ::Asm::Magic::Regexp.create( format4 ) # Regexp.new(format4)
 		
-		dev0RegEx = Regexp.new(dev0)
-		dev1RegEx = Regexp.new(dev1)
+		dev0RegEx = ::Asm::Magic::Regexp.create( dev0 ) # Regexp.new(dev0)
+		dev1RegEx = ::Asm::Magic::Regexp.create( dev1 ) # Regexp.new(dev1)
 		
-		commentRegEx = Regexp.new(formatComment)
-		whiteRegEx = Regexp.new(formatWhite)
-		
+		commentRegEx = ::Asm::Magic::Regexp.create( formatComment ) # Regexp.new(formatComment)
+		whiteRegEx = ::Asm::Magic::Regexp.create( formatWhite ) # Regexp.new(formatWhite)
+=end
 		# get & set the_Virtual_Machine; is an instance of Asm::Virtual_Machine
 		attr_accessor :the_Virtual_Machine
 		# get & set the memory index at which the Loader will load machine code into the Virtual_Machine's memory; is an Integer
@@ -105,7 +106,7 @@ module Asm
 		def getLocationFromLoadIndex
 			# if the load index is in an invalid state when this method is called, raise an error
 			if	Asm::Magic::Loader::Load::Index.valid?( self.load_index )
-				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following \'# loc = asm\' invalidate the load index state.' )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following "# loc = asm" invalidate the load index state.' )
 			end
 			# return the Asm::BCPU::Memory::Location corresponding to the load index
 			return	Asm::BCPU::Memory::Location.new( self.load_index )
@@ -116,7 +117,7 @@ module Asm
 		def incrementLoadIndex
 			# if the load index is in an invalid state when this method is called, raise an error
 			if	Asm::Magic::Loader::Load::Index.valid?( self.load_index )
-				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following \'# loc = asm\' invalidate the load index state.' )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following "# loc = asm" invalidate the load index state.' )
 			end
 			self.load_index	+= 1
 			return
@@ -132,8 +133,8 @@ module Asm
 		#
 		# Returns nothing
 		def setLoadIndex( an_integer )
-			if	Asm::Magic::Loader::Load::Index.valid?( an_integer )
-				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid attempt to set load index state; \'' << an_integer << '\' is not a valid index for a memory location.' )
+			if	!Asm::Magic::Loader::Load::Index.valid?( an_integer )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid attempt to set load index state; "' << an_integer.to_s << '" is not a valid index for a memory location.' )
 			else
 				self.load_index	= an_integer
 			end
@@ -142,60 +143,71 @@ module Asm
 		# DOCIT
 		def word_from_register_literal( a_register_literal )
 			# TODO refactor these & merge with other regex constants
-			register_flag	= 'd{,1}'
-			base10_number	= '[+\-]{,1}[0-9]+'
-			register_literal	= '^' << '(?<flag>' << register_flag << ')' << '(?<value>' << base10_number << ')' << '$'
+			#register_flag	= 'd{,1}'
+			#base10_number	= '[+\-]{,1}[0-9]+'
+			#register_literal	= '^' << '(?<flag>' << register_flag << ')' << '(?<value>' << base10_number << ')' << '$'
 			#
-			capture_register_literal	= Regexp.new( register_literal )
+			#capture_register_literal	= ::Asm::Magic::Regexp.create( register_literal )
+			capture_register_literal	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Register::Capture::Flag_Value ) )
 			match_info	= capture_register_literal.match( a_register_literal )
-			raise 'register literal expected from \'' << a_register_literal << '\'' if !match_info
-			Asm::BCPU::Word.new().assign_decimal_String( match_info[value] )
+			raise 'register literal expected from "' << a_register_literal << '"' if !match_info
+			result	= Asm::BCPU::Word.new( )
+			result.assign_decimal_String( match_info[::Asm::Magic::Regexp::String::Names::Value] )
+			return	result
 		end
 		# DOCIT
 		def word_from_numeric_literal( a_numeric_literal )
 			# TODO refactor these & merge with other regex constants
-			binary_flag	= '0[bB]'
-			binary_number	= '[01]+'
-			base10_flag	= 'd{,1}'
-			base10_number	= '[+\-]{,1}[0-9]+'
-			binary_literal	= '^' << '(?<flag>' << binary_flag << ')' << '(?<value>' << binary_number << ')$'
-			decimal_literal	= '^' << '(?<flag>' << decimal_flag << ')' << '(?<value>' << decimal_number << ')$'
+			#binary_flag	= '0[bB]'
+			#binary_number	= '[01]+'
+			#base10_flag	= 'd{,1}'
+			#base10_number	= '[+\-]{,1}[0-9]+'
+			#binary_literal	= '^' << '(?<flag>' << binary_flag << ')' << '(?<value>' << binary_number << ')$'
+			#decimal_literal	= '^' << '(?<flag>' << decimal_flag << ')' << '(?<value>' << decimal_number << ')$'
 			#
-			binary_match_info	= Regexp.new( binary_literal ).match( a_numeric_literal )
-			decimal_match_info	= Regexp.new( decimal_literal ).match( a_numeric_literal )
+			#binary_match_info	= ::Asm::Magic::Regexp.create( binary_literal ).match( a_numeric_literal )
+			binary_match_info	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Capture::Flag_Value ) ).match( a_numeric_literal )
+			#decimal_match_info	= ::Asm::Magic::Regexp.create( decimal_literal ).match( a_numeric_literal )
+			decimal_match_info	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Capture::Flag_Value ) ).match( a_numeric_literal )
 			#
+			result	= Asm::BCPU::Word.new( )
 			if !binary_match_info && decimal_match_info
-				return	Asm::BCPU::Word.new().assign_decimal_String( decimal_match_info[value] )
+				result.assign_decimal_String( decimal_match_info[::Asm::Magic::Regexp::String::Names::Value] )
 			elsif binary_match_info && !decimal_match_info
-				return	Asm::BCPU::Word.new().assign_binary_String( binary_match_info[value] )
+				result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value] )
 			elsif binary_match_info && decimal_match_info
-				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\', but it\'s too ambiguous to tell which'
+				raise 'decimal or binary literal expected from "' << a_numeric_literal << '", but it\'s too ambiguous to tell which'
 			else
-				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\''
+				raise 'decimal or binary literal expected from "' << a_numeric_literal << '"'
 			end
+			return	result
 		end
 		# DOCIT
 		def location_from_numeric_literal( a_numeric_literal )
 			# TODO refactor these & merge with other regex constants
-			binary_flag	= '0[bB]'
-			binary_number	= '[01]+'
-			base10_flag	= 'd{,1}'
-			base10_number	= '[+\-]{,1}[0-9]+'
-			binary_literal	= '^' << '(?<flag>' << binary_flag << ')' << '(?<value>' << binary_number << ')$'
-			decimal_literal	= '^' << '(?<flag>' << decimal_flag << ')' << '(?<value>' << decimal_number << ')$'
+			#binary_flag	= '0[bB]'
+			#binary_number	= '[01]+'
+			#base10_flag	= 'd{,1}'
+			#base10_number	= '[+\-]{,1}[0-9]+'
+			#binary_literal	= '^' << '(?<flag>' << binary_flag << ')' << '(?<value>' << binary_number << ')$'
+			#decimal_literal	= '^' << '(?<flag>' << decimal_flag << ')' << '(?<value>' << decimal_number << ')$'
 			#
-			binary_match_info	= Regexp.new( binary_literal ).match( a_numeric_literal )
-			decimal_match_info	= Regexp.new( decimal_literal ).match( a_numeric_literal )
+			#binary_match_info	= ::Asm::Magic::Regexp.create( binary_literal ).match( a_numeric_literal )
+			#decimal_match_info	= ::Asm::Magic::Regexp.create( decimal_literal ).match( a_numeric_literal )
+			binary_match_info	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Capture::Flag_Value ) ).match( a_numeric_literal )
+			decimal_match_info	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Capture::Flag_Value ) ).match( a_numeric_literal )
 			#
+			result	= Asm::BCPU::Memory::Location.new( )
 			if !binary_match_info && decimal_match_info
-				return	Asm::BCPU::Memory::Location.new().assign_decimal_String( decimal_match_info[value] )
+				result.assign_decimal_String( decimal_match_info[::Asm::Magic::Regexp::String::Names::Value] ,false )
 			elsif binary_match_info && !decimal_match_info
-				return	Asm::BCPU::Memory::Location.new().assign_binary_String( binary_match_info[value] )
+				result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value] )
 			elsif binary_match_info && decimal_match_info
-				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\', but it\'s too ambiguous to tell which'
+				raise 'decimal or binary literal expected from "' << a_numeric_literal << '", but it\'s too ambiguous to tell which'
 			else
-				raise 'decimal or binary literal expected from \'' << a_numeric_literal << '\''
+				raise 'decimal or binary literal expected from "' << a_numeric_literal << '"'
 			end
+			return	result
 		end
 		# maps bits from part of one bitset to part of another; can do range checking on literals for the BCPU
 		#
@@ -212,16 +224,18 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( from_Range ,::Range )
 			Asm::Boilerplate::raise_unless_type( to_Range ,::Range )
 			Asm::Boilerplate::raise_unless_type( from_Word ,::Asm::BCPU::Word )
-			Asm::Boilerplate::raise_unless_type( to_Word ,::Asm::BCPU::Word )
+			if	!to_Word.instance_of?( ::Asm::BCPU::Word ) && !to_Word.instance_of?( ::Asm::BCPU::Memory::Value ) && !to_Word.instance_of?( ::Asm::BCPU::Memory::Location )
+				Asm::Boilerplate::raise_unless_type( to_Word ,::Asm::BCPU::Word )
+			end
 			# paranoid range checking
-			raise ('shenanigans; \'' << (from_Word.the_bits.size - 1) << '\' is not in \''<< from_Range.to_s << '\'') unless from_Range.include?( from_Word.the_bits.size - 1 )
-			raise ('shenanigans; \'' << (to_Word.the_bits.size - 1) << '\' is not in \''<< to_Range.to_s << '\'') unless to_Range.include?( to_Word.the_bits.size - 1 )
-			raise 'invalid mapping' unless	(from_Range.size == to_Range.size)
+			#raise ('shenanigans; \'' << (from_Word.the_bits.size - 1).to_s << '\' is not in \''<< from_Range.to_s << '\'') unless from_Range.include?( from_Word.the_bits.size - 1 )
+			#raise ('shenanigans; \'' << (to_Word.the_bits.size - 1).to_s << '\' is not in \''<< to_Range.to_s << '\'') unless to_Range.include?( to_Word.the_bits.size - 1 )
+			raise 'invalid mapping' unless	((from_Range.last - from_Range.first) == (to_Range.last - to_Range.first))
 			# BCPU range checking
 			if bCPU_range_checking
 				(0..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |from_index|
-					if !(from_Range.include?( from_index )) && (from_Word.the_bits[from_index] == false )
-						raise Asm::Boilerplate::Exception::Syntax.new( 'literal translates to binary value outside of supported range.' )
+					if !(from_Range.include?( from_index )) && (from_Word.the_bits[from_index] == true )
+						raise Asm::Boilerplate::Exception::Syntax.new( "literal translates to binary value, '" << from_Word.to_s << "' outside of supported range, '" << from_Range.to_s << "'; first invalid value is at index " << from_index.to_s << '.' )
 					end
 				end
 			end
@@ -248,21 +262,30 @@ module Asm
 				# parse individually each line in the file
 				code.each_line do |line|
 					line_count += 1
+#					self.handle( line )
+#=begin
 					begin
 						self.handle( line )
 					rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
-						messages.push 'syntax error on line' << line_count << ': \"' << a_syntax_error.message << '\"'
-					else
-						an_error # TODO verify if this is appropriate or if this needs to be rescue Exception => ...
-						messages.push 'unexpected error on line' << line_count << ': \"' << an_error.message << '\"'
+						messages.push 'syntax error on line' << line_count.to_s << ": \"" << a_syntax_error.message << "\""
+					rescue ::Exception => an_error
+						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\""
+					rescue ::String => an_error
+						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\""
+					#else
+						#raise 'wrgiajeprohijaperohjoe'
+					#	messages.push 'totally unexpected error on line' << line_count.to_s << ': whatever happened, it was not good.'
 					end
+					messages.push 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
+#=end
 				end
 			else
 				messages.push '\'' << path << '\' is not a file.'
 			end
 			messages
 		end
-	private
+	#private
+	public
 =begin	dispatched messages based on the given line of text.
 		* messages dispatching based on the given line of text.
 		* dispatched messages based on the given line of text.
@@ -273,48 +296,41 @@ module Asm
 		#
 		# Returns nothing
 		def handle( line_of_text )
-			# check if 'keyword RD RA' instruction format consumes line
-			# dispatch with information from named captures
-			if capture = format0RegEx.match(line_of_text)
-				instruction_format__keyword_RD_RA( capture['keyword'], capture['registry dest'], capture['registry a'] )
-				
+			#if capture = format0RegEx.match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
+			if capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA ).match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
+				# dispatch with information from named captures
+				self.instruction_format__keyword_RD_RA( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Register::A] )
 			# check if 'keyword RD RA RB' instruction format consumes line
-			# dispatch with information from named captures
-			elsif capture = format1RegEx.match(line_of_text)
-				instruction_format__keyword_RD_RA_RB( capture['keyword'], capture['registry dest'], capture['registry a'], capture['registry b'] )
-			
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_RB ).match(line_of_text)
+				# dispatch with information from named captures
+				self.instruction_format__keyword_RD_RA_RB( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Register::A], capture[::Asm::Magic::Regexp::String::Names::Register::B] )
 			# check if 'keyword RD RA literal' instruction format consumes line
-			# dispatch with information from named captures
-			elsif capture = format2RegEx.match(line_of_text)
-				instruction_format__keyword_RD_RA_literal( capture['keyword'], capture['registry dest'], capture['registry a'], capture['literal'])
-			
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_data ).match(line_of_text)
+				# dispatch with information from named captures
+				self.instruction_format__keyword_RD_RA_literal( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Register::A], capture['literal'])
 			# check if 'keyword RD literal' instruction format consumes line
-			# dispatch with information from named captures
-			elsif capture = format3RegEx.match(line_of_text)
-				instruction_format__keyword_RD_literal( capture['keyword'], capture['registry dest'], capture['literal'])
-			
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data ).match(line_of_text)
+				# dispatch with information from named captures
+				self.instruction_format__keyword_RD_literal( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Numeric::Literal])
 			# check if 'keyword RD literal RA' instruction format consumes line
-			# dispatch with information from named captures
-			elsif capture = format4RegEx.match(line_of_text)
-				instruction_format__keyword_RD_literal_RA( capture['keyword'], capture['registry dest'], capture['literal'], capture['registry a'])
-			
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data_RB ).match(line_of_text)
+				# dispatch with information from named captures
+				self.instruction_format__keyword_RD_literal_RA( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Numeric::Literal], capture[::Asm::Magic::Regexp::String::Names::Register::B])
 			# check if '# memory_location_literal = memory_value_literal' directive consumes line
-			# dispatch with information from named captures
-			elsif capture = dev0RegEx.match(line_of_text)
-				directive__memory_value(capture['memory literal'], capture['literal'])
-			
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Directive::Format::Assignment ).match(line_of_text)
+				# dispatch with information from named captures
+				self.directive__memory_value(capture[::Asm::Magic::Regexp::String::Names::Directive::LHS], capture[::Asm::Magic::Regexp::String::Names::Directive::RHS])
 			# check if '# memory_location_literal = asm' directive consumes line
-			# dispatch with information from named captures
-			elsif capture = dev1RegEx.match(line_of_text)
-				directive__asm( capture['memory literal'] )
-			
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Directive::Format::Asm ).match(line_of_text)
+				# dispatch with information from named captures
+				self.directive__asm( capture[::Asm::Magic::Regexp::String::Names::Directive::LHS] )
 			# check if '//' format consumes line
-			# ignore by doing nothing
-			elsif capture = commentRegEx.match(line_of_text)
-
-			elsif capture = whiteRegEx.match(line_of_text)
-			
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Comment ).match(line_of_text)
+				# ignore by doing nothing
+			elsif capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Blank ).match(line_of_text)
+				# ignore by doing nothing
 			else
+				# syntax error
 				raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
 			end
 			return
@@ -325,43 +341,55 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( keyword ,::String )
+			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
+			Asm::Boilerplate::raise_unless_type( reg_a ,::String )
+			Asm::Boilerplate::raise_unless_type( reg_b ,::String )
+			#
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordRB = self.word_from_register_literal(reg_b)
 			value = Asm::BPCU::Memory::Value.new
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordRB ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
+			#
 			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
 			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
 			self.map_bits_to_bits( 0..3, wordRB, 0..3, value)
 			
 			if keyword == 'AND'
-				value.the_bits[13] = True
+				value.the_bits[13] = true
 			elsif keyword == 'OR'
-				value.the_bits[12] = True
-				value.the_bits[13] = True
+				value.the_bits[12] = true
+				value.the_bits[13] = true
 			elsif keyword == 'ADD'
-				value.the_bits[14] = True
+				value.the_bits[14] = true
 			elsif keyword == 'SUB'
-				value.the_bits[14] = True
-				value.the_bits[12] = True
+				value.the_bits[14] = true
+				value.the_bits[12] = true
 			elsif keyword == 'MOVEZ'
-				value.the_bits[15] = True
-				value.the_bits[14] = True
+				value.the_bits[15] = true
+				value.the_bits[14] = true
 			elsif keyword == 'MOVEX'
-				value.the_bits[15] = True
-				value.the_bits[14] = True
-				value.the_bits[12] = True
+				value.the_bits[15] = true
+				value.the_bits[14] = true
+				value.the_bits[12] = true
 			elsif keyword == 'MOVEP'
-				value.the_bits[15] = True
-				value.the_bits[14] = True
-				value.the_bits[13] = True
+				value.the_bits[15] = true
+				value.the_bits[14] = true
+				value.the_bits[13] = true
 			elsif keyword == 'MOVEN'
-				value.the_bits[15] = True
-				value.the_bits[14] = True
-				value.the_bits[13] = True
-				value.the_bits[12] = True
+				value.the_bits[15] = true
+				value.the_bits[14] = true
+				value.the_bits[13] = true
+				value.the_bits[12] = true
 			else
-				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognized operation' )
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
@@ -374,17 +402,27 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA( keyword ,dest_reg ,reg_a )
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( keyword ,::String )
+			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
+			Asm::Boilerplate::raise_unless_type( reg_a ,::String )
+			#
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			value = Asm::BPCU::Memory::Value.new
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
+			#
 			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
 			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
 			
 			if keyword == 'MOVE'
 				#Nothing to do, Opcode: 0000
 			elsif keyword == 'NOT'
-				value.the_bits[12] = True
+				value.the_bits[12] = true
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
@@ -399,22 +437,34 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_literal( keyword ,dest_reg ,reg_a ,literal )
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( keyword ,::String )
+			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
+			Asm::Boilerplate::raise_unless_type( literal ,::String )
+			Asm::Boilerplate::raise_unless_type( reg_a ,::String )
+			#
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordLit = self.word_from_numeric_literal(literal)
 			value = Asm::BPCU::Memory::Value.new
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
+			#
 			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
 			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
 			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
 			
 			if keyword == 'ADDI'
-				value.the_bits[13] = True
-				value.the_bits[14] = True
+				value.the_bits[13] = true
+				value.the_bits[14] = true
 			elsif keyword == 'SUBI'
-				value.the_bits[13] = True
-				value.the_bits[14] = True
-				value.the_bits[12] = True
+				value.the_bits[13] = true
+				value.the_bits[14] = true
+				value.the_bits[12] = true
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
@@ -429,22 +479,34 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_literal_RA( keyword ,dest_reg ,literal ,reg_a )
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( keyword ,::String )
+			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
+			Asm::Boilerplate::raise_unless_type( literal ,::String )
+			Asm::Boilerplate::raise_unless_type( reg_a ,::String )
+			#
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordLit = self.word_from_numeric_literal(literal)
 			value = Asm::BPCU::Memory::Value.new
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
+			#
 			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
 			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
 			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
 			
 			if keyword == 'INCIZ'
-				value.the_bits[13] = True
-				value.the_bits[14] = True
+				value.the_bits[13] = true
+				value.the_bits[14] = true
 			elsif keyword == 'DECIN'
-				value.the_bits[13] = True
-				value.the_bits[14] = True
-				value.the_bits[12] = True
+				value.the_bits[13] = true
+				value.the_bits[14] = true
+				value.the_bits[12] = true
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
@@ -458,20 +520,30 @@ module Asm
 		# DOCIT
 		# # Returns nothing
 		def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( keyword ,::String )
+			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
+			Asm::Boilerplate::raise_unless_type( literal ,::String )
+			#
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordLit = self.word_from_numeric_literal(literal)
-			value = Asm::BPCU::Memory::Value.new
+			value = Asm::BCPU::Memory::Value.new
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
+			#
 			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
-			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
+			self.map_bits_to_bits( 0..7, wordLit, 0..7, value)
 			
 			if keyword == 'SET'
-				value.the_bits[13] = True
-				value.the_bits[14] = True
+				value.the_bits[13] = true
+				value.the_bits[14] = true
 			elsif keyword == 'SETH'
-				value.the_bits[13] = True
-				value.the_bits[14] = True
-				value.the_bits[12] = True
+				value.the_bits[13] = true
+				value.the_bits[14] = true
+				value.the_bits[12] = true
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
@@ -486,9 +558,13 @@ module Asm
 		#
 		# Returns nothing
 		def directive__memory_value( memory_location_literal ,memory_value_literal )
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( memory_location_literal ,::String )
+			Asm::Boilerplate::raise_unless_type( memory_value_literal ,::String )
+			#
 			location = self.location_from_numeric_literal(memory_location_literal)
-			wordLit = self.word_from_numeric_literal(memory_value_literal)
-			value = Asm::BPCU::Memory::Value.new(wordLit.the_bits)
+			wordLit = self.word_from_numeric_literal( memory_value_literal )
+			value = Asm::BCPU::Memory::Value.new( wordLit.the_bits )
 			
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
@@ -499,6 +575,9 @@ module Asm
 		#
 		# Returns nothing
 		def directive__asm( memory_location_literal )
+			# Paranoid type checking
+			Asm::Boilerplate::raise_unless_type( memory_location_literal ,::String )
+			#
 			location = self.location_from_numeric_literal(memory_location_literal)
 			self.setLoadIndex(location.to_i)
 			return

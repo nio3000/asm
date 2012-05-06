@@ -5,6 +5,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib') unless $LOAD_PATH.include
 # this file instantiates an Application instance & does the stuff
 require	'Asm/require_all.rb'
 
-the_app	= Asm::Application.new( ).main_loop( )
+Asm::Application.new( ).main_loop( )
 
 # encoding: UTF-8

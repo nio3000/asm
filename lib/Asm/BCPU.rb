@@ -27,7 +27,7 @@ module Asm::BCPU
 		* see the repo for Bitset for details & methods available if you need to get at indivudal bits in the Bitset
 =end
 		# get @the_bits
-		attr_writer :the_bits
+		attr_accessor :the_bits
 		# initializing constructor, implicitly default constructor
 		# argument - see Asm::BCPU::Word::assign for restrictions
 		# force_twos_complement - see Asm::BCPU::Word::assign for usage
@@ -57,12 +57,12 @@ module Asm::BCPU
 			elsif an_Object.instance_of?( ::String )
 				self.assign_String( an_Object ,force_twos_complement )
 			# TODO double check that this catches all integer compatible types
-			elsif an_Object.integer?	#an_Object.instance_of?( ::Integer )
-				self.assign_integer( an_Object ,force_twos_complement )
 			elsif an_Object.instance_of?( ::Bitset )
 				self.assign_Bitset( an_Object )
 			elsif an_Object.instance_of?( ::Asm::BCPU::Word )
 				self.assign_BCPU_Word( an_Object )
+			elsif an_Object.integer?	#an_Object.instance_of?( ::Integer )
+				self.assign_integer( an_Object ,force_twos_complement )
 			else
 				raise 'Waku waku!'
 			end
@@ -221,15 +221,17 @@ module Asm::BCPU
 		def to_i( force_twos_complement = true )
 			result	= 0
 			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
-				result += @the_bits[index] * ( 2 ** index )
+				result += (@the_bits[index]) ? (1) : ( 0 ) * ( 2 ** index )
 			end
 			if force_twos_complement
 				result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result
-				assert( result < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
-				assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
+				Asm::Magic::Binary::Twos_Complement.assert_valid( result )
+				#assert( result < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
+				#assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
 			else
-				assert( result < Asm::Magic::Binary::Unsigned::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
-				assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
+				Asm::Magic::Binary::Unsigned.assert_valid( result )
+				#assert( result < Asm::Magic::Binary::Unsigned::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
+				#assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
 			end
 			result
 		end
