@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
+#$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
 
 =begin
 # /lib/Asm/require_all.rb
@@ -7,7 +7,12 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.incl
 	* no, don't bother just requiring the individual files you think you need.
 =end
 
-# test and assertion functionality
+# 3rd party dependencies
+require 'bitset'
+require 'minitest/unit'
+# 	TODO I'm not 100% sure whether or why the include statement is suggested in 'http://rubyonwindows.blogspot.com/2007/11/getting-started-with-wxruby-gui-toolkit.html'
+require 'wx'
+include Wx
 require 'test/unit/assertions'
 module Asm
 	class Tests
@@ -26,7 +31,6 @@ require 'Asm/Loader.rb'
 require 'Asm/Virtual_Machine.rb'
 
 # application specific functionality
-require 'Asm/Program_Options.rb'
 require 'Asm/Application.rb'
 
 # encoding: UTF-8
