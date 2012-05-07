@@ -12,6 +12,12 @@ module Asm
 	# Asm::Boilerplate
 =end
 	module Asm::Boilerplate
+		# DOCIT
+		# strings got padded, this is a hotfix
+		def	self.pads!( a_Range )
+			offset	= (::Asm::Magic::Memory::Bits_per::Word - 1)
+			return	(offset - a_Range.last)..(offset - a_Range.first)
+		end
 		# paranoid typechecking boilerplate
 		#
 		# argument - an object whose type is being checked

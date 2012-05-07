@@ -153,8 +153,8 @@ module Asm::BCPU
 			Asm::Boilerplate.raise_unless_type( a_String ,String )
 			# pure binary string checking
 			Asm::Magic::Binary::String.assert_valid( a_String )
-			# convert to Bitset; this may or may not be the appropriate length, but dispatch will correct for that
-			a_Bitset	= Bitset.from_s( a_String )
+			# convert to Bitset
+			a_Bitset	= Bitset.from_s( a_String.rjust( ::Asm::Magic::Memory::Bits_per::Word ,'0' ) )
 			# dispatch to new method
 			self.assign_Bitset( a_Bitset )
 		end
@@ -191,15 +191,16 @@ module Asm::BCPU
 		def bitwise_OR!( an_Object )	# TODO verify this preserves size
 			# switch case on type; fuck duck typing.
 			if an_Object.instance_of?( ::Asm::BCPU::Word )
-				@the_bits | an_Object.the_bits	# non broken usage case; Bitset instances are same size
+				@the_bits	= @the_bits | an_Object.the_bits	# non broken usage case; Bitset instances are same size
 			elsif an_Object.instance_of?( ::Bitset )
 				if an_Object.size < @the_bits.size
-					#raise 'implementation fault: Bitset\'s | operation is broken in the case you tried to use it in; ask for a workaround asap.'
+					raise 'implementation fault: Bitset\'s | operation is broken in the case you tried to use it in; ask for a workaround asap.'
 					for index in (0..an_Object.size - 1)
+						# TODO this code needs adjustment maybe?, but other code should be avoiding this section now. . .maybe
 						@the_bits[index]	= @the_bits[index] |  an_Object[index]
 					end
 				else
-					@the_bits | an_Object
+					@the_bits	= @the_bits | an_Object
 				end
 			else
 				raise 'Ojou-sama, that is inappropriate.'
@@ -220,8 +221,10 @@ module Asm::BCPU
 		# Returns Integer
 		def to_i( force_twos_complement = true )
 			result	= 0
+			a_String	= @the_bits.to_s
 			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
-				result += (@the_bits[index]) ? (1) : ( 0 ) * ( 2 ** index )
+				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
+				result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
 			if force_twos_complement
 				result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result
@@ -230,6 +233,7 @@ module Asm::BCPU
 				#assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
 			else
 				Asm::Magic::Binary::Unsigned.assert_valid( result )
+				raise 'shenanigans' << @the_bits.to_s.to_i( 2 ).to_s << '==' << result.to_s unless @the_bits.to_s.to_i( 2 ) == result
 				#assert( result < Asm::Magic::Binary::Unsigned::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
 				#assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
 			end
@@ -297,7 +301,7 @@ module Asm::BCPU
 			rescue
 			else
 				self.assign( 0 )
-				raise Asm::Boilerplate::Exception::Overflow.new( 'arithmetic failed; \'0\' assigned as result of arithmetic operation.' )
+				raise Asm::Boilerplate::Exception::Overflow.new( "arithmetic failed; '0' assigned as result of arithmetic operation." )
 			end
 			return
 		end

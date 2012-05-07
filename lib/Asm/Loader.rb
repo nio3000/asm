@@ -105,7 +105,7 @@ module Asm
 		# Returns the load index interpretted as an instance of Asm::BCPU::Memory::Location
 		def getLocationFromLoadIndex
 			# if the load index is in an invalid state when this method is called, raise an error
-			if	Asm::Magic::Loader::Load::Index.valid?( self.load_index )
+			if	!Asm::Magic::Loader::Load::Index.valid?( self.load_index )
 				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following "# loc = asm" invalidate the load index state.' )
 			end
 			# return the Asm::BCPU::Memory::Location corresponding to the load index
@@ -116,7 +116,7 @@ module Asm
 		# Returns nothing
 		def incrementLoadIndex
 			# if the load index is in an invalid state when this method is called, raise an error
-			if	Asm::Magic::Loader::Load::Index.valid?( self.load_index )
+			if	!Asm::Magic::Loader::Load::Index.valid?( self.load_index )
 				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following "# loc = asm" invalidate the load index state.' )
 			end
 			self.load_index	+= 1
@@ -268,6 +268,8 @@ module Asm
 						self.handle( line )
 					rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
 						messages.push 'syntax error on line' << line_count.to_s << ": \"" << a_syntax_error.message << "\""
+					rescue Asm::Boilerplate::Exception::Overflow => an_overflow_error
+						messages.push 'overflow error on line' << line_count.to_s << ": \"" << an_overflow_error.message << "\""
 					rescue ::Exception => an_error
 						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\""
 					rescue ::String => an_error
@@ -276,7 +278,7 @@ module Asm
 						#raise 'wrgiajeprohijaperohjoe'
 					#	messages.push 'totally unexpected error on line' << line_count.to_s << ': whatever happened, it was not good.'
 					end
-					messages.push 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
+					#messages.push 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
 #=end
 				end
 			else
@@ -358,9 +360,9 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordRB ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
 			#
-			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
-			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
-			self.map_bits_to_bits( 0..3, wordRB, 0..3, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRB, 0..3, value)
 			
 			if keyword == 'AND'
 				value.the_bits[13] = true
@@ -416,8 +418,8 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
 			#
-			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
-			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
 			
 			if keyword == 'MOVE'
 				#Nothing to do, Opcode: 0000
@@ -454,9 +456,9 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
 			#
-			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
-			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
-			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 4..7, value)
 			
 			if keyword == 'ADDI'
 				value.the_bits[13] = true
@@ -496,9 +498,9 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
 			#
-			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
-			self.map_bits_to_bits( 0..3, wordRA, 4..7, value)
-			self.map_bits_to_bits( 0..3, wordLit, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 4..7, value)
 			
 			if keyword == 'INCIZ'
 				value.the_bits[13] = true
@@ -534,8 +536,9 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
 			#
-			self.map_bits_to_bits( 0..3, wordRD, 8..11, value)
-			self.map_bits_to_bits( 0..7, wordLit, 0..7, value)
+			strings_got_padded	= ::Asm::Magic::Memory::Bits_per::Word - 1 # it's a hotfix offset
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..7 ), wordLit, 0..7, value)
 			
 			if keyword == 'SET'
 				value.the_bits[13] = true
@@ -579,7 +582,7 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( memory_location_literal ,::String )
 			#
 			location = self.location_from_numeric_literal(memory_location_literal)
-			self.setLoadIndex(location.to_i)
+			self.setLoadIndex( location.to_i )
 			return
 		end
 =begin
