@@ -24,6 +24,7 @@ module Asm
 				Word	    = 16	 # one word's worth of bits is the number of bits associated with a memory location or memory value
 				Halfword	= 8
 				Quarterword	= 4
+				Byte	= 8
 			end
 =begin
 		# Asm::Magic::Memory::Index
