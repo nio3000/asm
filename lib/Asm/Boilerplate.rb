@@ -12,6 +12,25 @@ module Asm
 	# Asm::Boilerplate
 =end
 	module Asm::Boilerplate
+		module Machine
+			module Code
+				# DOCIT
+				def self.get_OPcode_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_RD_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_RA_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_RB_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_value_from_bit_range( a_Memory_Value )
+				end
+			end
+		end
 		# DOCIT
 		def	self.get_sign_bit_as_String( an_Integer )
 			# Paranoid type checking
@@ -31,8 +50,10 @@ module Asm
 			raise "you passed a noninteger to Asm::Boilerplate.get_twos_complement_bits_as_String; don't do that!" unless  an_Integer.integer?
 			if	an_Integer.instance_of? ::Fixnum
 				a_binary_String	= ''
+				
 				(0..(::Asm::Magic::Memory::Bits_per::Word - 1 - 1)).each do |index|
-					a_binary_String << an_Integer[index].to_s( 2 )
+					#a_binary_String << an_Integer[index].to_s( 2 )
+					a_binary_String	= an_Integer[index].to_s( 2 ) << a_binary_String
 				end
 				raise 'shenanigans and sharnigans!' unless ( a_binary_String.size == a_binary_String.count('01') )
 				return	a_binary_String

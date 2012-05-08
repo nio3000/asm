@@ -53,8 +53,10 @@ module Asm
 		end
 		# DOCIT
 		def advance( steps )
-			# TODO implement
-			# call advance_once number_of_times
+			#i = 0
+			#while ( i < steps)
+			#	
+			#end
 		end
 	private
 =begin	execute simulated BCPU execution
@@ -141,7 +143,7 @@ module Asm
 			if self.get_memory_value( reg_b ).to_i == 0
 				self.move( dest_reg ,reg_a )
 			else
-				self.increment_program_counter
+				self.increment_program_counter( dest_reg )
 			end
 		end
 
@@ -150,7 +152,7 @@ module Asm
 			if self.get_memory_value( reg_b ).to_i != 0
 				self.move( dest_reg ,reg_a )
 			else
-				self.increment_program_counter
+				self.increment_program_counter( dest_reg )
 			end
 		end
 
@@ -159,7 +161,7 @@ module Asm
 			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 0
 				self.move( dest_reg ,reg_a )
 			else
-				self.increment_program_counter
+				self.increment_program_counter( dest_reg )
 			end
 		end
 
@@ -168,15 +170,15 @@ module Asm
 			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 1
 				self.move( dest_reg ,reg_a )
 			else
-				self.increment_program_counter
+				self.increment_program_counter( dest_reg )
 			end
 		end
 		# R15 <- R15 + 1
 		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
-			unless	( dest_reg.equals?( Asm::Magic::Register::Location::program_counter ) && dest_reg_altered )
-				lhs = self.get_memory_value( Asm::Magic::Register::Location::program_counter )
+			unless	( dest_reg.equals?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
+				lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 				lhs.add!( Asm::BCPU::Word.new( an_Integer ) )
-				self.set_location_to_value( Asm::Magic::Register::Location::program_counter ,lhs )
+				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,lhs )
 			end
 		end
 	public
