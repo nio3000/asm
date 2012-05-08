@@ -152,7 +152,7 @@ module Asm
 			match_info	= capture_register_literal.match( a_register_literal )
 			raise 'register literal expected from "' << a_register_literal << '"' if !match_info
 			result	= Asm::BCPU::Word.new( )
-			result.assign_decimal_String( match_info[::Asm::Magic::Regexp::String::Names::Value] )
+			result.assign_decimal_String( match_info[::Asm::Magic::Regexp::String::Names::Value] ,false )
 			return	result
 		end
 		# DOCIT
