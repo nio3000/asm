@@ -27,7 +27,7 @@ module Asm
 				def self.get_RB_location( a_Memory_Value )
 				end
 				# DOCIT
-				def self.get_value_from_bit_range( a_Memory_Value )
+				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
 				end
 			end
 		end
