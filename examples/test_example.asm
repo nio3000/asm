@@ -16,7 +16,7 @@ NOT R3, R1
 //R4 <-- R0 bitwise AND R2, R0 = 0, R2 = 5 or 0b101, R4 = 0 
 AND R4, R0, R2
 
-//R4 <-- R0 bitwise AND R2, R0 = 0, R2 = 5 or 0b101, R4 = 0b101 
+//R4 <-- R0 bitwise AND R2, R0 = 0, R2 = 5 or 0b101, R4 = 0b101
 OR R4, R0, R2
 
 //R6 <-- R4 + R5, R6 = 0b101

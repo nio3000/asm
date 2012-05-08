@@ -277,7 +277,7 @@ module Asm
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordRB = self.word_from_register_literal(reg_b)
-			value = Asm::BPCU::Memory::Value.new
+			value = Asm::BCPU::Memory::Value.new
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
@@ -336,7 +336,7 @@ module Asm
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
-			value = Asm::BPCU::Memory::Value.new
+			value = Asm::BCPU::Memory::Value.new
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
@@ -373,7 +373,7 @@ module Asm
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordLit = self.word_from_numeric_literal(literal)
-			value = Asm::BPCU::Memory::Value.new
+			value = Asm::BCPU::Memory::Value.new
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
@@ -415,7 +415,7 @@ module Asm
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordLit = self.word_from_numeric_literal(literal)
-			value = Asm::BPCU::Memory::Value.new
+			value = Asm::BCPU::Memory::Value.new
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
