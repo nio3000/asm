@@ -81,11 +81,13 @@ module Asm
 			end
 			# 	* output registers
 			if	( true )
+				description	= ''
 				::Asm::Magic::Register::Indicies::Output_registers.each do |index|
 					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Output_register )
+					description << 'R' << index.to_s
 				end
-				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::PC ).change_value( 'R' << ::Asm::Magic::Register::Index::Program_counter )
-				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::PC ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_counter )
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::Output ).change_value( description )
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::Output ).set_background_colour( ::Asm::Magic::GUI::Colour::Output_register )
 			end
 			# 	* program counter register
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[::Asm::Magic::Register::Index::Program_counter] ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_counter )
@@ -108,12 +110,12 @@ module Asm
 		# DOCIT
 		def process_memory_entry( a_memory_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
-			return	'A' << a_memory_index << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ) << '; d' << temp.to_i( false ) << '; "' << ::Asm::Magic::ISA::machine_code_to_String( a_raw_memory_value ) << '"'
+			return	'A' << a_memory_index << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s << '; "' << ::Asm::Magic::ISA::machine_code_to_String( a_raw_memory_value ) << '"'
 		end
 		# DOCIT
 		def process_register_entry( a_register_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
-			return	'R' << a_register_index << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ) << '; d' << temp.to_i( false )
+			return	'R' << a_register_index << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s
 		end
 		# DOCIT
 		def update_VM_display( force_program_counter_visible = true )
