@@ -413,17 +413,17 @@ module Asm
 			#
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
-			wordRA = self.word_from_register_literal(reg_a)
+			wordRB = self.word_from_register_literal(reg_a)
 			wordLit = self.word_from_numeric_literal(literal)
 			value = Asm::BCPU::Memory::Value.new
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
-			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
+			Asm::Boilerplate::raise_unless_type( wordRB ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
 			#
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
-			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRB, 0..3, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 4..7, value)
 			
 			if keyword == 'INCIZ'
