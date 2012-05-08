@@ -6,6 +6,26 @@ require 'optparse'
 require	'Asm/require_all_cli.rb'
 
 module Asm
+	
+	#
+	#
+	# Print all Register locations and their values to cli
+	def self.printAllRegs( v_machine, loader )
+		i = 0
+		while i < 16
+			self.printReg("r" + i.to_s, v_machine, loader)
+			i = i + 1
+		end
+	end
+	
+	#
+	#
+	# prints Register location  and Register value to cli
+	def self.printReg(register_literal, v_machine, loader)
+		location = Asm::BCPU::Memory::Location.new(loader.word_from_register_literal( register_literal ).the_bits)
+		puts("Register: " + location.to_s + " -> " + v_machine.get_memory_value(location).to_s)
+	end
+	
 	def self.on_init()
 		puts("Enter in the file you wish to run: ")
 		a_file_path = gets.chomp
@@ -22,6 +42,26 @@ module Asm
 		}
 		the_processed_message << the_Tohru_Honda.to_s << ' messages caught during loading attempt.' << "\n"	# will give output even if no messages arise.
 		puts(the_processed_message)
+		
+		run = true
+		while (run)
+			command = gets.chomp
+			
+			if command == "s"
+				the_BCPU.advance_once
+				
+			elsif command == "r"
+				#run
+				
+			elsif command == "x"
+				run = false
+				
+			else
+				puts("command " + command + " was not recognize by cli")
+			end
+			
+			printAllRegs(the_BCPU, the_Loader)
+		end
 	end
 end
 
