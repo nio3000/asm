@@ -358,6 +358,11 @@ module Asm
 		* constants involved in the GUI
 =end
 		module GUI
+			module Magic
+				module Memory
+					Window_size = 8
+				end
+			end
 			module Names
 				Xrc_file	= 'lib/Asm/gui.xrc'
 				Top_level	= 'Main_frame'
@@ -369,7 +374,7 @@ module Asm
 				module VM
 					Frame	= 'VM_frame'
 					module State
-						Memories = ((0..::Asm::Magic::GUI::Magic::Memory::Maximum).to_a).map! { |k| "VM_memory_Ai" + k.to_s }
+						Memories = ((0..::Asm::Magic::GUI::Magic::Memory::Window_size).to_a).map! { |k| "VM_memory_Ai" + k.to_s }
 						Registers = ((0..::Asm::Magic::Register::Index::Inclusive::Maximum).to_a).map! { |k| "VM_registers_R" + k.to_s }
 					end
 					module Control
@@ -392,11 +397,6 @@ module Asm
 						Input  = 'VM_special_registers_input'
 						Output = 'VM_special_registers_output'
 					end
-				end
-			end
-			module Magic
-				module Memory
-					Window_size = 8
 				end
 			end
 		end
