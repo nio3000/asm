@@ -40,7 +40,7 @@ module Asm
 			# return the Asm::BCPU::Memory::Location corresponding to the load index
 			return	Asm::BCPU::Memory::Location.new( self.load_index )
 		end
-		# Increment the load index OR 
+		# Increment the load index OR
 		# raise error if load index is a invalid value
 		# Returns nothing
 		def incrementLoadIndex
@@ -146,7 +146,7 @@ module Asm
 		# to_Range - the range of integer indicies in the destination Bitset
 		# to_Word - the destination Bitset; does get modified by this method
 		#
-		# Raises if from_Bitset is nonzero outside of from_Range and if BCPU_range_checking is true 
+		# Raises if from_Bitset is nonzero outside of from_Range and if BCPU_range_checking is true
 		# Raises if the range's don't match up in cardinality
 		# Returns nothing
 		def map_bits_to_bits( from_Range ,from_Word ,to_Range ,to_Word ,bCPU_range_checking = true )
@@ -356,7 +356,7 @@ module Asm
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRB, 0..3, value)
-			
+
 			if keyword == 'AND'
 				value.the_bits[13] = true
 			elsif keyword == 'OR'
@@ -413,7 +413,7 @@ module Asm
 			#
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
-			
+
 			if keyword == 'MOVE'
 				#Nothing to do, Opcode: 0000
 			elsif keyword == 'NOT'
@@ -437,7 +437,7 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
 			Asm::Boilerplate::raise_unless_type( literal ,::String )
 			Asm::Boilerplate::raise_unless_type( reg_a ,::String )
-			#
+
 			keyword.upcase!
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
@@ -452,7 +452,7 @@ module Asm
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 4..7, value)
-			
+
 			if keyword == 'ADDI'
 				value.the_bits[13] = true
 				value.the_bits[14] = true
@@ -494,7 +494,7 @@ module Asm
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRB, 0..3, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 4..7, value)
-			
+
 			if keyword == 'INCIZ'
 				value.the_bits[13] = true
 				value.the_bits[14] = true
@@ -559,7 +559,7 @@ module Asm
 			location = self.location_from_numeric_literal(memory_location_literal)
 			wordLit = self.word_from_numeric_literal( memory_value_literal )
 			value = Asm::BCPU::Memory::Value.new( wordLit.the_bits )
-			
+
 			puts 'location.to_s="' << location.to_s << '"; value.to_s="' << value.to_s << '";' # confirmed that location and value have the correct content.
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
