@@ -55,19 +55,15 @@ module Asm
 			#		Control
 			#			advance n
 			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Button ) ) { |event| self.handle_advance_n( event ) }	# Process a EVT_COMMAND_BUTTON_CLICKED event,when the button is clicked.
-			# TODO this callback
-			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_advance_n)
 			#			advance, delay, repeat
-			# TODO these callbacks; go, stop
-			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_run_forever)
-			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_stop_eternity)
+			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Button ) ) { |event| self.handle_go_stop_button( event ) }
 			#		Register
 			#		Memory
 			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display }
 			evt_spinctrl( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display }
-			# TODO these callbacks; scroll up, scroll down, changed lower bound, changed upper bound
-			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_???)
 			# set features of the GUI
+			# * set allowed range on ::Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter
+			@main_GUI_sheet.find_window_by_name( ::Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).set_range( 1 ,60 * 10 )
 			# * set allowed range on Advance::N::Counter
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Counter ).set_range( Asm::Magic::Memory::Index::Inclusive::Minimum ,Asm::Magic::Memory::Index::Inclusive::Maximum )
 			# * set background colours of registers & declare special registers
@@ -76,15 +72,21 @@ module Asm
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Default )
 			end
 			# 	* input registers
-			::Asm::Magic::Register::Indicies::Input_registers.each do |index|
-				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Input_register )
+			if	( true )
+				description	= ''
+				::Asm::Magic::Register::Indicies::Input_registers.each do |index|
+					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Input_register )
+					description << 'R' << index.to_s << ' '
+				end
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::Input ).change_value( description )
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::Input ).set_background_colour( ::Asm::Magic::GUI::Colour::Input_register )
 			end
 			# 	* output registers
 			if	( true )
 				description	= ''
 				::Asm::Magic::Register::Indicies::Output_registers.each do |index|
 					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Output_register )
-					description << 'R' << index.to_s
+					description << 'R' << index.to_s << ' '
 				end
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::Output ).change_value( description )
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::Output ).set_background_colour( ::Asm::Magic::GUI::Colour::Output_register )
@@ -93,17 +95,9 @@ module Asm
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[::Asm::Magic::Register::Index::Program_counter] ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_counter )
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::PC ).change_value( 'R' << ::Asm::Magic::Register::Index::Program_counter )
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::PC ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_counter )
-			#Asm::Magic::GUI::Magic::Memory::Window_Size
 			# show the GUI
 			@main_GUI_sheet.show(true)
 		end
-		# WxRuby callback, no need to register; program start
-		#def on_run
-		#	super
-		#	rescue Exception => e
-		#	puts e.message
-		#	retry
-		#end
 =begin	Wx callbacks
 		* need to be instance methods evidently; not 100% sure why, but at least they get access to @main_GUI_sheet
 =end
