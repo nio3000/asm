@@ -430,6 +430,7 @@ module Asm
 		* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
 =end
 		module ISA
+			# TODO: Abandoned
 			class Instruction
 				def initialize( )
 					@opcode	= -1
@@ -439,7 +440,6 @@ module Asm
 				end
 
 				def opcode_as_binary_String
-					# TODO implement
 				end
 				def keyword_as_String
 					@text
@@ -476,24 +476,6 @@ module Asm
 					MOVEX = 13
 					MOVEP = 14
 					MOVEN = 15
-
-					# instructions and their 4 bit binary codes
-					instructions = {'move'  => "%04d" % MOVE.to_s(2),
-									'not'   => "%04d" % NOT.to_s(2),
-									'and'   => "%04d" % AND.to_s(2),
-									'or'    => "%04d" % OR.to_s(2),
-									'add'   => "%04d" % ADD.to_s(2),
-									'sub'   => "%04d" % SUB.to_s(2),
-									'addi'  => "%04d" % ADDI.to_s(2),
-									'subi'  => "%04d" % SUBI.to_s(2),
-									'set'   => "%04d" % SET.to_s(2),
-									'seth'  => "%04d" % SETH.to_s(2),
-									'inciz' => "%04d" % INCIZ.to_s(2),
-									'decin' => "%04d" % DECIN.to_s(2),
-									'movez' => "%04d" % MOVEZ.to_s(2),
-									'movex' => "%04d" % MOVEX.to_s(2),
-									'movep' => "%04d" % MOVEP.to_s(2),
-									'moven' => "%04d" % MOVEN.to_s(2)}
 				end
 
 				module Binary
