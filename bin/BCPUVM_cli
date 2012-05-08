@@ -26,6 +26,14 @@ module Asm
 		puts("Register: " + location.to_s + " -> " + v_machine.get_memory_value(location).to_s)
 	end
 	
+	#
+	#
+	# Prints out the location and value of the program counter
+	#def self.printPC(literal, v_machine, loader)
+	#	location = Asm::BCPU::Memory::Location.new(loader.word_from_register_literal( register_literal ).the_bits)
+	#	puts("Register: " + location.to_s + " -> " + v_machine.get_memory_value(location).to_s)
+	#end
+	
 	def self.on_init()
 		puts("Enter in the file you wish to run: ")
 		a_file_path = gets.chomp
@@ -43,6 +51,7 @@ module Asm
 		the_processed_message << the_Tohru_Honda.to_s << ' messages caught during loading attempt.' << "\n"	# will give output even if no messages arise.
 		puts(the_processed_message)
 		
+		printAllRegs(the_BCPU, the_Loader)
 		run = true
 		while (run)
 			command = gets.chomp
