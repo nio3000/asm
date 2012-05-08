@@ -327,7 +327,8 @@ module Asm
 					module	::Asm::Magic::Regexp::String::Asm::Numeric
 						Literal	= '(' << ::Asm::Magic::Regexp::String::Asm::Base10::Literal << ')|(' << ::Asm::Magic::Regexp::String::Asm::Binary::Literal << ')'
 						module	::Asm::Magic::Regexp::String::Asm::Numeric::Capture
-							Literal	= '(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Literal ,::Asm::Magic::Regexp::String::Names::Numeric::Literal ) << ')|(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Literal ,::Asm::Magic::Regexp::String::Names::Numeric::Literal ) << ')'
+							#Literal	= '(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Literal ,::Asm::Magic::Regexp::String::Names::Numeric::Literal ) << ')|(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Literal ,::Asm::Magic::Regexp::String::Names::Numeric::Literal ) << ')'
+							Literal	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Numeric::Literal ,::Asm::Magic::Regexp::String::Names::Numeric::Literal )
 							Flag_Value	= ::Asm::Magic::Regexp::String::Asm::Binary::Capture::Flag_Value + '|' + ::Asm::Magic::Regexp::String::Asm::Base10::Capture::Flag_Value
 						end
 					end
