@@ -31,8 +31,10 @@ module Asm
 			raise "you passed a noninteger to Asm::Boilerplate.get_twos_complement_bits_as_String; don't do that!" unless  an_Integer.integer?
 			if	an_Integer.instance_of? ::Fixnum
 				a_binary_String	= ''
+				
 				(0..(::Asm::Magic::Memory::Bits_per::Word - 1 - 1)).each do |index|
-					a_binary_String << an_Integer[index].to_s( 2 )
+					#a_binary_String << an_Integer[index].to_s( 2 )
+					a_binary_String	= an_Integer[index].to_s( 2 ) << a_binary_String
 				end
 				raise 'shenanigans and sharnigans!' unless ( a_binary_String.size == a_binary_String.count('01') )
 				return	a_binary_String
