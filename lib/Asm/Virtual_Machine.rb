@@ -273,8 +273,8 @@ module Asm
 		# Returns nothing
 		def set_location_to_value( location ,value )
 			# paranoid type checking
-			Asm::Boilerplate::#puts_unless_type( location ,Asm::BCPU::Memory::Location )
-			Asm::Boilerplate::#puts_unless_type( value ,Asm::BCPU::Memory::Value )
+			#Asm::Boilerplate::puts_unless_type( location ,Asm::BCPU::Memory::Location )
+			#Asm::Boilerplate::puts_unless_type( value ,Asm::BCPU::Memory::Value )
 			#puts 'VM#set_location_to_value( loc=' << location.to_s << ' ,val=' << value.to_s << ' )'
 			# assignment; creates association if none existed, else overwrites.
 			@the_memory[location.to_s]	= value
