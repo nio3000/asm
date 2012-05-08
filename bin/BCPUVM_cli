@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../lib')
+
+require 'optparse'
+require	'Asm/require_all_cli.rb'
+
+module Asm
+	def self.on_init()
+		puts("Enter in the file you wish to run: ")
+		a_file_path = gets.chomp
+		the_BCPU	= Asm::Virtual_Machine.new
+		the_Loader	= Asm::Loader.new( the_BCPU )
+		
+		the_messages = the_Loader.load( a_file_path )
+		# process the messages
+		the_processed_message	= ''
+		the_Tohru_Honda	= 0
+		the_messages.each { |this_message|
+			the_processed_message << this_message << "\n"
+			the_Tohru_Honda += 1
+		}
+		the_processed_message << the_Tohru_Honda.to_s << ' messages caught during loading attempt.' << "\n"	# will give output even if no messages arise.
+		puts(the_processed_message)
+	end
+end
+
+Asm.on_init
