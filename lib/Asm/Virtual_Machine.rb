@@ -108,6 +108,7 @@ module Asm
 		# RD <- RA
 		def move( dest_reg, reg_a)
 			self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- bitwise NOT RA
@@ -115,6 +116,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra.not(rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA bitwise AND RB
@@ -122,6 +125,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra & rb)
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA bitwise OR RB
@@ -129,6 +134,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA + RB
@@ -136,6 +143,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value( dest_reg , ra.add_Word!(rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA - RB
@@ -143,23 +152,36 @@ module Asm
 			ra = self.get_memory_value(reg_a).to_i
 			rb = self.get_memory_value(reg_b).to_i
 			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA + 4bit data
 		def addi( dest_reg, reg_a, reg_fourbit)
+			ra = self.get_memory_value(reg_a).to_i			
+			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra + reg_fourbit.to_i ))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA - 4bit data
 		def subi( dest_reg, reg_a, reg_fourbit)
+			ra = self.get_memory_value(reg_a).to_i			
+			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra - reg_fourbit.to_i ))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- 8 0's followed by 8 bit data
 		def set( dest_reg, reg_eightbit)
-			#self.set_location_to_value(dest_reg,
+			Asm::Loader::map_bits_to_bits( 0..7,self.get_memory_value( dest_reg ), 0..7, reg_eightbit)
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- 8bit data follow by RD7, RD6, ... RD0
 		def seth( dest_reg, reg_eightbit)
+			Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RD + 4bit data if RB == 0 (zero)
@@ -175,7 +197,7 @@ module Asm
 		# RD <- RD - 4bit data if RB15 == 1 (neg)
 		def decin( dest_reg, reg_fourbit, reg_b )
 			dest_reg_altered	= false
-			if self.get_memory_value( reg_b ).to_i >= 0
+			if self.get_memory_value( reg_b ).to_i <= 0
 				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
 				dest_reg_altered	= true
 			end
