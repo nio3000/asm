@@ -52,12 +52,45 @@ module Asm
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
-			
-			# dispatch based on opcode
-				# make boilerplate code for splitting based on format
+			if op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:move] )
+				self.move( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:not] )
+				self.not( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:and] )
+				self.and( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:or] )
+				self.or( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:add] )
+				self.add( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:sub] )
+				self.sub( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:addi] )
+				self.addi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:subi] )
+				self.subi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:set] )
+				self.set( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..7) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:seth] )
+				self.seth( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..7) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:inciz] )
+				self.inciz( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(4..7) ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code )  )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:decin] )
+				self.decin( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(4..7) ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code )  )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:movez] )
+				self.movez( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:movex] )
+				self.movex( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:movep] )
+				self.movep( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:moven] )
+				self.moven( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			else
+				raise	'BANKAI: ' + op_code_binary_string + " = " + Asm::Magic::ISA::Opcode::Binary::String[:move]
+			end
 		end
 		# DOCIT
 		def advance( steps )
+			raise 'chii' unless steps.integer?
 			if	( steps > 0 )
 				for index in 1..steps ( i < steps)
 					self.advance_once
@@ -75,6 +108,7 @@ module Asm
 		# RD <- RA
 		def move( dest_reg, reg_a)
 			self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- bitwise NOT RA
@@ -82,6 +116,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra.not(rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA bitwise AND RB
@@ -89,6 +125,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra & rb)
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA bitwise OR RB
@@ -96,6 +134,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA + RB
@@ -103,6 +143,8 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value( dest_reg , ra.add_Word!(rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA - RB
@@ -110,23 +152,36 @@ module Asm
 			ra = self.get_memory_value(reg_a).to_i
 			rb = self.get_memory_value(reg_b).to_i
 			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA + 4bit data
 		def addi( dest_reg, reg_a, reg_fourbit)
+			ra = self.get_memory_value(reg_a).to_i			
+			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra + reg_fourbit.to_i ))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA - 4bit data
 		def subi( dest_reg, reg_a, reg_fourbit)
+			ra = self.get_memory_value(reg_a).to_i			
+			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra - reg_fourbit.to_i ))
+			
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- 8 0's followed by 8 bit data
 		def set( dest_reg, reg_eightbit)
-			#self.set_location_to_value(dest_reg,
+			Asm::Loader::map_bits_to_bits( 0..7,self.get_memory_value( dest_reg ), 0..7, reg_eightbit)
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- 8bit data follow by RD7, RD6, ... RD0
 		def seth( dest_reg, reg_eightbit)
+			Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
+			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RD + 4bit data if RB == 0 (zero)
@@ -142,7 +197,7 @@ module Asm
 		# RD <- RD - 4bit data if RB15 == 1 (neg)
 		def decin( dest_reg, reg_fourbit, reg_b )
 			dest_reg_altered	= false
-			if self.get_memory_value( reg_b ).to_i >= 0
+			if self.get_memory_value( reg_b ).to_i <= 0
 				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
 				dest_reg_altered	= true
 			end

@@ -405,43 +405,92 @@ module Asm
 			Integer OpCodes corresponding to
 			* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
 =end
-			module Integer
-				# Integer OpCodes
-				MOVE  = 0
-				NOT   = 1
-				AND   = 2
-				OR    = 3
-				ADD   = 4
-				SUB   = 5
-				ADDI  = 6
-				SUBI  = 7
-				SET   = 8
-				SETH  = 9
-				INCIZ = 10
-				DECIN = 11
-				MOVEZ = 12
-				MOVEX = 13
-				MOVEP = 14
-				MOVEN = 15
+			module Opcode
+				module Integer
+					# Integer OpCodes
+					MOVE  = 0
+					NOT   = 1
+					AND   = 2
+					OR    = 3
+					ADD   = 4
+					SUB   = 5
+					ADDI  = 6
+					SUBI  = 7
+					SET   = 8
+					SETH  = 9
+					INCIZ = 10
+					DECIN = 11
+					MOVEZ = 12
+					MOVEX = 13
+					MOVEP = 14
+					MOVEN = 15
 
-				# instructions and their 4 bit binary codes
-				instructions = {'move'  => "%04d" % MOVE.to_s(2),
-								'not'   => "%04d" % NOT.to_s(2),
-								'and'   => "%04d" % AND.to_s(2),
-								'or'    => "%04d" % OR.to_s(2),
-								'add'   => "%04d" % ADD.to_s(2),
-								'sub'   => "%04d" % SUB.to_s(2),
-								'addi'  => "%04d" % ADDI.to_s(2),
-								'subi'  => "%04d" % SUBI.to_s(2),
-								'set'   => "%04d" % SET.to_s(2),
-								'seth'  => "%04d" % SETH.to_s(2),
-								'inciz' => "%04d" % INCIZ.to_s(2),
-								'decin' => "%04d" % DECIN.to_s(2),
-								'movez' => "%04d" % MOVEZ.to_s(2),
-								'movex' => "%04d" % MOVEX.to_s(2),
-								'movep' => "%04d" % MOVEP.to_s(2),
-								'moven' => "%04d" % MOVEN.to_s(2)}
-			end
+					# instructions and their 4 bit binary codes
+					instructions = {'move'  => "%04d" % MOVE.to_s(2),
+									'not'   => "%04d" % NOT.to_s(2),
+									'and'   => "%04d" % AND.to_s(2),
+									'or'    => "%04d" % OR.to_s(2),
+									'add'   => "%04d" % ADD.to_s(2),
+									'sub'   => "%04d" % SUB.to_s(2),
+									'addi'  => "%04d" % ADDI.to_s(2),
+									'subi'  => "%04d" % SUBI.to_s(2),
+									'set'   => "%04d" % SET.to_s(2),
+									'seth'  => "%04d" % SETH.to_s(2),
+									'inciz' => "%04d" % INCIZ.to_s(2),
+									'decin' => "%04d" % DECIN.to_s(2),
+									'movez' => "%04d" % MOVEZ.to_s(2),
+									'movex' => "%04d" % MOVEX.to_s(2),
+									'movep' => "%04d" % MOVEP.to_s(2),
+									'moven' => "%04d" % MOVEN.to_s(2)}
+				end
+				
+				module Binary
+					# instructions and their 4 bit binary codes
+					String = { :move	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVE.to_s(2),
+								:not	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::NOT.to_s(2),
+								:and	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::AND.to_s(2),
+								:or	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::OR.to_s(2),
+								:add	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADD.to_s(2),
+								:sub   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUB.to_s(2),
+								:addi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADDI.to_s(2),
+								:subi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUBI.to_s(2),
+								:set   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SET.to_s(2),
+								:seth  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SETH.to_s(2),
+								:inciz => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::INCIZ.to_s(2),
+								:decin => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::DECIN.to_s(2),
+								:movez => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEZ.to_s(2),
+								:movex => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEX.to_s(2),
+								:movep => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEP.to_s(2),
+								:moven => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEN.to_s(2)}
+=begin				module String
+						MOVE	= "%04d" % MOVE.to_s(2)
+						NOT	= "%04d" % NOT.to_s(2)
+						AND	= "%04d" % AND.to_s(2)
+						OR	= "%04d" % OR.to_s(2)
+						ADD	= "%04d" % ADD.to_s(2)
+						SUB	= "%04d" % SUB.to_s(2)
+						ADDI	= "%04d" % ADDI.to_s(2)
+						SUBI  = "%04d" % SUBI.to_s(2)
+						SET   = 8
+						SETH  = 9
+						INCIZ = 10
+						DECIN = 11
+						MOVEZ = 12
+						MOVEX = 13
+						MOVEP = 14
+						MOVEN = 15
+									'subi'  =>									'set'   => "%04d" % SET.to_s(2)
+									'seth'  => 
+									'inciz' => "%04d" % INCIZ.to_s(2)
+									'decin' => "%04d" % DECIN.to_s(2)
+									'movez' => "%04d" % MOVEZ.to_s(2)
+									'movex' => "%04d" % MOVEX.to_s(2)
+									'movep' => "%04d" % MOVEP.to_s(2)
+									'moven' => "%04d" % MOVEN.to_s(2)
+=end
+					end
+				end
+				
 		end
 	end
 end
