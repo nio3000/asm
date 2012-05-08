@@ -362,6 +362,9 @@ module Asm
 				module Memory
 					Window_size = 8
 				end
+				module Timer
+					Interval = 2000 # seconds
+				end
 			end
 			module Names
 				Xrc_file	= 'lib/Asm/gui.xrc'

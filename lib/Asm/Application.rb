@@ -23,15 +23,30 @@ module Asm
 	* a complete and self-contained application object for a BCPU VM
 	* derives from Wx::App; implements an application object for a WxRuby application.
 =end
+	class RunTimer < ::Wx::Timer
+		def notify
+			if @stopped == true
+				@timer.stop()
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).enable()
+			else
+				@the_BCPU.advance_once
+				self.update_VM_display
+			end
+		end
+	end
+
 	class Application < ::Wx::App
 	public
 =begin	Wx::App callbacks
 =end
+
 		# WxRuby callback, no need to register; program initialization
 		def on_init
 			# application-specific initialization
 			@the_BCPU	= Asm::Virtual_Machine.new
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
+			@stopped    = true
+			@timer = RunTimer.new
 			#self.set_name( "BCPU" )
 			# DOCIT
 			#::Wx::init_all_image_handlers()	# may be depreciated
@@ -64,8 +79,8 @@ module Asm
 			# set features of the GUI
 			# * set allowed range on Advance::N::Counter
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Advance::N::Counter ).set_range( Asm::Magic::Memory::Index::Inclusive::Minimum ,Asm::Magic::Memory::Index::Inclusive::Maximum )
-			# * 
-			
+			# *
+
 			Asm::Magic::GUI::Magic::Memory::Window_Size
 			# show the GUI
 			@main_GUI_sheet.show(true)
@@ -152,17 +167,15 @@ module Asm
 		# event - instance of ???
 		#
 		# Returns nothing
-		def handle_run_forever( an_Event )
-			# TODO implement this callback
+		def handle_go_stop_button( an_Event )
+			@stopped = !@stopped
+			if @stopped == false
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).disable()
+				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).get_value * 1000
+				@timer.start(temp)
+			end
 		end
-		# WxRuby callback; DOCIT
-		#
-		# event - instance of ???
-		#
-		# Returns nothing
-		def handle_stop_eternity( an_Event )
-			# TODO implement this callback
-		end
+
 	end
 end
 
