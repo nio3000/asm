@@ -514,32 +514,6 @@ module Asm
 								:movex => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEX.to_s(2),
 								:movep => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEP.to_s(2),
 								:moven => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEN.to_s(2)}
-=begin				module String
-						MOVE	= "%04d" % MOVE.to_s(2)
-						NOT	= "%04d" % NOT.to_s(2)
-						AND	= "%04d" % AND.to_s(2)
-						OR	= "%04d" % OR.to_s(2)
-						ADD	= "%04d" % ADD.to_s(2)
-						SUB	= "%04d" % SUB.to_s(2)
-						ADDI	= "%04d" % ADDI.to_s(2)
-						SUBI  = "%04d" % SUBI.to_s(2)
-						SET   = 8
-						SETH  = 9
-						INCIZ = 10
-						DECIN = 11
-						MOVEZ = 12
-						MOVEX = 13
-						MOVEP = 14
-						MOVEN = 15
-									'subi'  =>									'set'   => "%04d" % SET.to_s(2)
-									'seth'  =>
-									'inciz' => "%04d" % INCIZ.to_s(2)
-									'decin' => "%04d" % DECIN.to_s(2)
-									'movez' => "%04d" % MOVEZ.to_s(2)
-									'movex' => "%04d" % MOVEX.to_s(2)
-									'movep' => "%04d" % MOVEP.to_s(2)
-									'moven' => "%04d" % MOVEN.to_s(2)
-=end
 					end
 				end
 			def self.machine_code_to_String( a_memory_value )
