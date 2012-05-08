@@ -242,10 +242,13 @@ module Asm::BCPU
 		def from_i( an_Integer ,force_twos_complement = true )
 			# Paranoid type checking
 			raise "you passed a noninteger to Asm::BCPU::Word#from_i; don't do that!" unless  an_Integer.integer?
-			if	( force_twos_complement )
-				a_binary_String	= '' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer ) << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )
+			if	force_twos_complement | ::Asm::Magic::Binary::Twos_complement.valid?( an_Integer )
+				::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
+				#a_binary_String	= '' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer ) << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )
+				a_binary_String	= '' << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer ) << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer )
 				self.assign_binary_String( a_binary_String )
 			else
+				::Asm::Magic::Binary::Unsigned.assert_valid( an_Integer )
 				self.assign_binary_String( an_Integer.to_s( 2 ) )
 			end
 			return
