@@ -15,7 +15,7 @@ module Asm
 		module Machine
 			module Code
 				# DOCIT
-				def self.get_OPcode_location( a_Memory_Value )
+				def self.get_OPcode_as_string( a_Memory_Value )
 				end
 				# DOCIT
 				def self.get_RD_location( a_Memory_Value )

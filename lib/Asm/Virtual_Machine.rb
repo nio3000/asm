@@ -47,7 +47,11 @@ module Asm
 =end
 		# DOCIT
 		def advance_once
-			# TODO implement # read the memory value of the program counter
+			# read the memory value of the program counter
+			the_program_counter	= ::Asm::Magic::Register::Location::Program_counter
+			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
+			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
+			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
 			# dispatch based on opcode
 				# make boilerplate code for splitting based on format
 		end
@@ -175,7 +179,7 @@ module Asm
 		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
 			unless	( dest_reg.equals?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
 				lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
-				lhs.add!( Asm::BCPU::Word.new( an_Integer ) )
+				lhs.add!( Asm::BCPU::Word.new( an_Integer ) ,false )	# should allow unsigned values to be assigned to program counter
 				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,lhs )
 			end
 		end
