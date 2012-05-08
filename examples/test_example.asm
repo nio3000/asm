@@ -39,10 +39,10 @@ SET R10, 0b11110111
 SETH R10, 0b11101111
 
 //R12 = -5 because R12 = 0 or it should be
-INCIZ R12, -5, R12
+INCIZ R12, 0b101, R12
 
-//R13 = 5
-DECIN R13, -5, R12
+//R13 = something
+DECIN R13, 3, R12
 
 //R14 = 5
 MOVEZ R14, R1, R14
