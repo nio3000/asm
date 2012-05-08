@@ -39,6 +39,21 @@ module Asm
 					Minimum	= Asm::Magic::Memory::Index::Inclusive::Minimum - 1
 					Maximum	= Asm::Magic::Memory::Index::Inclusive::Maximum + 1	# 2^16 = 65536
 				end
+				# DOCIT
+				def	self.valid?( an_Integer )
+					raise 'adsgasdgawer' unless an_Integer.integer?
+					return	( an_Integer > ::Asm::Magic::Memory::Index::Exclusive::Minimum ) && ( an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum )
+				end
+				# DOCIT
+				def	self.assert_valid( an_Integer )
+					raise 'adsgasdgawer' unless an_Integer.integer?
+					if !(an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum)
+						raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive to be a memory location index.'
+					elsif !(::Asm::Magic::Memory::Index::Exclusive::Minimum < an_Integer)
+						raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative to be a memory location index.'
+					end
+					return
+				end
 			end
 		end
 =begin
@@ -59,14 +74,16 @@ module Asm
 				end
 				# twos complement range checking
 				def	self.valid?( an_Integer )
+					raise 'adsgasdgawer' unless an_Integer.integer?
 					return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				end
 				# twos complement range checking
 				def	self.assert_valid( an_Integer )
+					raise 'adsgasdgawer' unless an_Integer.integer?
 					if !(an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum)
-						raise 'The integer, \'' << an_Integer << '\',  is too positive for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+						raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
 					elsif !(Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer)
-						raise 'The integer, \'' << an_Integer << '\',  is too negative for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+						raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
 					end
 					return
 				end
@@ -88,14 +105,16 @@ module Asm
 				end
 				# unsigned binary range checking
 				def	self.valid?( an_Integer )
+					raise 'adsgasdgawer' unless an_Integer.integer?
 					return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				end
 				# unsigned binary range checking
 				def	self.assert_valid( an_Integer )
+					raise 'adsgasdgawer' unless an_Integer.integer?
 					if !(an_Integer < Asm::Magic::Binary::Unsigned::Exclusive::Maximum)
-						raise 'The integer, \'' << an_Integer << '\', is too positive for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+						raise 'The integer, \'' << an_Integer.to_s << '\', is too positive for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
 					elsif !(Asm::Magic::Binary::Unsigned::Exclusive::Minimum < an_Integer)
-						raise 'The integer, \'' << an_Integer << '\',  is too negative for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word << 'bits.'
+						raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
 					end
 					return
 				end
@@ -399,7 +418,7 @@ module Asm
 						end
 					end
 					module Legend
-						PC     = 'VM_special_register_pc'
+						PC     = 'VM_special_registers_pc'
 						Input  = 'VM_special_registers_input'
 						Output = 'VM_special_registers_output'
 					end

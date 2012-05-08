@@ -297,8 +297,14 @@ module Asm
 		# Returns memory-location-ordered array of memory values
 		def get_memory_range( inclusive_minimum ,exclusive_maximum )
 			# paranoid type checking
-			# TODO force integer-compatible types
-			assert( inclusive_minimum < exclusive_maximum ,"The minimum is not less than the maximum" )
+			raise 'haerierhaerh' unless inclusive_minimum.integer? && exclusive_maximum.integer?
+			raise "The minimum is not less than the maximum" unless inclusive_minimum < exclusive_maximum 
+			# force all values available
+			values	= []
+			for index in (inclusive_minimum..(exclusive_maximum-1))
+				values.push self.get_memory_value( ::Asm::BCPU::Memory::Location.new( index ) )
+			end
+=begin
 			# local state
 			locations	= []
 			values	= []
@@ -310,9 +316,11 @@ module Asm
 			end
 			# order the locations as is natural for them
 			# TODO test that the ordering is correctly accomplished here
-			locations.sort! { |lhs ,rhs| lhs.to_i( 2 ) <=> rhs.to_i( 2 ) }
+			locations.sort! { |lhs ,rhs| lhs.to_i( ) <=> rhs.to_i( ) }
 			# retrieve for values for each location (preserves ordering)
-			locations.each { |key| values.push @the_memory[key] }
+			#locations.each { |key| values.push @the_memory[key] }
+			locations.each { |key| values.push self.get_memory_value( key ) }
+=end
 			# return sorted values
 			values
 		end

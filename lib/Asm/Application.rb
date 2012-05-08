@@ -21,14 +21,9 @@ module Asm
 	module	::Asm::Magic::GUI::Colour
 		Output_register	= ::Wx::GREEN
 		Input_register	= ::Wx::BLUE
-		Program_register	= ::Wx::RED
+		Program_counter	= ::Wx::RED
 		Default	= ::Wx::WHITE
 	end
-=begin
-	# Asm::Application
-	* a complete and self-contained application object for a BCPU VM
-	* derives from Wx::App; implements an application object for a WxRuby application.
-=end
 	class RunTimer < ::Wx::Timer
 		def notify
 			if @stopped == true
@@ -40,12 +35,15 @@ module Asm
 			end
 		end
 	end
-
+=begin
+	# Asm::Application
+	* a complete and self-contained application object for a BCPU VM
+	* derives from Wx::App; implements an application object for a WxRuby application.
+=end
 	class Application < ::Wx::App
 	public
 =begin	Wx::App callbacks
 =end
-
 		# WxRuby callback, no need to register; program initialization
 		def on_init
 			# application-specific initialization
@@ -62,25 +60,13 @@ module Asm
 			# obtain an object for the main sheet in the GUI
 			@main_GUI_sheet	= xml.load_frame( nil ,Asm::Magic::GUI::Names::Top_level )
 			Asm::Boilerplate::raise_unless_type( @main_GUI_sheet ,::Wx::Frame )
-			# TODO setup the callbacks
-			#	Loader
-			#		filepath
-			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Filepath ) ) { |event| self.handle_compile_code( event ) }
-			#	VM
-			#		Control
-			#			advance n
-			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Button ) ) { |event| self.handle_advance_n( event ) }	# Process a EVT_COMMAND_BUTTON_CLICKED event,when the button is clicked.
-			#			advance, delay, repeat
-			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Button ) ) { |event| self.handle_go_stop_button( event ) }
-			#		Register
-			#		Memory
-			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display }
-			evt_spinctrl( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display }
 			# set features of the GUI
 			# * set allowed range on ::Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter
 			@main_GUI_sheet.find_window_by_name( ::Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).set_range( 1 ,60 * 10 )
 			# * set allowed range on Advance::N::Counter
-			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Counter ).set_range( Asm::Magic::Memory::Index::Inclusive::Minimum ,Asm::Magic::Memory::Index::Inclusive::Maximum )
+			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Counter ).set_range( 1 ,Asm::Magic::Memory::Index::Inclusive::Maximum )
+			# * set allowed range on Memory::Counter
+			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).set_range( Asm::Magic::Memory::Index::Inclusive::Minimum + Asm::Magic::GUI::Magic::Memory::Window_size - 1 ,Asm::Magic::Memory::Index::Inclusive::Maximum )
 			# * set background colours of registers & declare special registers
 			# 	* default (will be overridden for special registers)
 			(::Asm::Magic::Register::Index::Inclusive::Minimum..::Asm::Magic::Register::Index::Inclusive::Maximum).each do |index|
@@ -108,8 +94,22 @@ module Asm
 			end
 			# 	* program counter register
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[::Asm::Magic::Register::Index::Program_counter] ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_counter )
-			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::PC ).change_value( 'R' << ::Asm::Magic::Register::Index::Program_counter )
+			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::PC ).change_value( 'R' << ::Asm::Magic::Register::Index::Program_counter.to_s )
 			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Legend::PC ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_counter )
+			# setup the callbacks
+			#	Loader
+			#		filepath
+			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Filepath ) ) { |event| self.handle_compile_code( event ) }
+			#	VM
+			#		Control
+			#			advance n
+			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Button ) ) { |event| self.handle_advance_n( event ) }	# Process a EVT_COMMAND_BUTTON_CLICKED event,when the button is clicked.
+			#			advance, delay, repeat
+			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Button ) ) { |event| self.handle_go_stop_button( event ) }
+			#		Register
+			#		Memory
+			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display( false ) }
+			evt_spinctrl( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display( false ) }
 			# show the GUI
 			@main_GUI_sheet.show(true)
 		end
@@ -119,51 +119,52 @@ module Asm
 		# DOCIT
 		def process_memory_entry( a_memory_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
-			return	'A' << a_memory_index << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s << '; "' << ::Asm::Magic::ISA::machine_code_to_String( a_raw_memory_value ) << '"'
+			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s << '; "' << ::Asm::Magic::ISA::machine_code_to_String( a_raw_memory_value ) << '"'
 		end
 		# DOCIT
 		def process_register_entry( a_register_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
-			return	'R' << a_register_index << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s
+			return	'R' << a_register_index.to_s << ' |-> 0b' << temp.to_s << "; d" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s
 		end
 		# DOCIT
 		def update_VM_display( force_program_counter_visible = true )
 			# info
-			program_counter	= ::Asm::BCPU::Memory::Location.new( @the_BCPU.get_memory_value( the_program_counter ).the_bits ).to_i
+			program_counter	= ::Asm::BCPU::Memory::Location.new( @the_BCPU.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i
 			# write registers
-			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Minimum )
+			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Maximum )
 			for index in 0..(raw_registers.size - 1)
-				raise 'aregaerghaerhaerh (incoherent rage error)' unless (raw_registers.size == Asm::Magic::GUI::Magic::Memory::Window_Size)
-				processed_version	= self.process_register_entry( memory_window_low_bound + index ,raw_registers[index] )
-				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).change_value( processed_version )
+				raise 'aregaerghaerhaerh (incoherent rage error)' << raw_registers.size.to_s << '==' << (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum).to_s unless (raw_registers.size == (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum))
+				processed_version	= self.process_register_entry( ::Asm::Magic::Register::Index::Inclusive::Minimum + index ,raw_registers[index] )
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).change_value( processed_version )
 			end
-			# move memory window if it isn't contained in the current memory range
+			# move memory window if the program counter isn't contained in the current memory range
 			if	force_program_counter_visible
 				memory_window_high_bound	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).get_value
 				::Asm::Magic::Memory::Index::assert_valid( memory_window_high_bound )
-				memory_window_low_bound	= memory_window_high_bound - ( Asm::Magic::GUI::Magic::Memory::Window_Size - 1 )
+				memory_window_low_bound	= memory_window_high_bound - ( Asm::Magic::GUI::Magic::Memory::Window_size - 1 )
 				::Asm::Magic::Memory::Index::assert_valid( memory_window_low_bound )
 				memory_window	= memory_window_low_bound..(memory_window_high_bound-1)
-				if	(!memory_window.includes?( program_counter ))
+				if	(!memory_window.include?( program_counter ))
 					target	= program_counter
-					if	::Asm::Magic::Memory::Index::valid?( program_counter +( Asm::Magic::GUI::Magic::Memory::Window_Size - 1 ))
-						target	+= Asm::Magic::GUI::Magic::Memory::Window_Size - 1
+					temp	= Asm::Magic::GUI::Magic::Memory::Window_size - 3
+					if	::Asm::Magic::Memory::Index::valid?( program_counter + temp )
+						target	+= temp
 					end
-					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).set_value( program_counter + 1 )
+					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).set_value( target )
 				end
 			end
 			# write memory
 			memory_window_high_bound	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).get_value
 			::Asm::Magic::Memory::Index::assert_valid( memory_window_high_bound )
-			memory_window_low_bound	= memory_window_high_bound - ( Asm::Magic::GUI::Magic::Memory::Window_Size - 1 )
+			memory_window_low_bound	= memory_window_high_bound - ( Asm::Magic::GUI::Magic::Memory::Window_size - 1 )
 			::Asm::Magic::Memory::Index::assert_valid( memory_window_low_bound )
-			raw_memory	= @the_BCPU.get_memory_range( memory_window_low_bound ,memory_window_high_bound)
+			raw_memory	= @the_BCPU.get_memory_range( memory_window_low_bound ,memory_window_high_bound + 1 )
 			for index in 0..(raw_memory.size - 1)
-				raise 'aregaerghaerhaerh (incoherent rage error)' unless (raw_memory.size == Asm::Magic::GUI::Magic::Memory::Window_Size)
+				raise 'aregaerghaerhaerh (incoherent rage error)' << raw_memory.size.to_s << '==' << Asm::Magic::GUI::Magic::Memory::Window_size.to_s unless (raw_memory.size == Asm::Magic::GUI::Magic::Memory::Window_size)
 				processed_version	= self.process_memory_entry( memory_window_low_bound + index ,raw_memory[index] )
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).change_value( processed_version )
-				if index == program_counter
-					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_register )
+				if (memory_window_low_bound + index) == program_counter
+					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Program_counter )
 				else
 					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Default )
 				end
@@ -222,7 +223,6 @@ module Asm
 				@timer.start(temp)
 			end
 		end
-
 	end
 end
 
