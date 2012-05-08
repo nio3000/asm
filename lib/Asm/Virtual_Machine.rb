@@ -188,7 +188,9 @@ module Asm
 		def inciz( dest_reg, reg_fourbit, reg_b)
 			dest_reg_altered	= false
 			if self.get_memory_value( reg_b ).to_i == 0
-				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( reg_fourbit.to_i ) )
+				var = self.get_memory_value( dest_reg )
+				var.add!( reg_fourbit.to_i )
+				self.set_location_to_value( dest_reg , var)
 				dest_reg_altered	= true
 			end
 			self.increment_program_counter( dest_reg ,dest_reg_altered )
