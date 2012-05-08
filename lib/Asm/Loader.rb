@@ -77,7 +77,8 @@ module Asm
 			#register_literal	= '^' << '(?<flag>' << register_flag << ')' << '(?<value>' << base10_number << ')' << '$'
 			#
 			#capture_register_literal	= ::Asm::Magic::Regexp.create( register_literal )
-			capture_register_literal	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Register::Capture::Flag_Value ) )
+			#capture_register_literal	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Register::Capture::Flag_Value ) )
+			capture_register_literal	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Register::Capture::Flag_Value )
 			match_info	= capture_register_literal.match( a_register_literal )
 			raise 'register literal expected from "' << a_register_literal << '"' if !match_info
 			result	= Asm::BCPU::Word.new( )
@@ -222,6 +223,73 @@ module Asm
 		#
 		# Returns nothing
 		def handle( line_of_text )
+			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA	# check if 'keyword RD RA' instruction format consumes line
+			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_RB
+			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_data
+			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data
+			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data_RB
+			puts ::Asm::Magic::Regexp::String::Asm::Directive::Format::Assignment
+			puts ::Asm::Magic::Regexp::String::Asm::Directive::Format::Asm
+			puts ::Asm::Magic::Regexp::String::Asm::Ignore::Comment
+			puts ::Asm::Magic::Regexp::String::Asm::Ignore::Blank
+			
+			puts capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA ).match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_RB ).match(line_of_text)
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_data ).match(line_of_text)
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data ).match(line_of_text)
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data_RB ).match(line_of_text)
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Directive::Format::Assignment ).match(line_of_text)
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Directive::Format::Asm ).match(line_of_text)
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Comment ).match(line_of_text)
+			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Blank ).match(line_of_text)
+			
+			capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA ).match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
+			if	capture != nil
+				self.instruction_format__keyword_RD_RA( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Register::A] )
+			else
+				capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_RB ).match(line_of_text)
+				if	capture != nil
+					self.instruction_format__keyword_RD_RA_RB( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Register::A], capture[::Asm::Magic::Regexp::String::Names::Register::B] )
+				else
+					capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_data ).match(line_of_text)
+					if	capture != nil
+						self.instruction_format__keyword_RD_RA_literal( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Register::A], capture['literal'])
+					else
+						capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data ).match(line_of_text)
+						if	capture != nil
+							self.instruction_format__keyword_RD_literal( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Numeric::Literal])
+						else
+							capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_data_RB ).match(line_of_text)
+							if	capture != nil
+								self.instruction_format__keyword_RD_literal_RA( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Numeric::Literal], capture[::Asm::Magic::Regexp::String::Names::Register::B])
+							else
+								capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Directive::Format::Assignment ).match(line_of_text)
+								if	capture != nil
+									self.directive__memory_value(capture[::Asm::Magic::Regexp::String::Names::Directive::LHS], capture[::Asm::Magic::Regexp::String::Names::Directive::RHS])
+								else
+									capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Directive::Format::Asm ).match(line_of_text)
+									if	capture != nil
+										self.directive__asm( capture[::Asm::Magic::Regexp::String::Names::Directive::LHS] )
+									else
+										capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Comment ).match(line_of_text)
+										if	capture != nil
+											;
+										else
+											capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Blank ).match(line_of_text)
+											if	capture != nil
+												;
+											else
+												raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+=begin
 			#if capture = format0RegEx.match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
 			if capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA ).match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
 				# dispatch with information from named captures
@@ -259,6 +327,7 @@ module Asm
 				# syntax error
 				raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
 			end
+=end
 			return
 		end
 		# initialize the VM

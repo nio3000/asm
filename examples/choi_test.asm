@@ -1,9 +1,10 @@
+// examples/choi_test.asm
 // Example input file
 #1 = 1
 #15 = 100
 #100 = asm
 SET R2, 1
-INCIZ R15,4,R1
+INCIZ R15, d4,R1
 ADD R2,R2,R2
 SUBI R1,R1,R1
 SUBI R15,R15,3

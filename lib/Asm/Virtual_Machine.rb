@@ -254,12 +254,15 @@ module Asm
 			#program_counter	= Asm::BCPU::Word.from_Bitset( Asm::Magic::Register::Location::Program_counter.the_bits ).to_i( false ,true )
 			program_counter	= Asm::Magic::Register::Location::Program_counter.to_i
 			#unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
+			puts 'R15 |-> ' << program_counter.to_s << '; dest_reg_altered is ' << (dest_reg_altered ? 'true' : 'false')
 			if	( dest_reg.to_i == program_counter ) && dest_reg_altered
 				#lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 				temp	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i + an_Integer
 				#lhs.add!( Asm::BCPU::Word.new( an_Integer ) ,false )	# should allow unsigned values to be assigned to program counter
 				value	= ::Asm::BCPU::Memory::Value.new( ::Asm::BCPU::Memory::Location.new( temp ).the_bits )
 				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,value )
+			else
+				puts 'R15 not incremented.'
 			end
 			return
 		end
