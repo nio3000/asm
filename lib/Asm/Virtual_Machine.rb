@@ -102,7 +102,7 @@ module Asm
 				end
 			end
 		end
-	private
+	#private
 =begin	execute simulated BCPU execution
 =end
 		# RD <- RA
@@ -241,7 +241,7 @@ module Asm
 		end
 		# R15 <- R15 + 1
 		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
-			unless	( dest_reg.equals?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
+			unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
 				lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 				lhs.add!( Asm::BCPU::Word.new( an_Integer ) ,false )	# should allow unsigned values to be assigned to program counter
 				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,lhs )
@@ -277,7 +277,7 @@ module Asm
 				self.set_location_to_value( location ,Asm::BCPU::Memory::Value.new )
 			end
 			# return association by value
-			return	Asm::BCPU::Memory::Location.new(@the_memory[location].the_bits) #.clone
+			return	Asm::BCPU::Memory::Value.new(@the_memory[location].the_bits) #.clone
 		end
 		# Obtain values mapped by memory locations in the given range (@param inclusive_minimum, @paramexclusive_maximum)
 		# 	values are obtained in order

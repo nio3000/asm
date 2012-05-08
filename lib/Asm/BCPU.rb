@@ -61,7 +61,7 @@ module Asm::BCPU
 				self.assign_Bitset( an_Object )
 			elsif an_Object.instance_of?( ::Asm::BCPU::Word )
 				self.assign_BCPU_Word( an_Object )
-			elsif an_Object.integer?	#an_Object.instance_of?( ::Integer )
+			elsif an_Object.integer?	#an_Object.integer?
 				self.assign_integer( an_Object ,force_twos_complement )
 			else
 				raise 'Waku waku!'
@@ -266,7 +266,7 @@ module Asm::BCPU
 			elsif an_Object.instance_of?( ::Asm::BCPU::Memory::Location )
 				raise 'invalid invocation' unless !force_twos_complement
 				self.add_Location!( an_Object )
-			elsif an_Object.instance_of?( ::Integer )
+			elsif an_Object.integer?
 				self.add_Integer!( an_Object ,force_twos_complement )
 			else
 				raise	'Chiiiii'
@@ -304,7 +304,8 @@ module Asm::BCPU
 			# paranoid type checking
 			# TODO force Integer compatible type
 			# utilize to_i to implement addition
-			lhs	= self.to_i( force_twos_complement )
+			#lhs	= self.to_i( force_twos_complement )
+			lhs	= self.to_i()
 			rhs	= rhs_Integer
 			result	= lhs + rhs
 			# assign will attempt to represent the result in 16 bits; failure indicates overflow
@@ -339,7 +340,7 @@ module Asm::BCPU
 			def less_than?( rhs )
 				if rhs.instance_of?( ::Asm::Virtual_Machine::Memory_Location )
 					return	self.to_i( ) < rhs.to_i( )
-				elsif rhs.instance_of?( ::Integer )
+				elsif rhs.integer?
 					return	self.to_i( ) < rhs
 				else
 					raise "wtf; stop it"
@@ -348,9 +349,9 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def equal_to?( rhs )
-				if rhs.instance_of?( ::Asm::Virtual_Machine::Memory_Location )
+				if rhs.instance_of?( ::Asm::BCPU::Memory::Location )
 					return	self.to_i( ).equal?( rhs.to_i( ) )
-				elsif rhs.instance_of?( ::Integer )
+				elsif rhs.integer?
 					return	self.to_i( ).equal?( rhs )
 				else
 					raise "wtf; stop it"
