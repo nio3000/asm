@@ -27,13 +27,23 @@ module Asm::BCPU
 		* see the repo for Bitset for details & methods available if you need to get at indivudal bits in the Bitset
 =end
 		# get @the_bits
-		attr_accessor :the_bits
+		#attr_accessor :the_bits
+		def the_bits
+			temp	= @the_bits.to_s
+			Bitset.from_s( temp )
+		end
+		def the_bits=( a_Bitset )
+			temp	= a_Bitset.to_s
+			@the_bits.from_s( temp )
+		end
 		# initializing constructor, implicitly default constructor
 		# argument - see Asm::BCPU::Word::assign for restrictions
 		# force_twos_complement - see Asm::BCPU::Word::assign for usage
 		def initialize( an_Object = nil ,force_twos_complement = false ,force_unsigned = false )
+			@the_bits	= Bitset.new( ::Asm::Magic::Memory::Bits_per::Word )
 			self.assign( an_Object ,force_twos_complement ,force_unsigned )
 			self.assert_valid
+			self
 		end
 		# Creates a new instance of Asm::BCPU::Word,
 		# initialized to the values in self
@@ -265,7 +275,8 @@ module Asm::BCPU
 		def bitwise_OR!( an_Object )	# TODO verify this preserves size
 			# switch case on type; fuck duck typing.
 			if an_Object.instance_of?( ::Asm::BCPU::Word )
-				@the_bits	= @the_bits | an_Object.the_bits	# non broken usage case; Bitset instances are same size
+				self.bitwise_OR!( an_Object.the_bits )
+				#@the_bits	= @the_bits | an_Object.the_bits	# non broken usage case; Bitset instances are same size
 			elsif an_Object.instance_of?( ::Bitset )
 				if an_Object.size < @the_bits.size
 					raise 'implementation fault: Bitset\'s | operation is broken in the case you tried to use it in; ask for a workaround asap.'
@@ -273,6 +284,9 @@ module Asm::BCPU
 						# TODO this code needs adjustment maybe?, but other code should be avoiding this section now. . .maybe
 						@the_bits[index]	= @the_bits[index] |  an_Object[index]
 					end
+				elsif an_Object.size > @the_bits.size
+					puts 'wrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrry'
+					raise 'the dead'
 				else
 					@the_bits	= @the_bits | an_Object
 				end
@@ -285,6 +299,7 @@ module Asm::BCPU
 		# Obtain a binary String of the bits in self
 		def to_s
 			result	= @the_bits.to_s
+			::Asm::Boilerplate.puts_unless_type( result ,::String )
 			self.assert_valid
 			return	result
 		end
@@ -303,17 +318,41 @@ module Asm::BCPU
 				end
 			end
 			#
-			result	= 0
 			a_String	= @the_bits.to_s
 			#a_bits = the_bits
+			# interpret as unsigned
+			unsigned_result	= 0
 			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
-				result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
+				unsigned_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
-			Asm::Magic::Binary::Unsigned.assert_valid( result )
+			Asm::Magic::Binary::Unsigned.assert_valid( unsigned_result )
+			# interpret as twos complement
+			twos_complement_result	= 0
+			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 2)
+				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
+				twos_complement_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
+			end
+			if a_String[Asm::Magic::Memory::Bits_per::Word - 1].to_s.to_i( 2 ) == 1
+				twos_complement_result	= -twos_complement_result
+			end
+			#
+			result	= -666
+			if force_twos_complement
+				result	= twos_complement_result
+			elsif force_unsigned
+				result	= unsigned_result
+			else
+				if twos_complement_result != unsigned_result
+					puts 'BCPU::Word#to_i has an ambiguity; assuming twos_complement value is correct'
+				end
+				result	= twos_complement_result
+			end
+=begin
 			if force_twos_complement
 				#result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result + 1
-				result	= - result + 1
+				#result	= - result
+				puts '' << @the_bits.to_s << ' interpretted as ' << result.to_s
 				Asm::Magic::Binary::Twos_complement.assert_valid( result )
 				#assert( result < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
 				#assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
@@ -327,6 +366,7 @@ module Asm::BCPU
 					result	= - result + 1
 				end
 			end
+=end
 			result
 		end
 		# DOCIT
@@ -412,6 +452,15 @@ module Asm::BCPU
 			end
 			return
 		end
+		# DOCIT
+		def ==( an_Object )
+			if an_Object.instance_of? Asm::BCPU::Word
+				return	self == an_Object.the_bits
+			elsif an_Object.instance_of? ::Bitset
+				return	self.the_bits.to_s == an_Object.to_s
+			end
+			return	false
+		end
 	end
 	# DOCIT
 	module Asm::BCPU::Memory
@@ -451,27 +500,38 @@ module Asm::BCPU
 				end
 			end
 			# DOCIT
+			def ==( an_Object )
+				if an_Object.instance_of? Asm::BCPU::Memory::Location
+					return	self == an_Object.the_bits
+				else
+					return	super( an_Object )
+				end
+			end
+			# DOCIT
 			def valid?
 				return	Asm::Magic::Memory::Index::valid?( self.to_i( ) )
 			end
 			# DOCIT
 			def self.from_binary_String( a_binary_String )
 				# TODO Paranoid type checking
-				result	= self.class.new
+				result	= ::Asm::BCPU::Memory::Location.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_binary_String( a_binary_String )
 				return	result
 			end
 			# DOCIT
 			def self.from_decimal_String( a_decimal_String )
 				# TODO Paranoid type checking
-				result	= self.class.new
+				result	= ::Asm::BCPU::Memory::Location.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_decimal_String( a_decimal_String )
 				return	result
 			end
 			# DOCIT
 			def self.from_integer( an_Integer )
 				# TODO Paranoid type checking
-				result	= self.class.new
+				result	= ::Asm::BCPU::Memory::Location.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer( an_Integer )
 				return	result
 			end
@@ -520,6 +580,14 @@ module Asm::BCPU
 			# Returns an integer
 			def to_i( )
 				super( false ,false )
+			end
+			# DOCIT
+			def ==( an_Object )
+				if an_Object.instance_of? Asm::BCPU::Memory::Value
+					return	self == an_Object.the_bits
+				else
+					return	super( an_Object )
+				end
 			end
 			# DOCIT
 			def self.from_binary_String( a_binary_String )

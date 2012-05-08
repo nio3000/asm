@@ -117,6 +117,14 @@ module Asm
 			@main_GUI_sheet.show(true)
 			#return
 		end
+		def on_run
+			super
+			rescue Exception => e
+				puts '' << e.message << e.backtrace.to_s
+			rescue Asm::Boilerplate::Exception::Misaka_Mikoto => the_railgun
+				puts '' << the_railgun.message << the_railgun.backtrace.to_s
+			retry
+		end
 =begin	Wx callbacks
 		* need to be instance methods evidently; not 100% sure why, but at least they get access to @main_GUI_sheet
 =end
@@ -133,11 +141,12 @@ module Asm
 		# DOCIT
 		def update_VM_display( force_program_counter_visible = true )
 			# info
-			program_counter	= ::Asm::BCPU::Memory::Location.new( @the_BCPU.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i
+			program_counter_value	= @the_BCPU.get_memory_value( Asm::Magic::Register::Location::Program_counter )
+			program_counter	= ::Asm::BCPU::Memory::Location.from_binary_String( program_counter_value.the_bits.to_s ).to_i
 			# write registers
 			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Maximum )
 			for index in 0..(raw_registers.size - 1)
-				raise 'aregaerghaerhaerh (incoherent rage error)' << raw_registers.size.to_s << '==' << (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum).to_s unless (raw_registers.size == (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum))
+				raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'aregaerghaerhaerh (incoherent rage error)' << raw_registers.size.to_s << '==' << (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum).to_s ) unless (raw_registers.size == (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum))
 				processed_version	= self.process_register_entry( ::Asm::Magic::Register::Index::Inclusive::Minimum + index ,raw_registers[index] )
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).change_value( processed_version )
 			end
@@ -164,7 +173,7 @@ module Asm
 			::Asm::Magic::Memory::Index::assert_valid( memory_window_low_bound )
 			raw_memory	= @the_BCPU.get_memory_range( memory_window_low_bound ,memory_window_high_bound + 1 )
 			for index in 0..(raw_memory.size - 1)
-				raise 'aregaerghaerhaerh (incoherent rage error)' << raw_memory.size.to_s << '==' << Asm::Magic::GUI::Magic::Memory::Window_size.to_s unless (raw_memory.size == Asm::Magic::GUI::Magic::Memory::Window_size)
+				raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'aregaerghaerhaerh (incoherent rage error)' << raw_memory.size.to_s << '==' << Asm::Magic::GUI::Magic::Memory::Window_size.to_s ) unless (raw_memory.size == Asm::Magic::GUI::Magic::Memory::Window_size)
 				processed_version	= self.process_memory_entry( memory_window_low_bound + index ,raw_memory[index] )
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).change_value( processed_version )
 				if (memory_window_low_bound + index) == program_counter
@@ -211,11 +220,12 @@ module Asm
 		def handle_advance_n( an_Event )
 			# obtain necessary info
 			number_of_advances	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Counter ).get_value
-			raise unless number_of_advances > 0
+			raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'jiiiiiiiiiiiiiiiiiiiiiiii' ) unless number_of_advances > 0
 			# advance state
 			@the_BCPU.advance( number_of_advances )
 			# necessary things
 			self.update_VM_display
+			#puts @the_BCPU.inspect + ' ' + @the_Loader.the_Virtual_Machine.inspect
 			return
 		end
 		# WxRuby callback; DOCIT

@@ -203,7 +203,7 @@ module Asm
 					rescue ::String => an_error
 						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\""
 					end
-					messages.push 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
+					puts 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
 				end
 			else
 				messages.push '\'' << path << '\' is not a file.'
@@ -277,7 +277,7 @@ module Asm
 			wordRD = self.word_from_register_literal(dest_reg)
 			wordRA = self.word_from_register_literal(reg_a)
 			wordRB = self.word_from_register_literal(reg_b)
-			value = Asm::BPCU::Memory::Value.new
+			value = Asm::BCPU::Memory::Value.new
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
@@ -491,6 +491,7 @@ module Asm
 			wordLit = self.word_from_numeric_literal( memory_value_literal )
 			value = Asm::BCPU::Memory::Value.new( wordLit.the_bits )
 			
+			puts 'location.to_s="' << location.to_s << '"; value.to_s="' << value.to_s << '";' # confirmed that location and value have the correct content.
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end

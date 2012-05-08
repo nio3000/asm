@@ -112,6 +112,15 @@ module Asm
 			end
 			return
 		end
+		def	self.puts_unless_type( argument ,type )
+			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
+			begin
+				puts 'argument\'s type is ' << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives \'' << argument.inspect( ) << '\'.' unless argument.instance_of?( type )
+			rescue
+				puts 'argument\'s type is not ' << type.inspect() << '; argument.inspect gives \'' << argument.inspect( ) << '\'.' unless argument.instance_of?( type )
+			end
+			return
+		end
 		# paranoid typechecking boilerplate
 		#
 		# argument - an object whose type is being checked
@@ -149,6 +158,8 @@ module Asm
 			* DOCIT
 =end
 			class Asm::Boilerplate::Exception::Overflow < ::Exception
+			end
+			class Asm::Boilerplate::Exception::Misaka_Mikoto < ::Exception
 			end
 		end
 	end
