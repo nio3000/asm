@@ -52,15 +52,22 @@ module Asm
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
+			
 			# dispatch based on opcode
 				# make boilerplate code for splitting based on format
 		end
 		# DOCIT
 		def advance( steps )
-			#i = 0
-			#while ( i < steps)
-			#	
-			#end
+			if	( steps > 0 )
+				for index in 1..steps ( i < steps)
+					self.advance_once
+				end
+			else
+				if	steps == 0
+				else
+					raise "don't do that"
+				end
+			end
 		end
 	private
 =begin	execute simulated BCPU execution
