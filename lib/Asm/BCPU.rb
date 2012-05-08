@@ -38,7 +38,7 @@ module Asm::BCPU
 		# initialized to the values in self
 		# const copy constructor
 		def clone
-			return	Asm::BCPU::Word.new( self )
+			return	Asm::BCPU::Word.new( self ).the_bits
 		end
 	public
 =begin

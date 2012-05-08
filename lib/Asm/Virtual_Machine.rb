@@ -206,10 +206,10 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( location ,Asm::BCPU::Memory::Location )
 			# create association even if none exists
 			unless @the_memory.has_key?( location )
-				self.set_location_to_memory_value( location ,Asm::BCPU::Memory::Value.new )
+				self.set_location_to_value( location ,Asm::BCPU::Memory::Value.new )
 			end
 			# return association by value
-			return	@the_memory[location].clone
+			return	Asm::BCPU::Memory::Location.new(@the_memory[location].the_bits) #.clone
 		end
 		# Obtain values mapped by memory locations in the given range (@param inclusive_minimum, @paramexclusive_maximum)
 		# 	values are obtained in order
