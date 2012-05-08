@@ -345,15 +345,6 @@ module Asm
 			# return sorted values
 			values
 		end
-=begin
-		# Unit tests on this class
-		* any claim made in documentation ought to have a unit tests
-		* TODO implement the unit tests
-		* all the major instructions needs unit tests
-		* TODO implement the unit tests
-=end
-		#class Test < Test::Unit::TestCase
-		#end
 	end
 end
 

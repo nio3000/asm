@@ -577,15 +577,6 @@ module Asm
 			self.setLoadIndex( location.to_i )
 			return
 		end
-=begin
-		# Unit tests on this class
-		* any claim made in documentation ought to have a unit tests
-			* TODO implement the unit tests
-		* interpretation of each instruction ought to have a unit test
-		* interpretation of strange language features ought to have stress tests
-=end
-		#class Test < Test::Unit::TestCase
-		#end
 	end
 end
 

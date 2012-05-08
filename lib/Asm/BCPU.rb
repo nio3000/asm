@@ -53,7 +53,8 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def self.from_binary_String( a_binary_String )
-			# TODO Paranoid type checking
+			# Paranoid type checking
+			raise 'Aya' unless a_binary_String.instance_of? ::String
 			result	= ::Asm::BCPU::Word.new
 			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_binary_String( a_binary_String )
@@ -61,7 +62,8 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def self.from_decimal_String( a_decimal_String )
-			# TODO Paranoid type checking
+			# Paranoid type checking
+			raise ' Aya' unless a_decimal_String.instance_of? ::String
 			result	= ::Asm::BCPU::Word.new
 			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_decimal_String( a_decimal_String )
@@ -69,7 +71,8 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def self.from_integer( an_Integer )
-			# TODO Paranoid type checking
+			# Paranoid type checking
+			raise 'Aya' unless an_Integer.instance_of? ::Integer
 			result	= ::Asm::BCPU::Word.new
 			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer( an_Integer )
@@ -77,7 +80,8 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def self.from_integer_as_unsigned( an_Integer )
-			# TODO Paranoid type checking
+			# Paranoid type checking
+			raise 'Aya' unless an_Integer.instance_of? ::Integer
 			result	= ::Asm::BCPU::Word.new
 			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer_as_unsigned( an_Integer )
@@ -85,7 +89,8 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def self.from_integer_as_twos_complement( an_Integer )
-			# TODO Paranoid type checking
+			# Paranoid type checking
+			raise 'Aya' unless an_Integer.instance_of? ::Integer
 			result	= ::Asm::BCPU::Word.new
 			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer_as_twos_complement( an_Integer )
@@ -93,7 +98,8 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def self.from_Bitset( a_Bitset )
-			# TODO Paranoid type checking
+			# Paranoid type checking
+			raise 'Aya' unless a_Bitset.instance_of? ::Bitset
 			result	= ::Asm::BCPU::Word.new
 			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_Bitset( a_Bitset )
@@ -101,7 +107,8 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def self.from_BCPU_Word( a_Word )
-			# TODO Paranoid type checking
+			# Paranoid type checking
+			raise 'Aya' unless a_Word.instance_of? ::Asm::BCPU::Word
 			result	= ::Asm::BCPU::Word.new
 			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_Word( a_Word )
@@ -174,7 +181,7 @@ module Asm::BCPU
 			# DOCIT
 			if	!(force_twos_complement == !force_unsigned)
 				if	force_twos_complement == true
-					raise 'Aya' 
+					raise 'Aya'
 				end
 			end
 			# paranoid type checking
@@ -314,7 +321,7 @@ module Asm::BCPU
 			# DOCIT
 			if	!(force_twos_complement == !force_unsigned)
 				if	force_twos_complement == true
-					raise 'Aya' 
+					raise 'Aya'
 				end
 			end
 			#
@@ -513,7 +520,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_binary_String( a_binary_String )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless a_binary_String.instance_of? ::String
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_binary_String( a_binary_String )
@@ -521,7 +529,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_decimal_String( a_decimal_String )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless a_decimal_String.instance_of? ::String
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_decimal_String( a_decimal_String )
@@ -529,7 +538,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_integer( an_Integer )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless an_Integer.instance_of? ::Integer
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer( an_Integer )
@@ -537,7 +547,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_integer_as_unsigned( an_Integer )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless an_Integer.instance_of? ::Integer
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer_as_unsigned( an_Integer )
@@ -545,7 +556,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_integer_as_twos_complement( an_Integer )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless an_Integer.instance_of? ::Integer
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer_as_twos_complement( an_Integer )
@@ -553,7 +565,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_Bitset( a_Bitset )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless a_Bitset.instance_of? ::Bitset
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_Bitset( a_Bitset )
@@ -561,7 +574,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_BCPU_Word( a_Word )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless a_Word.instance_of? ::Asm::BCPU::Word
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_Word( a_Word )
@@ -591,7 +605,9 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_binary_String( a_binary_String )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				Asm::Boilerplate.raise_unless_type( a_binary_String ,::String)
+
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_binary_String( a_binary_String )
@@ -599,7 +615,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_decimal_String( a_decimal_String )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless a_decimal_String.instance_of? ::String
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_decimal_String( a_decimal_String )
@@ -607,7 +624,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_integer( an_Integer )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless an_Integer.instance_of? ::Integer
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer( an_Integer )
@@ -615,7 +633,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_integer_as_unsigned( an_Integer )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless an_Integer.instance_of? ::Integer
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer_as_unsigned( an_Integer )
@@ -623,7 +642,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_integer_as_twos_complement( an_Integer )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless an_Integer.instance_of? ::Integer
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer_as_twos_complement( an_Integer )
@@ -631,7 +651,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_Bitset( a_Bitset )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless a_Bitset.instance_of? ::Bitset
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_Bitset( a_Bitset )
@@ -639,7 +660,8 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def self.from_BCPU_Word( a_Word )
-				# TODO Paranoid type checking
+				# Paranoid type checking
+				raise 'Aya' unless a_Word.instance_of? ::Asm::BCPU::Word
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_Word( a_Word )
