@@ -221,13 +221,15 @@ module Asm::BCPU
 		def to_i( force_twos_complement = true )
 			result	= 0
 			a_String	= @the_bits.to_s
+			#a_bits = the_bits
 			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
 				result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
 			if force_twos_complement
-				result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result
-				Asm::Magic::Binary::Twos_Complement.assert_valid( result )
+				#result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result + 1
+				result	= - result + 1
+				Asm::Magic::Binary::Twos_complement.assert_valid( result )
 				#assert( result < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
 				#assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
 			else
