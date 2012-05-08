@@ -42,7 +42,7 @@ module Asm
 			#@the_memory	= { }
 			@the_memory	= Hash.new
 			#@the_memory.compare_by_identity
-			puts 'VM.initialze ,@the_memory.compare_by_identity?=' << ((@the_memory.compare_by_identity?) ? ('true') : ('false')) << ''
+			#puts 'VM.initialze ,@the_memory.compare_by_identity?=' << ((@the_memory.compare_by_identity?) ? ('true') : ('false')) << ''
 		end
 	public
 =begin
@@ -88,12 +88,12 @@ module Asm
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:moven] )
 				self.moven( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
 			else
-				puts	'BANKAI: ' + op_code_binary_string + " = " + Asm::Magic::ISA::Opcode::Binary::String[:move]
+				#puts	'BANKAI: ' + op_code_binary_string + " = " + Asm::Magic::ISA::Opcode::Binary::String[:move]
 			end
 		end
 		# DOCIT
 		def advance( steps )
-			puts 'chii' unless steps.integer?
+			#puts 'chii' unless steps.integer?
 			if	( steps > 0 )
 				for index in 1..steps
 					self.advance_once
@@ -101,7 +101,7 @@ module Asm
 			else
 				if	steps == 0
 				else
-					puts "don't do that"
+					#puts "don't do that"
 				end
 			end
 		end
@@ -267,18 +267,18 @@ module Asm
 =begin
 		BCPU memory manipulation
 		* strict type checking is intended
-		* incorrect types will puts exceptions.
+		* incorrect types will #puts exceptions.
 =end
 		# Maps the memory location (@param location) to the memory value (@param value)
 		# Returns nothing
 		def set_location_to_value( location ,value )
 			# paranoid type checking
-			Asm::Boilerplate::puts_unless_type( location ,Asm::BCPU::Memory::Location )
-			Asm::Boilerplate::puts_unless_type( value ,Asm::BCPU::Memory::Value )
-			puts 'VM#set_location_to_value( loc=' << location.to_s << ' ,val=' << value.to_s << ' )'
+			Asm::Boilerplate::#puts_unless_type( location ,Asm::BCPU::Memory::Location )
+			Asm::Boilerplate::#puts_unless_type( value ,Asm::BCPU::Memory::Value )
+			#puts 'VM#set_location_to_value( loc=' << location.to_s << ' ,val=' << value.to_s << ' )'
 			# assignment; creates association if none existed, else overwrites.
 			@the_memory[location.to_s]	= value
-			puts '	@the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s
+			#puts '	@the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s
 			# return nothing
 			return
 		end
@@ -289,15 +289,15 @@ module Asm
 		# Returns by value an Asm::BCPU::Memory::Value instance
 		def get_memory_value( location )
 			# paranoid type checking
-			Asm::Boilerplate::puts_unless_type( location ,Asm::BCPU::Memory::Location )
+			Asm::Boilerplate::#puts_unless_type( location ,Asm::BCPU::Memory::Location )
 			# create association even if none exists
 			if !@the_memory.has_key?( location.to_s )
-				puts 'location=' << location.to_s << ' was previously undefined'
+				#puts 'location=' << location.to_s << ' was previously undefined'
 				self.set_location_to_value( location ,Asm::BCPU::Memory::Value.new )
 			else
-				puts 'QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ'
+				#puts 'QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ'
 			end
-			puts 'Aya; @the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s unless @the_memory[location.to_s].instance_of?( Asm::BCPU::Memory::Value )
+			#puts 'Aya; @the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s unless @the_memory[location.to_s].instance_of?( Asm::BCPU::Memory::Value )
 			# return association by value
 			#return	Asm::BCPU::Memory::Value.from_Bitset( @the_memory[location.to_s].the_bits ) #.clone
 			return	Asm::BCPU::Memory::Value.from_binary_String( @the_memory[location.to_s].the_bits.to_s ) #.clone
@@ -311,12 +311,12 @@ module Asm
 		#
 		# computationally expensive; consider using orderedhash gem if this becomes a dealbreaker
 		#
-		# putss exceptions when the memory range is invalid
+		# #putss exceptions when the memory range is invalid
 		# Returns memory-location-ordered array of memory values
 		def get_memory_range( inclusive_minimum ,exclusive_maximum )
 			# paranoid type checking
-			puts 'haerierhaerh' unless inclusive_minimum.integer? && exclusive_maximum.integer?
-			puts "The minimum is not less than the maximum" unless inclusive_minimum < exclusive_maximum 
+			#puts 'haerierhaerh' unless inclusive_minimum.integer? && exclusive_maximum.integer?
+			#puts "The minimum is not less than the maximum" unless inclusive_minimum < exclusive_maximum 
 			# force all values available
 			values	= []
 			for index in (inclusive_minimum..(exclusive_maximum-1))
