@@ -119,7 +119,7 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra.not(rb))
-			
+
 			self.increment_program_counter( dest_reg )
 		end
 
@@ -128,7 +128,7 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra & rb)
-			
+
 			self.increment_program_counter( dest_reg )
 		end
 
@@ -137,7 +137,7 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
-			
+
 			self.increment_program_counter( dest_reg )
 		end
 
@@ -146,7 +146,7 @@ module Asm
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value( dest_reg , ra.add_Word!(rb))
-			
+
 			self.increment_program_counter( dest_reg )
 		end
 
@@ -155,23 +155,23 @@ module Asm
 			ra = self.get_memory_value(reg_a).to_i
 			rb = self.get_memory_value(reg_b).to_i
 			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
-			
+
 			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA + 4bit data
 		def addi( dest_reg, reg_a, reg_fourbit)
-			ra = self.get_memory_value(reg_a).to_i			
+			ra = self.get_memory_value(reg_a).to_i
 			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra + reg_fourbit.to_i ))
-			
+
 			self.increment_program_counter( dest_reg )
 		end
 
 		# RD <- RA - 4bit data
 		def subi( dest_reg, reg_a, reg_fourbit)
-			ra = self.get_memory_value(reg_a).to_i			
+			ra = self.get_memory_value(reg_a).to_i
 			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra - reg_fourbit.to_i ))
-			
+
 			self.increment_program_counter( dest_reg )
 		end
 
@@ -273,8 +273,8 @@ module Asm
 		# Returns nothing
 		def set_location_to_value( location ,value )
 			# paranoid type checking
-			Asm::Boilerplate::#puts_unless_type( location ,Asm::BCPU::Memory::Location )
-			Asm::Boilerplate::#puts_unless_type( value ,Asm::BCPU::Memory::Value )
+			Asm::Boilerplate::puts_unless_type( location ,Asm::BCPU::Memory::Location )
+			Asm::Boilerplate::puts_unless_type( value ,Asm::BCPU::Memory::Value )
 			#puts 'VM#set_location_to_value( loc=' << location.to_s << ' ,val=' << value.to_s << ' )'
 			# assignment; creates association if none existed, else overwrites.
 			@the_memory[location.to_s]	= value
@@ -289,7 +289,7 @@ module Asm
 		# Returns by value an Asm::BCPU::Memory::Value instance
 		def get_memory_value( location )
 			# paranoid type checking
-			Asm::Boilerplate::#puts_unless_type( location ,Asm::BCPU::Memory::Location )
+			Asm::Boilerplate::puts_unless_type( location ,Asm::BCPU::Memory::Location )
 			# create association even if none exists
 			if !@the_memory.has_key?( location.to_s )
 				#puts 'location=' << location.to_s << ' was previously undefined'
@@ -316,7 +316,7 @@ module Asm
 		def get_memory_range( inclusive_minimum ,exclusive_maximum )
 			# paranoid type checking
 			#puts 'haerierhaerh' unless inclusive_minimum.integer? && exclusive_maximum.integer?
-			#puts "The minimum is not less than the maximum" unless inclusive_minimum < exclusive_maximum 
+			#puts "The minimum is not less than the maximum" unless inclusive_minimum < exclusive_maximum
 			# force all values available
 			values	= []
 			for index in (inclusive_minimum..(exclusive_maximum-1))
