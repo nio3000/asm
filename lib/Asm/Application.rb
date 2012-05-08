@@ -18,17 +18,6 @@ include Wx
 * highest-level namespace for the project.
 =end
 module Asm
-=begin	# Asm::Wx
-	* misc WxRuby code
-=end
-	module Wx
-=begin		# Asm::Wx::Callback
-		* WxRuby callbacks
-=end
-		module Callback
-			# TODO remove this
-		end
-	end
 =begin
 	# Asm::Application
 	* a complete and self-contained application object for a BCPU VM
@@ -54,15 +43,12 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( @main_GUI_sheet ,::Wx::Frame )
 			# TODO setup the callbacks
 			#	Loader
-			#		console
 			#		filepath
-			#evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::filepath ) ) Asm::Wx::Callback.instance_method(:handle_compile_code)
-			#evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::filepath ) ) { |event| Asm::Wx::Callback.instance_method(:handle_compile_code)(event) }
-			#evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Filepath ) ) { |event| ::Asm::Wx::Callback.handle_compile_code( event ) }
 			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Filepath ) ) { |event| self.handle_compile_code( event ) }
 			#	VM
 			#		Control
 			#			advance n
+			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Advance::N::Button ) ) { |event| ... }	# Process a EVT_COMMAND_BUTTON_CLICKED event,when the button is clicked.
 			# TODO this callback
 			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_advance_n)
 			#			advance, delay, repeat
@@ -71,8 +57,16 @@ module Asm
 			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_stop_eternity)
 			#		Register
 			#		Memory
+			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display }
+			evt_spinctrl( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display }
 			# TODO these callbacks; scroll up, scroll down, changed lower bound, changed upper bound
 			# 	evt_???( @main_GUI_sheet.find_window( Asm::Magic::GUI::VM::??? ) ) Asm::Wx::Callback.instance_method(:handle_???)
+			# set features of the GUI
+			# * set allowed range on Advance::N::Counter
+			@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Advance::N::Counter ).set_range( Asm::Magic::Memory::Index::Inclusive::Minimum ,Asm::Magic::Memory::Index::Inclusive::Maximum )
+			# * 
+			
+			Asm::Magic::GUI::Magic::Memory::Window_Size
 			# show the GUI
 			@main_GUI_sheet.show(true)
 		end
@@ -86,6 +80,35 @@ module Asm
 =begin	Wx callbacks
 		* need to be instance methods evidently; not 100% sure why, but at least they get access to @main_GUI_sheet
 =end
+		# DOCIT
+		def update_VM_display( force_program_counter_visible = true )
+			# write registers
+			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Minimum )
+			# TODO process and dispatch the registers
+			# move memory window if it isn't contained in the current memory range
+			if	force_program_counter_visible
+				memory_window_high_bound	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).get_value
+				::Asm::Magic::Memory::Index::assert_valid( memory_window_high_bound )
+				memory_window_low_bound	= memory_window_high_bound - ( Asm::Magic::GUI::Magic::Memory::Window_Size - 1 )
+				::Asm::Magic::Memory::Index::assert_valid( memory_window_low_bound )
+				memory_window	= memory_window_low_bound..(memory_window_high_bound-1)
+				program_counter	= ::Asm::BCPU::Memory::Location.new( @the_BCPU.get_memory_value( the_program_counter ).the_bits ).to_i
+				if	(!memory_window.includes?( program_counter ))
+					target	= program_counter
+					if	::Asm::Magic::Memory::Index::valid?( program_counter +( Asm::Magic::GUI::Magic::Memory::Window_Size - 1 ))
+						target	+= Asm::Magic::GUI::Magic::Memory::Window_Size - 1
+					end
+					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).set_value( program_counter + 1 )
+				end
+			end
+			# write memory
+			memory_window_high_bound	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ).get_value
+			::Asm::Magic::Memory::Index::assert_valid( memory_window_high_bound )
+			memory_window_low_bound	= memory_window_high_bound - ( Asm::Magic::GUI::Magic::Memory::Window_Size - 1 )
+			::Asm::Magic::Memory::Index::assert_valid( memory_window_low_bound )
+			raw_memory	= @the_BCPU.get_memory_range( memory_window_low_bound ,memory_window_high_bound)
+			# TODO process and dispatch the memories
+		end
 		# WxRuby callback; invokes compilation and posts results to GUI
 		#
 		# event - instance of Wx::CommandEvent
@@ -95,7 +118,6 @@ module Asm
 		# Returns nothing
 		def handle_compile_code( a_CommandEvent )
 			# obtain a file path
-			# TODO obtain a file path from the event argument
 			a_file_path	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Filepath ).get_value
 			# invoke load, capture returned messages
 			the_messages	= @the_Loader.load( a_file_path )
@@ -114,11 +136,16 @@ module Asm
 		end
 		# WxRuby callback; DOCIT
 		#
-		# event - instance of ???
+		# event - instance of EVT_COMMAND_BUTTON_CLICKED
 		#
 		# Returns nothing
 		def handle_advance_n( an_Event )
-			# TODO implement this callback
+			# obtain necessary info
+			number_of_advances	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Advance::N::Counter ).get_value
+			# advance state
+			@the_BCPU.advance( number_of_advances )
+			# necessary things
+			self.update_VM_display
 		end
 		# WxRuby callback; DOCIT
 		#
