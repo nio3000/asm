@@ -539,7 +539,7 @@ module Asm::BCPU
 			# DOCIT
 			def self.from_integer( an_Integer )
 				# Paranoid type checking
-				raise 'Aya' unless an_Integer.instance_of? ::Integer
+				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer( an_Integer )
@@ -548,7 +548,7 @@ module Asm::BCPU
 			# DOCIT
 			def self.from_integer_as_unsigned( an_Integer )
 				# Paranoid type checking
-				raise 'Aya' unless an_Integer.instance_of? ::Integer
+				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer_as_unsigned( an_Integer )
@@ -557,7 +557,7 @@ module Asm::BCPU
 			# DOCIT
 			def self.from_integer_as_twos_complement( an_Integer )
 				# Paranoid type checking
-				raise 'Aya' unless an_Integer.instance_of? ::Integer
+				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Location.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer_as_twos_complement( an_Integer )
@@ -625,7 +625,7 @@ module Asm::BCPU
 			# DOCIT
 			def self.from_integer( an_Integer )
 				# Paranoid type checking
-				raise 'Aya' unless an_Integer.instance_of? ::Integer
+				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer( an_Integer )
@@ -634,7 +634,7 @@ module Asm::BCPU
 			# DOCIT
 			def self.from_integer_as_unsigned( an_Integer )
 				# Paranoid type checking
-				raise 'Aya' unless an_Integer.instance_of? ::Integer
+				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer_as_unsigned( an_Integer )
@@ -643,7 +643,7 @@ module Asm::BCPU
 			# DOCIT
 			def self.from_integer_as_twos_complement( an_Integer )
 				# Paranoid type checking
-				raise 'Aya' unless an_Integer.instance_of? ::Integer
+				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer_as_twos_complement( an_Integer )
