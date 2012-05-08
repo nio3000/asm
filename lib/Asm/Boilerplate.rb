@@ -19,12 +19,12 @@ module Asm
 				return "0"
 			end
 		end
-		
+
 		module Machine
 			module Code
 				# DOCIT
 				def self.get_OPcode_as_string( a_Memory_Value )
-					return "" + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[15]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[14]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[13]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[12]) 
+					return "" + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[15]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[14]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[13]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[12])
 				end
 				# DOCIT
 				def self.get_RD_location( a_Memory_Value )
@@ -79,7 +79,7 @@ module Asm
 			raise "you passed a noninteger to Asm::Boilerplate.get_twos_complement_bits_as_String; don't do that!" unless  an_Integer.integer?
 			if	an_Integer.instance_of? ::Fixnum
 				a_binary_String	= ''
-				
+
 				(0..(::Asm::Magic::Memory::Bits_per::Word - 1 - 1)).each do |index|
 					#a_binary_String << an_Integer[index].to_s( 2 )
 					a_binary_String	= an_Integer[index].to_s( 2 ) << a_binary_String
@@ -106,22 +106,22 @@ module Asm
 		def	self.raise_unless_type( argument ,type )
 			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
 			begin
-				raise "argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
+				raise "(#{argument}) argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
-				puts "argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
+				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
-				puts "argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '". It is probably nil.' unless argument.instance_of?( type )
+				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '". It is probably nil.' unless argument.instance_of?( type )
 			end
 			return
 		end
 		def	self.puts_unless_type( argument ,type )
 			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
 			begin
-				puts "argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
+				puts "(#{argument}) argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
-				puts "argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
+				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
-				puts "argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '". It is probably nil.' unless argument.instance_of?( type )
+				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '". It is probably nil.' unless argument.instance_of?( type )
 			end
 			return
 		end
