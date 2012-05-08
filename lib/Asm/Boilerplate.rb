@@ -12,22 +12,46 @@ module Asm
 	# Asm::Boilerplate
 =end
 	module Asm::Boilerplate
+		def bool_to_s( Memory_Bit )
+		end
+		
 		module Machine
 			module Code
 				# DOCIT
 				def self.get_OPcode_as_string( a_Memory_Value )
+					return "" + bool_to_s(a_Memory_Value.the_bits[15]) + bool_to_s(a_Memory_Value.the_bits[14]) + bool_to_s(a_Memory_Value.the_bits[13]) + bool_to_s(a_Memory_Value.the_bits[12]) 
 				end
 				# DOCIT
 				def self.get_RD_location( a_Memory_Value )
+					result = ::Asm::BCPU::Memory::Value.new
+					for index in (8..11)
+						result.the_bits[index] = a_Memory_Value.the_bits[index]
+					end
+					return result
 				end
 				# DOCIT
 				def self.get_RA_location( a_Memory_Value )
+					result = ::Asm::BCPU::Memory::Value.new
+					for index in (4..7)
+						result.the_bits[index] = a_Memory_Value.the_bits[index]
+					end
+					return result
 				end
 				# DOCIT
 				def self.get_RB_location( a_Memory_Value )
+					result = ::Asm::BCPU::Memory::Value.new
+					for index in (0..3)
+						result.the_bits[index] = a_Memory_Value.the_bits[index]
+					end
+					return result
 				end
 				# DOCIT
-				def self.get_value_from_bit_range( a_Memory_Value )
+				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
+					result = ::Asm::BCPU::Memory::Value.new
+					for index in a_bit_range
+						result.the_bits[index] = a_Memory_Value.the_bits[index]
+					end
+					return result
 				end
 			end
 		end
