@@ -12,18 +12,23 @@ module Asm
 	# Asm::Boilerplate
 =end
 	module Asm::Boilerplate
-		def bool_to_s( Memory_Bit )
+		def self.bool_to_s( memory_bit )
+			if memory_bit
+				return "1"
+			else
+				return "0"
+			end
 		end
 		
 		module Machine
 			module Code
 				# DOCIT
 				def self.get_OPcode_as_string( a_Memory_Value )
-					return "" + bool_to_s(a_Memory_Value.the_bits[15]) + bool_to_s(a_Memory_Value.the_bits[14]) + bool_to_s(a_Memory_Value.the_bits[13]) + bool_to_s(a_Memory_Value.the_bits[12]) 
+					return "" + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[15]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[14]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[13]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[12]) 
 				end
 				# DOCIT
 				def self.get_RD_location( a_Memory_Value )
-					result = ::Asm::BCPU::Memory::Value.new
+					result = ::Asm::BCPU::Memory::Location.new
 					for index in (8..11)
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
@@ -31,7 +36,7 @@ module Asm
 				end
 				# DOCIT
 				def self.get_RA_location( a_Memory_Value )
-					result = ::Asm::BCPU::Memory::Value.new
+					result = ::Asm::BCPU::Memory::Location.new
 					for index in (4..7)
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
@@ -39,7 +44,7 @@ module Asm
 				end
 				# DOCIT
 				def self.get_RB_location( a_Memory_Value )
-					result = ::Asm::BCPU::Memory::Value.new
+					result = ::Asm::BCPU::Memory::Location.new
 					for index in (0..3)
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
@@ -47,7 +52,7 @@ module Asm
 				end
 				# DOCIT
 				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
-					result = ::Asm::BCPU::Memory::Value.new
+					result = ::Asm::BCPU::Memory::Location.new
 					for index in a_bit_range
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
@@ -101,7 +106,7 @@ module Asm
 		def	self.raise_unless_type( argument ,type )
 			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
 			begin
-				raise 'argument\'s type is ' << argument.kind?() << ', not ' << type.inspect() << '; argument.inspect gives \'' << argument.inspect( ) << '\'.' unless argument.instance_of?( type )
+				raise 'argument\'s type is ' << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives \'' << argument.inspect( ) << '\'.' unless argument.instance_of?( type )
 			rescue
 				raise 'argument\'s type is not ' << type.inspect() << '; argument.inspect gives \'' << argument.inspect( ) << '\'.' unless argument.instance_of?( type )
 			end
