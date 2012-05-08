@@ -12,6 +12,25 @@ module Asm
 	# Asm::Boilerplate
 =end
 	module Asm::Boilerplate
+		module Machine
+			module Code
+				# DOCIT
+				def self.get_OPcode_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_RD_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_RA_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_RB_location( a_Memory_Value )
+				end
+				# DOCIT
+				def self.get_value_from_bit_range( a_Memory_Value )
+				end
+			end
+		end
 		# DOCIT
 		def	self.get_sign_bit_as_String( an_Integer )
 			# Paranoid type checking
