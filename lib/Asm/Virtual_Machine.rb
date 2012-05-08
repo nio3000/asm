@@ -92,7 +92,7 @@ module Asm
 		def advance( steps )
 			raise 'chii' unless steps.integer?
 			if	( steps > 0 )
-				for index in 1..steps ( i < steps)
+				for index in 1..steps
 					self.advance_once
 				end
 			else
@@ -188,19 +188,24 @@ module Asm
 		def inciz( dest_reg, reg_fourbit, reg_b)
 			dest_reg_altered	= false
 			if self.get_memory_value( reg_b ).to_i == 0
-				var = self.get_memory_value( dest_reg )
-				var.add!( reg_fourbit.to_i )
-				self.set_location_to_value( dest_reg , var)
+				an_Integer	= self.get_memory_value( dest_reg ).to_i + reg_fourbit.to_i
+				::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
+				#var = self.get_memory_value( dest_reg )
+				#var.add!( reg_fourbit.to_i )
+				self.set_location_to_value( dest_reg ,::Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer ) )
+				#self.set_location_to_value( dest_reg , var)
 				dest_reg_altered	= true
 			end
 			self.increment_program_counter( dest_reg ,dest_reg_altered )
 		end
-
 		# RD <- RD - 4bit data if RB15 == 1 (neg)
 		def decin( dest_reg, reg_fourbit, reg_b )
 			dest_reg_altered	= false
 			if self.get_memory_value( reg_b ).to_i <= 0
-				self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
+				an_Integer	= self.get_memory_value( dest_reg ).to_i + reg_fourbit.to_i
+				::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
+				self.set_location_to_value( dest_reg ,::Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer ) )
+				#self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
 				dest_reg_altered	= true
 			end
 			self.increment_program_counter( dest_reg ,dest_reg_altered )
@@ -226,7 +231,7 @@ module Asm
 
 		# RD <- RA if RB15 == 0 (positive)
 		def movep( dest_reg, reg_a, reg_b)
-			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 0
+			if self.get_memory_value( reg_b ).the_bits[15] == 0
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
@@ -235,7 +240,7 @@ module Asm
 
 		# RD <- RA if RB15 == 1 (negative)
 		def moven( dest_reg, reg_a, reg_b)
-			if self.get_memory_value( reg_b ).the_bits[Asm::Magic::Register::Index::Inclusive::Minimum] == 1
+			if self.get_memory_value( reg_b ).the_bits[15] == 1
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
@@ -243,14 +248,17 @@ module Asm
 		end
 		# R15 <- R15 + 1
 		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
-			unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
+			#program_counter	= Asm::BCPU::Word.from_Bitset( Asm::Magic::Register::Location::Program_counter.the_bits ).to_i( false ,true )
+			program_counter	= Asm::Magic::Register::Location::Program_counter.to_i
+			#unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
+			if	( dest_reg.to_i == program_counter ) && dest_reg_altered
 				#lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
-				temp	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i
+				temp	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i + an_Integer
 				#lhs.add!( Asm::BCPU::Word.new( an_Integer ) ,false )	# should allow unsigned values to be assigned to program counter
-				temp	+= an_Integer
 				value	= ::Asm::BCPU::Memory::Value.new( ::Asm::BCPU::Memory::Location.new( temp ).the_bits )
 				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,value )
 			end
+			return
 		end
 	public
 =begin
@@ -281,8 +289,9 @@ module Asm
 			unless @the_memory.has_key?( location )
 				self.set_location_to_value( location ,Asm::BCPU::Memory::Value.new )
 			end
+			raise 'Aya' unless @the_memory[location].instance_of?( Asm::BCPU::Memory::Value )
 			# return association by value
-			return	Asm::BCPU::Memory::Value.new(@the_memory[location].the_bits) #.clone
+			return	Asm::BCPU::Memory::Value.from_Bitset( @the_memory[location].the_bits ) #.clone
 		end
 		# Obtain values mapped by memory locations in the given range (@param inclusive_minimum, @paramexclusive_maximum)
 		# 	values are obtained in order

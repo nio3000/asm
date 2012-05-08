@@ -17,77 +17,6 @@ module Asm
 	public
 =begin	structors & accessors
 =end
-=begin
-		#The following are the name captures/regular expressions for capturing machines instructions
-		#Literals
-		registry = '(r|R)[0-9]+'
-		decimal = '[d]{,1}[\+\-]{,1}[0-9]+'
-		binary = '(0)(b|B)[\+\-]{,1}[0-1]+' #Accepts other digits but doesn't capture
-		decimalUnsigned = '[0-9]+'
-		
-		captureBOL = '(?<begin of line>^)' #^
-		captureEOL = '(?<end of line>$)' #$
-		
-		captureKeyword0 = '(?<keyword>(MOVE)|(NOT))' #0 Corresponds
-		captureKeyword1 = '(?<keyword>((AND)|(OR)|(ADD)|(SUB)|(MOVEZ)|(MOVEX)|(MOVEP)|(MOVEN)))'
-		captureKeyword2 = '(?<keyword>(ADDI)|(SUBI))'
-		captureKeyword3 = '(?<keyword>(SET)|(SETH))'
-		captureKeyword4 = '(?<keyword>(INCIZ)|(DECIN))'
-		
-		captureWhitespace = '(?<whitespace>[\s\t]*)'
-		captureWhitespaceReg = '(?<whitespace>[\s\t]+)'
-		captureRegALiteral = '(?<registry a>' + registry +')'
-		captureRegBLiteral = '(?<registry b>' + registry +')'
-		captureRegDESTLiteral = '(?<registry dest>' + registry +')'
-		captureLiteral = '(?<literal>(' + decimal + ')|(' + binary + '))'
-		captureDelimiter = '(?<delimiter>[,])'
-		captureComment = '(?<Comment>(//.*){,1})' 
-		
-		captureASM = '(?<ASM>[Aa][Ss][Mm])'
-		poundLiteral = '(?<memory literal>(#)(' + decimalUnsigned + '))' 
-		equalDelimiter = '(?<delimiter>[=])'
-		
-		dev0 = captureBOL + captureWhitespace + poundLiteral + captureWhitespace + equalDelimiter + captureWhitespace \
-		 + captureLiteral + captureWhitespace + captureComment
-		 
-		dev1 = captureBOL + captureWhitespace + poundLiteral + captureWhitespace + equalDelimiter + captureWhitespace \
-		 + captureASM + captureWhitespace + captureComment
-		
-		format0 = captureBOL + captureWhitespace + captureKeyword0 + captureWhitespaceReg + captureRegDESTLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace \
-		 + captureComment + captureEOL
-		 
-		format1 = captureBOL + captureWhitespace + captureKeyword1 + captureWhitespaceReg + captureRegDESTLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureRegBLiteral + captureWhitespace + captureComment + captureEOL
-		 
-		format2 = captureBOL + captureWhitespace + captureKeyword2 + captureWhitespaceReg + captureRegDESTLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment + captureEOL
-		 
-		format3 = captureBOL + captureWhitespace + captureKeyword3 + captureWhitespaceReg + captureRegDESTLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace + captureComment + captureEOL
-		 
-		format4 = captureBOL + captureWhitespace + captureKeyword4 + captureWhitespaceReg + captureRegDESTLiteral \
-		 + captureWhitespace + captureDelimiter + captureWhitespace + captureLiteral + captureWhitespace \
-		 + captureDelimiter + captureWhitespace + captureRegALiteral + captureWhitespace + captureComment + captureEOL
-		 
-		formatComment = captureBOL + captureWhitespace + captureComment
-		formatWhite = captureBOL + captureWhitespace
-		
-		#New Expressions
-		format0RegEx = ::Asm::Magic::Regexp.create( format0 ) # Regexp.new(format0)
-		format1RegEx = ::Asm::Magic::Regexp.create( format1 ) # Regexp.new(format1)
-		format2RegEx = ::Asm::Magic::Regexp.create( format2 ) # Regexp.new(format2)
-		format3RegEx = ::Asm::Magic::Regexp.create( format3 ) # Regexp.new(format3)
-		format4RegEx = ::Asm::Magic::Regexp.create( format4 ) # Regexp.new(format4)
-		
-		dev0RegEx = ::Asm::Magic::Regexp.create( dev0 ) # Regexp.new(dev0)
-		dev1RegEx = ::Asm::Magic::Regexp.create( dev1 ) # Regexp.new(dev1)
-		
-		commentRegEx = ::Asm::Magic::Regexp.create( formatComment ) # Regexp.new(formatComment)
-		whiteRegEx = ::Asm::Magic::Regexp.create( formatWhite ) # Regexp.new(formatWhite)
-=end
 		# get & set the_Virtual_Machine; is an instance of Asm::Virtual_Machine
 		attr_accessor :the_Virtual_Machine
 		# get & set the memory index at which the Loader will load machine code into the Virtual_Machine's memory; is an Integer
@@ -235,6 +164,7 @@ module Asm
 			if bCPU_range_checking
 				(0..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |from_index|
 					if !(from_Range.include?( from_index )) && (from_Word.the_bits[from_index] == true )
+						raise Asm::Boilerplate::Exception::Overflow.new( 'literal translated to binary value requiring more bits than available in the context; "' << from_Word.to_s << "' outside of supported range, '" << from_Range.to_s << "'; first invalid value is at index " << from_index.to_s << '.' )
 						raise Asm::Boilerplate::Exception::Syntax.new( "literal translates to binary value, '" << from_Word.to_s << "' outside of supported range, '" << from_Range.to_s << "'; first invalid value is at index " << from_index.to_s << '.' )
 					end
 				end
@@ -262,8 +192,6 @@ module Asm
 				# parse individually each line in the file
 				code.each_line do |line|
 					line_count += 1
-#					self.handle( line )
-#=begin
 					begin
 						self.handle( line )
 					rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
@@ -271,15 +199,11 @@ module Asm
 					rescue Asm::Boilerplate::Exception::Overflow => an_overflow_error
 						messages.push 'overflow error on line' << line_count.to_s << ": \"" << an_overflow_error.message << "\""
 					rescue ::Exception => an_error
-						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\""
+						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\" " << an_error.backtrace.to_s
 					rescue ::String => an_error
 						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\""
-					#else
-						#raise 'wrgiajeprohijaperohjoe'
-					#	messages.push 'totally unexpected error on line' << line_count.to_s << ': whatever happened, it was not good.'
 					end
-					#messages.push 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
-#=end
+					messages.push 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
 				end
 			else
 				messages.push '\'' << path << '\' is not a file.'
@@ -536,10 +460,8 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordLit ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
 			#
-			strings_got_padded	= ::Asm::Magic::Memory::Bits_per::Word - 1 # it's a hotfix offset
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..7 ), wordLit, 0..7, value)
-			
 			if keyword == 'SET'
 				value.the_bits[13] = true
 				value.the_bits[14] = true

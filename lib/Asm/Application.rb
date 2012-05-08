@@ -103,15 +103,19 @@ module Asm
 			#	VM
 			#		Control
 			#			advance n
+			#raise @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Button ).inspect( )
 			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Button ) ) { |event| self.handle_advance_n( event ) }	# Process a EVT_COMMAND_BUTTON_CLICKED event,when the button is clicked.
+			#raise 'sdgsdg' unless @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Button ).get_evt_handler_enabled()
 			#			advance, delay, repeat
 			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Button ) ) { |event| self.handle_go_stop_button( event ) }
+			#@main_GUI_sheet.evt_button(Wx::ID_ANY) { raise 'some button was pressed' }
 			#		Register
 			#		Memory
 			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display( false ) }
 			evt_spinctrl( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display( false ) }
 			# show the GUI
 			@main_GUI_sheet.show(true)
+			#return
 		end
 =begin	Wx callbacks
 		* need to be instance methods evidently; not 100% sure why, but at least they get access to @main_GUI_sheet
@@ -119,12 +123,12 @@ module Asm
 		# DOCIT
 		def process_memory_entry( a_memory_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
-			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s << '; "' << ::Asm::Magic::ISA::machine_code_to_String( a_raw_memory_value ) << '"'
+			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ,false ).to_s << '; d' << temp.to_i( false ,true ).to_s << '; "' << ::Asm::Magic::ISA::machine_code_to_String( a_raw_memory_value ) << '"'
 		end
 		# DOCIT
 		def process_register_entry( a_register_index ,a_raw_memory_value )
-			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
-			return	'R' << a_register_index.to_s << ' |-> 0b' << temp.to_s << "; d" << temp.to_i( true ).to_s << '; d' << temp.to_i( false ).to_s
+			temp	= ::Asm::BCPU::Word.from_Bitset( a_raw_memory_value.the_bits )
+			return	'R' << a_register_index.to_s << ' |-> 0b' << temp.to_s << "; d" << temp.to_i( true ,false ).to_s << '; d' << temp.to_i( false ,true ).to_s
 		end
 		# DOCIT
 		def update_VM_display( force_program_counter_visible = true )
@@ -169,6 +173,7 @@ module Asm
 					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Default )
 				end
 			end
+			return
 		end
 		# WxRuby callback; invokes compilation and posts results to GUI
 		#
@@ -196,6 +201,7 @@ module Asm
 			the_console.change_value( the_processed_message )
 			# post new VM state to the GUI
 			self.update_VM_display
+			return
 		end
 		# WxRuby callback; DOCIT
 		#
@@ -204,11 +210,13 @@ module Asm
 		# Returns nothing
 		def handle_advance_n( an_Event )
 			# obtain necessary info
-			number_of_advances	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Advance::N::Counter ).get_value
+			number_of_advances	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Counter ).get_value
+			raise unless number_of_advances > 0
 			# advance state
 			@the_BCPU.advance( number_of_advances )
 			# necessary things
 			self.update_VM_display
+			return
 		end
 		# WxRuby callback; DOCIT
 		#
@@ -222,6 +230,7 @@ module Asm
 				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).get_value * 1000
 				@timer.start(temp)
 			end
+			return
 		end
 	end
 end

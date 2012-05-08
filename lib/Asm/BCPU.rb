@@ -31,8 +31,8 @@ module Asm::BCPU
 		# initializing constructor, implicitly default constructor
 		# argument - see Asm::BCPU::Word::assign for restrictions
 		# force_twos_complement - see Asm::BCPU::Word::assign for usage
-		def initialize( an_Object = nil ,force_twos_complement = true )
-			self.assign( an_Object ,force_twos_complement )
+		def initialize( an_Object = nil ,force_twos_complement = false ,force_unsigned = false )
+			self.assign( an_Object ,force_twos_complement ,force_unsigned )
 			self.assert_valid
 		end
 		# Creates a new instance of Asm::BCPU::Word,
@@ -44,49 +44,56 @@ module Asm::BCPU
 		# DOCIT
 		def self.from_binary_String( a_binary_String )
 			# TODO Paranoid type checking
-			result	= self.class.new
+			result	= ::Asm::BCPU::Word.new
+			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_binary_String( a_binary_String )
 			return	result
 		end
 		# DOCIT
 		def self.from_decimal_String( a_decimal_String )
 			# TODO Paranoid type checking
-			result	= self.class.new
+			result	= ::Asm::BCPU::Word.new
+			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_decimal_String( a_decimal_String )
 			return	result
 		end
 		# DOCIT
 		def self.from_integer( an_Integer )
 			# TODO Paranoid type checking
-			result	= self.class.new
+			result	= ::Asm::BCPU::Word.new
+			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer( an_Integer )
 			return	result
 		end
 		# DOCIT
 		def self.from_integer_as_unsigned( an_Integer )
 			# TODO Paranoid type checking
-			result	= self.class.new
+			result	= ::Asm::BCPU::Word.new
+			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer_as_unsigned( an_Integer )
 			return	result
 		end
 		# DOCIT
 		def self.from_integer_as_twos_complement( an_Integer )
 			# TODO Paranoid type checking
-			result	= self.class.new
+			result	= ::Asm::BCPU::Word.new
+			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer_as_twos_complement( an_Integer )
 			return	result
 		end
 		# DOCIT
 		def self.from_Bitset( a_Bitset )
 			# TODO Paranoid type checking
-			result	= self.class.new
+			result	= ::Asm::BCPU::Word.new
+			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_Bitset( a_Bitset )
 			return	result
 		end
 		# DOCIT
 		def self.from_BCPU_Word( a_Word )
 			# TODO Paranoid type checking
-			result	= self.class.new
+			result	= ::Asm::BCPU::Word.new
+			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_Word( a_Word )
 			return	result
 		end
@@ -101,7 +108,7 @@ module Asm::BCPU
 		# force the encoding choice to be twos complement.
 		# Raises when input is invalid
 		# Returns nothing
-		def assign( an_Object = nil ,force_twos_complement = true )
+		def assign( an_Object = nil ,force_twos_complement = false ,force_unsigned = false )
 			if an_Object == nil	# Bitset initialized to 16 bits of zeros.
 				@the_bits	= Bitset.new( Asm::Magic::Memory::Bits_per::Word )
 			elsif an_Object.instance_of?( ::String )
@@ -112,7 +119,7 @@ module Asm::BCPU
 			elsif an_Object.instance_of?( ::Asm::BCPU::Word )
 				self.assign_BCPU_Word( an_Object )
 			elsif an_Object.integer?	#an_Object.integer?
-				self.assign_integer( an_Object ,force_twos_complement )
+				self.assign_integer( an_Object ,force_twos_complement ,force_unsigned )
 			else
 				raise 'Waku waku!'
 			end
@@ -153,7 +160,13 @@ module Asm::BCPU
 		# force_twos_complement
 		#	T: will delegate assignment to Asm::BCPU::Word::assign_integer_as_twos_complement
 		#	F: will delegate assignment to Asm::BCPU::Word::assign_integer_as_twos_complement iff an_Integer < 0; else will delegate assignment to Asm::BCPU::Word::assign_integer_as_unsigned
-		def assign_integer( an_Integer ,force_twos_complement = true )
+		def assign_integer( an_Integer ,force_twos_complement = false ,force_unsigned = false )
+			# DOCIT
+			if	!(force_twos_complement == !force_unsigned)
+				if	force_twos_complement == true
+					raise 'Aya' 
+				end
+			end
 			# paranoid type checking
 			raise 'argument is not an integer' unless an_Integer.integer?
 			# loose range checking based on known binary encodings (unsigned union twos-complement)
@@ -162,6 +175,9 @@ module Asm::BCPU
 			if force_twos_complement
 				Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 				self.assign_integer_as_twos_complement( an_Integer )
+			elsif force_unsigned
+				Asm::Magic::Binary::Unsigned.assert_valid( an_Integer )
+				self.assign_integer_as_unsigned( an_Integer )
 			else
 				if Asm::Magic::Binary::Unsigned::valid?( an_Integer )
 					self.assign_integer_as_unsigned( an_Integer )
@@ -239,7 +255,7 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def	assert_valid
-			raise 'Invalid ::Asm::BCPU::Word instance' unless self.valid
+			raise 'Invalid ::Asm::BCPU::Word instance' unless self.valid?
 		end
 		# Bitset's bitwise-or (aka '|') is broken (in one usage case only), don't use it.
 		# If for some reason you need that, then use this instead.
@@ -268,8 +284,9 @@ module Asm::BCPU
 		end
 		# Obtain a binary String of the bits in self
 		def to_s
-			@the_bits.to_s
+			result	= @the_bits.to_s
 			self.assert_valid
+			return	result
 		end
 		# computes the Integer representation of @the_bits
 		#
@@ -314,6 +331,7 @@ module Asm::BCPU
 		end
 		# DOCIT
 		def from_i( an_Integer ,force_twos_complement = true )
+			raise 'deprecated method ::Asm::BCPU::Word#from_i; use ::Asm::BCPU::Word.from_integer or variants instead'
 			# Paranoid type checking
 			raise "you passed a noninteger to Asm::BCPU::Word#from_i; don't do that!" unless  an_Integer.integer?
 			if	force_twos_complement | ::Asm::Magic::Binary::Twos_complement.valid?( an_Integer )
@@ -334,9 +352,9 @@ module Asm::BCPU
 		def add!( an_Object ,force_twos_complement = true )
 			if an_Object.instance_of?( ::Asm::BCPU::Word )
 				self.add_Word!( an_Object ,force_twos_complement )
-			elsif an_Object.instance_of?( ::Asm::BCPU::Memory::Value )
-				raise 'invalid invocation' unless force_twos_complement
-				self.add_Value!( an_Object )
+			#elsif an_Object.instance_of?( ::Asm::BCPU::Memory::Value )
+			#	raise 'invalid invocation' unless force_twos_complement
+			#	self.add_Value!( an_Object )
 			elsif an_Object.instance_of?( ::Asm::BCPU::Memory::Location )
 				raise 'invalid invocation' unless !force_twos_complement
 				self.add_Location!( an_Object )
@@ -355,13 +373,13 @@ module Asm::BCPU
 			self.add_Integer!( rhs ,force_twos_complement )
 		end
 		# Performs addition given another Asm::BCPU::Word instance
-		def add_Value!( rhs_Memory_Value )
-			# paranoid type checking
-			Asm::Boilerplate.raise_unless_type( rhs_Memory_Value ,Asm::BCPU::Memory::Value )
-			# utilize to_i to implement addition
-			rhs	= rhs_Memory_Value.to_i( )
-			self.add_Integer!( rhs ,true )
-		end
+		#def add_Value!( rhs_Memory_Value )
+		#	# paranoid type checking
+		#	Asm::Boilerplate.raise_unless_type( rhs_Memory_Value ,Asm::BCPU::Memory::Value )
+		#	# utilize to_i to implement addition
+		#	rhs	= rhs_Memory_Value.to_i( )
+		#	self.add_Integer!( rhs ,true )
+		#end
 		# Performs addition given another Asm::BCPU::Word instance
 		def add_Location!( rhs_memory_location ,force_twos_complement = true )
 			# paranoid type checking
@@ -402,13 +420,13 @@ module Asm::BCPU
 			# initializing constructor
 			# see Asm::BCPU::Word::initialize
 			def initialize( an_Object = nil )
-				super( an_Object ,false )
+				super( an_Object ,false ,true )
 			end
 			# Interprets self as the unsigned binary encoding of an integer value
 			#
 			# Returns an integer
 			def to_i( )
-				super( false )
+				super( false ,true )
 			end
 			# DOCIT
 			def less_than?( rhs )
@@ -434,7 +452,60 @@ module Asm::BCPU
 			end
 			# DOCIT
 			def valid?
-				return	Asm::BCPU::Memory::Index::valid?( self.to_i( ) )
+				return	Asm::Magic::Memory::Index::valid?( self.to_i( ) )
+			end
+			# DOCIT
+			def self.from_binary_String( a_binary_String )
+				# TODO Paranoid type checking
+				result	= self.class.new
+				result.assign_binary_String( a_binary_String )
+				return	result
+			end
+			# DOCIT
+			def self.from_decimal_String( a_decimal_String )
+				# TODO Paranoid type checking
+				result	= self.class.new
+				result.assign_decimal_String( a_decimal_String )
+				return	result
+			end
+			# DOCIT
+			def self.from_integer( an_Integer )
+				# TODO Paranoid type checking
+				result	= self.class.new
+				result.assign_integer( an_Integer )
+				return	result
+			end
+			# DOCIT
+			def self.from_integer_as_unsigned( an_Integer )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Location.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				result.assign_integer_as_unsigned( an_Integer )
+				return	result
+			end
+			# DOCIT
+			def self.from_integer_as_twos_complement( an_Integer )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Location.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				result.assign_integer_as_twos_complement( an_Integer )
+				return	result
+			end
+			# DOCIT
+			def self.from_Bitset( a_Bitset )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Location.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				result.assign_Bitset( a_Bitset )
+				return	result
+			end
+			# DOCIT
+			def self.from_BCPU_Word( a_Word )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Location.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				result.assign_Word( a_Word )
+				return	result
 			end
 		end
 		# DOCIT
@@ -448,22 +519,64 @@ module Asm::BCPU
 			#
 			# Returns an integer
 			def to_i( )
-				super( true )
+				super( false ,false )
 			end
-		end
-		# DOCIT
-		module Asm::BCPU::Memory::Index
 			# DOCIT
-			def valid?( argument )
-				return	(argument >= Asm::Literals_Are_Magic::Memory::inclusive_minimum_index) && (argument < Asm::Literals_Are_Magic::Memory::exclusive_maximum_index)
+			def self.from_binary_String( a_binary_String )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Value.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				result.assign_binary_String( a_binary_String )
+				return	result
 			end
-		end
-	end
-	# DOCIT
-	module Asm::BCPU::Register
-		# DOCIT
-		def location( register_literal )
-			# TODO make an instance of Memory::Location based on /R[0-9]+/
+			# DOCIT
+			def self.from_decimal_String( a_decimal_String )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Value.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				result.assign_decimal_String( a_decimal_String )
+				return	result
+			end
+			# DOCIT
+			def self.from_integer( an_Integer )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Value.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				result.assign_integer( an_Integer )
+				return	result
+			end
+			# DOCIT
+			def self.from_integer_as_unsigned( an_Integer )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Value.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				result.assign_integer_as_unsigned( an_Integer )
+				return	result
+			end
+			# DOCIT
+			def self.from_integer_as_twos_complement( an_Integer )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Value.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				result.assign_integer_as_twos_complement( an_Integer )
+				return	result
+			end
+			# DOCIT
+			def self.from_Bitset( a_Bitset )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Value.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				result.assign_Bitset( a_Bitset )
+				return	result
+			end
+			# DOCIT
+			def self.from_BCPU_Word( a_Word )
+				# TODO Paranoid type checking
+				result	= ::Asm::BCPU::Memory::Value.new
+				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				result.assign_Word( a_Word )
+				return	result
+			end
 		end
 	end
 end
@@ -473,17 +586,17 @@ end
 	* memory locations of unique special function registers
 =end
 module Asm::Magic::Register::Location
-	Minimum	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::Inclusive::Minimum )
-	Maximum	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::Inclusive::Maximum )
-	Program_counter	= Asm::BCPU::Memory::Location.new( Asm::Magic::Register::Index::Program_counter )
+	Minimum	= Asm::BCPU::Memory::Location.from_integer_as_unsigned( Asm::Magic::Register::Index::Inclusive::Minimum )
+	Maximum	= Asm::BCPU::Memory::Location.from_integer_as_unsigned( Asm::Magic::Register::Index::Inclusive::Maximum )
+	Program_counter	= Asm::BCPU::Memory::Location.from_integer_as_unsigned( Asm::Magic::Register::Index::Program_counter )
 end
 =begin
 	# Asm::Magic::Register::Locations
 	* memory locations of ategories of special function registers
 =end
 module	Asm::Magic::Register::Locations
-	Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
-	Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.new( index ) }
+	Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.from_integer_as_unsigned( index ) }
+	Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.from_integer_as_unsigned( index ) }
 end
 
 # encoding: UTF-8

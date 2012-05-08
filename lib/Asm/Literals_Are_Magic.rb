@@ -41,12 +41,12 @@ module Asm
 				end
 				# DOCIT
 				def	self.valid?( an_Integer )
-					raise 'adsgasdgawer' unless an_Integer.integer?
+					raise 'Aya' unless an_Integer.integer?
 					return	( an_Integer > ::Asm::Magic::Memory::Index::Exclusive::Minimum ) && ( an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum )
 				end
 				# DOCIT
 				def	self.assert_valid( an_Integer )
-					raise 'adsgasdgawer' unless an_Integer.integer?
+					raise 'Aya' unless an_Integer.integer?
 					if !(an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum)
 						raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive to be a memory location index.'
 					elsif !(::Asm::Magic::Memory::Index::Exclusive::Minimum < an_Integer)
