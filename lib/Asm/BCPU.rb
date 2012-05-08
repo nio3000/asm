@@ -33,12 +33,62 @@ module Asm::BCPU
 		# force_twos_complement - see Asm::BCPU::Word::assign for usage
 		def initialize( an_Object = nil ,force_twos_complement = true )
 			self.assign( an_Object ,force_twos_complement )
+			self.assert_valid
 		end
 		# Creates a new instance of Asm::BCPU::Word,
 		# initialized to the values in self
 		# const copy constructor
 		def clone
-			return	Asm::BCPU::Word.new( self ).the_bits
+			return	Asm::BCPU::Word.new( self.the_bits )
+		end
+		# DOCIT
+		def self.from_binary_String( a_binary_String )
+			# TODO Paranoid type checking
+			result	= self.class.new
+			result.assign_binary_String( a_binary_String )
+			return	result
+		end
+		# DOCIT
+		def self.from_decimal_String( a_decimal_String )
+			# TODO Paranoid type checking
+			result	= self.class.new
+			result.assign_decimal_String( a_decimal_String )
+			return	result
+		end
+		# DOCIT
+		def self.from_integer( an_Integer )
+			# TODO Paranoid type checking
+			result	= self.class.new
+			result.assign_integer( an_Integer )
+			return	result
+		end
+		# DOCIT
+		def self.from_integer_as_unsigned( an_Integer )
+			# TODO Paranoid type checking
+			result	= self.class.new
+			result.assign_integer_as_unsigned( an_Integer )
+			return	result
+		end
+		# DOCIT
+		def self.from_integer_as_twos_complement( an_Integer )
+			# TODO Paranoid type checking
+			result	= self.class.new
+			result.assign_integer_as_twos_complement( an_Integer )
+			return	result
+		end
+		# DOCIT
+		def self.from_Bitset( a_Bitset )
+			# TODO Paranoid type checking
+			result	= self.class.new
+			result.assign_Bitset( a_Bitset )
+			return	result
+		end
+		# DOCIT
+		def self.from_BCPU_Word( a_Word )
+			# TODO Paranoid type checking
+			result	= self.class.new
+			result.assign_Word( a_Word )
+			return	result
 		end
 	public
 =begin
@@ -176,12 +226,21 @@ module Asm::BCPU
 			# make the assignment to @the_bits
 			@the_bits	= Bitset.new( Asm::Magic::Memory::Bits_per::Word )	# 0000 0000 0000 0000
 			self.bitwise_OR!( a_Bitset )	# 1s from a_Bitset will appear in @the_bits
+			self.assert_valid
 			return
 		end
 	public
 =begin
 		implementation details
 =end
+		# DOCIT
+		def	valid?
+			@the_bits.size == ::Asm::Magic::Memory::Bits_per::Word
+		end
+		# DOCIT
+		def	assert_valid
+			raise 'Invalid ::Asm::BCPU::Word instance' unless self.valid
+		end
 		# Bitset's bitwise-or (aka '|') is broken (in one usage case only), don't use it.
 		# If for some reason you need that, then use this instead.
 		#
@@ -204,12 +263,13 @@ module Asm::BCPU
 			else
 				raise 'Ojou-sama, that is inappropriate.'
 			end
+			self.assert_valid
 			return
 		end
 		# Obtain a binary String of the bits in self
-		def to_s( )
+		def to_s
 			@the_bits.to_s
-			# TODO check for consistency between endianness in Word.new( '01' ) and Word.new( '01' ).to_s
+			self.assert_valid
 		end
 		# computes the Integer representation of @the_bits
 		#
@@ -218,7 +278,14 @@ module Asm::BCPU
 		#
 		# Raises if something really wierd happens
 		# Returns Integer
-		def to_i( force_twos_complement = true )
+		def to_i( force_twos_complement = true ,force_unsigned = false )
+			# DOCIT
+			if	!(force_twos_complement == !force_unsigned)
+				if	force_twos_complement == true
+					raise 'Aya' 
+				end
+			end
+			#
 			result	= 0
 			a_String	= @the_bits.to_s
 			#a_bits = the_bits
@@ -226,17 +293,22 @@ module Asm::BCPU
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
 				result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
+			Asm::Magic::Binary::Unsigned.assert_valid( result )
 			if force_twos_complement
 				#result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result + 1
 				result	= - result + 1
 				Asm::Magic::Binary::Twos_complement.assert_valid( result )
 				#assert( result < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
 				#assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
-			else
+			elsif force_unsigned
 				Asm::Magic::Binary::Unsigned.assert_valid( result )
 				raise 'shenanigans' << @the_bits.to_s.to_i( 2 ).to_s << '==' << result.to_s unless @the_bits.to_s.to_i( 2 ) == result
 				#assert( result < Asm::Magic::Binary::Unsigned::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
 				#assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
+			else
+				if	!Asm::Magic::Binary::Unsigned.valid?( result )
+					result	= - result + 1
+				end
 			end
 			result
 		end

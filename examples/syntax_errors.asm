@@ -1,4 +1,4 @@
-// # /examples/syntax_errors.asm
+// # examples/syntax_errors.asm
 // * this file should fail to execute in the BCPU VM.
 // 	* statements that should fail should have a comment after them; // invalid
 // 	* statements that should not fail should have a comment after them; // valid
