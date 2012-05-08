@@ -260,10 +260,10 @@ module Asm::BCPU
 		def add!( an_Object ,force_twos_complement = true )
 			if an_Object.instance_of?( ::Asm::BCPU::Word )
 				self.add_Word!( an_Object ,force_twos_complement )
-			elsif an_Object.instance_of?( ::Asm::BCPU::Value )
+			elsif an_Object.instance_of?( ::Asm::BCPU::Memory::Value )
 				raise 'invalid invocation' unless force_twos_complement
 				self.add_Value!( an_Object )
-			elsif an_Object.instance_of?( ::Asm::BCPU::Location )
+			elsif an_Object.instance_of?( ::Asm::BCPU::Memory::Location )
 				raise 'invalid invocation' unless !force_twos_complement
 				self.add_Location!( an_Object )
 			elsif an_Object.instance_of?( ::Integer )
