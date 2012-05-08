@@ -52,12 +52,45 @@ module Asm
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
-			
-			# dispatch based on opcode
-				# make boilerplate code for splitting based on format
+			if op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:move] )
+				self.move( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:not] )
+				self.not( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:and] )
+				self.and( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:or] )
+				self.or( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:add] )
+				self.add( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:sub] )
+				self.sub( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:addi] )
+				self.addi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:subi] )
+				self.subi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:set] )
+				self.set( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..7) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:seth] )
+				self.seth( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..7) ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:inciz] )
+				self.inciz( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(4..7) ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code )  )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:decin] )
+				self.decin( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(4..7) ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code )  )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:movez] )
+				self.movez( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:movex] )
+				self.movex( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:movep] )
+				self.movep( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Binary::String[:moven] )
+				self.moven( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
+			else
+				raise	'BANKAI'
+			end
 		end
 		# DOCIT
 		def advance( steps )
+			raise 'chii' unless steps.integer?
 			if	( steps > 0 )
 				for index in 1..steps ( i < steps)
 					self.advance_once
