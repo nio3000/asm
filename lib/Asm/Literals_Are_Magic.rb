@@ -236,7 +236,7 @@ module Asm
 				#
 				# Returns a new Regexp_String
 				def	self.named_capture( a_Regexp_String ,a_String_for_a_name )
-					return	'(?<' << a_String_for_a_name << '>' << a_Regexp_String << ')'
+					return	'(?<' << a_String_for_a_name << '>' << a_Regexp_String << ')'	# (?<name>dsgfsdg)
 				end
 				# DOCIT
 				#
@@ -271,6 +271,13 @@ module Asm
 =end
 				module	::Asm::Magic::Regexp::String::Asm
 					Comment	= '' << ::Asm::Magic::Regexp::String::Optional::Whitespace << '//.*$'	# optional whitespace followed by a comment followed by optional anything; also forced consume until end of line or fail to match
+					module	::Asm::Magic::Regexp::String::Asm::Optional
+						Comment	= '' << ::Asm::Magic::Regexp::String::Optional::Whitespace << '(//.*){,1}$'
+					end
+					module	::Asm::Magic::Regexp::String::Asm::Ignore
+						Comment	= '' << Beginning_of_line << ::Asm::Magic::Regexp::String::Asm::Comment
+						Blank	= '' << Beginning_of_line << '$'
+					end
 					module	::Asm::Magic::Regexp::String::Asm::Register
 						Flag	= '[rR]'
 						Value	= '[0-9]+'
@@ -323,7 +330,7 @@ module Asm
 					module	::Asm::Magic::Regexp::String::Asm::Instruction
 						Prefix	= '' << Beginning_of_line
 						Delimiter	= '' << ::Asm::Magic::Regexp::String::Optional::Whitespace << ',' << ::Asm::Magic::Regexp::String::Optional::Whitespace	# a comma, optionally surrounded by whitespace; the delimiter in instructions
-						Suffix	= '' << Comment
+						Suffix	= '' << ::Asm::Magic::Regexp::String::Asm::Optional::Comment
 						module	::Asm::Magic::Regexp::String::Asm::Instruction::Format
 							RD_RA	= '' << Prefix << ::Asm::Magic::Regexp::String::Asm::Keyword::Capture::RD_RA << ::Asm::Magic::Regexp::String::Optional::Whitespace << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RD << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RA << Suffix
 							RD_RA_RB	= '' << Prefix << ::Asm::Magic::Regexp::String::Asm::Keyword::Capture::RD_RA_RB << ::Asm::Magic::Regexp::String::Optional::Whitespace << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RD << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RA << Delimiter << ::Asm::Magic::Regexp::String::Asm::Register::Capture::RB << Suffix
@@ -335,7 +342,7 @@ module Asm
 					module	::Asm::Magic::Regexp::String::Asm::Directive
 						Prefix	= '' << Beginning_of_line << '#' << ::Asm::Magic::Regexp::String::Optional::Whitespace	# directive symbol followed by optional whitespace
 						Delimiter	= '' << ::Asm::Magic::Regexp::String::Optional::Whitespace << '=' << ::Asm::Magic::Regexp::String::Optional::Whitespace
-						Suffix	= '' << Comment
+						Suffix	= '' << ::Asm::Magic::Regexp::String::Asm::Optional::Comment
 						LHS	= '' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Numeric::Literal ,::Asm::Magic::Regexp::String::Names::Directive::LHS )
 						#LHS	= '(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Literal ,::Asm::Magic::Regexp::String::Names::Directive::LHS ) << ')|(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Literal ,::Asm::Magic::Regexp::String::Names::Directive::LHS ) << ')'
 						#RHS	= '(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Base10::Literal ,::Asm::Magic::Regexp::String::Names::Directive::RHS ) << ')|(' << ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Binary::Literal ,::Asm::Magic::Regexp::String::Names::Directive::RHS ) << ')'
@@ -344,10 +351,6 @@ module Asm
 							Asm	= '' << ::Asm::Magic::Regexp::String::Asm::Directive::Prefix << ::Asm::Magic::Regexp::String::Asm::Directive::LHS << ::Asm::Magic::Regexp::String::Asm::Directive::Delimiter << ::Asm::Magic::Regexp::String::Asm::Keyword::Asm << ::Asm::Magic::Regexp::String::Asm::Directive::Suffix	# # number = asm
 							Assignment	= '' << ::Asm::Magic::Regexp::String::Asm::Directive::Prefix << ::Asm::Magic::Regexp::String::Asm::Directive::LHS << ::Asm::Magic::Regexp::String::Asm::Directive::Delimiter << ::Asm::Magic::Regexp::String::Asm::Directive::RHS << ::Asm::Magic::Regexp::String::Asm::Directive::Suffix	# # number = number
 						end
-					end
-					module	::Asm::Magic::Regexp::String::Asm::Ignore
-						Comment	= '' << Beginning_of_line << ::Asm::Magic::Regexp::String::Asm::Comment
-						Blank	= '' << Beginning_of_line << '$'
 					end
 				end
 #=end
@@ -520,7 +523,10 @@ module Asm
 =end
 					end
 				end
-
+			def self.machine_code_to_String( a_memory_value )
+				# TODO implement me
+				return	'rm -rf'
+			end
 		end
 	end
 end
