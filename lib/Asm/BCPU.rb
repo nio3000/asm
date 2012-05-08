@@ -129,8 +129,7 @@ module Asm::BCPU
 			# twos complement range checking
 			Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 			# convert to binary String twos complement encoding
-			a_String	= an_Integer.to_s( 2 )
-			# TODO verify whether or not the binary String faithfully represents negative values in twos complement (I don't think it does)
+			a_String	= '' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer ) << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )
 			Asm::Magic::Binary::String.assert_valid( a_String )
 			# dispatch to new method
 			self.assign_binary_String( a_String )
@@ -238,6 +237,18 @@ module Asm::BCPU
 				#assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
 			end
 			result
+		end
+		# DOCIT
+		def from_i( an_Integer ,force_twos_complement = true )
+			# Paranoid type checking
+			raise "you passed a noninteger to Asm::BCPU::Word#from_i; don't do that!" unless  an_Integer.integer?
+			if	( force_twos_complement )
+				a_binary_String	= '' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer ) << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )
+				self.assign_binary_String( a_binary_String )
+			else
+				self.assign_binary_String( an_Integer.to_s( 2 ) )
+			end
+			return
 		end
 		# Performs addition given an object
 		# delegates alot

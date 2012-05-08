@@ -13,6 +13,34 @@ module Asm
 =end
 	module Asm::Boilerplate
 		# DOCIT
+		def	self.get_sign_bit_as_String( an_Integer )
+			# Paranoid type checking
+			raise "you passed a noninteger to Asm::Boilerplate.get_sign_bit_as_String; don't do that!" unless  an_Integer.integer?
+			if	an_Integer.instance_of? ::Fixnum
+				index_of_sign_bit	= (an_Integer.size * ::Asm::Magic::Memory::Bits_per::Byte) - 1
+				result	= an_Integer[index_of_sign_bit].to_s( 2 )
+				raise 'shenanigans and sharnigans!' unless ((result.size == 1) && (result.count('01') == 1))
+				return	result
+			else
+				raise 'shenanigans! unsupported type'
+			end
+		end
+		# DOCIT
+		def	self.get_twos_complement_bits_as_String( an_Integer )
+			# Paranoid type checking
+			raise "you passed a noninteger to Asm::Boilerplate.get_twos_complement_bits_as_String; don't do that!" unless  an_Integer.integer?
+			if	an_Integer.instance_of? ::Fixnum
+				a_binary_String	= ''
+				(0..(::Asm::Magic::Memory::Bits_per::Word - 1)).each do |index|
+					a_binary_String << an_Integer[index].to_s( 2 )
+				end
+				raise 'shenanigans and sharnigans!' unless ( a_binary_String.size == a_binary_String.count('01') )
+				return	a_binary_String
+			else
+				raise 'shenanigans! unsupported type'
+			end
+		end
+		# DOCIT
 		# strings got padded, this is a hotfix
 		def	self.pads!( a_Range )
 			offset	= (::Asm::Magic::Memory::Bits_per::Word - 1)
