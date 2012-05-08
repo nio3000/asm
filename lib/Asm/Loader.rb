@@ -223,6 +223,7 @@ module Asm
 		#
 		# Returns nothing
 		def handle( line_of_text )
+=begin
 			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA	# check if 'keyword RD RA' instruction format consumes line
 			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_RB
 			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_data
@@ -242,7 +243,7 @@ module Asm
 			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Directive::Format::Asm ).match(line_of_text)
 			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Comment ).match(line_of_text)
 			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Ignore::Blank ).match(line_of_text)
-			
+=end
 			capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA ).match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
 			if	capture != nil
 				self.instruction_format__keyword_RD_RA( capture[::Asm::Magic::Regexp::String::Names::Keyword], capture[::Asm::Magic::Regexp::String::Names::Register::D], capture[::Asm::Magic::Regexp::String::Names::Register::A] )
@@ -388,6 +389,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			puts '#instruction_format__keyword_RD_RA_RB, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -423,6 +425,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			puts '#instruction_format__keyword_RD_RA, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -465,6 +468,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			puts '#instruction_format__keyword_RD_RA_literal, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -507,6 +511,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			puts '#instruction_format__keyword_RD_literal_RA, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -543,6 +548,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			puts '#instruction_format__keyword_RD_literal, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
