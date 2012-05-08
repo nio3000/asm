@@ -374,7 +374,7 @@ module Asm
 				module VM
 					Frame	= 'VM_frame'
 					module State
-						Memories = ((0..::Asm::Magic::GUI::Magic::Memory::Window_size).to_a).map! { |k| "VM_memory_Ai" + k.to_s }
+						Memories = ((0..(::Asm::Magic::GUI::Magic::Memory::Window_size - 1)).to_a).map! { |k| "VM_memory_Ai" + k.to_s }
 						Registers = ((0..::Asm::Magic::Register::Index::Inclusive::Maximum).to_a).map! { |k| "VM_registers_R" + k.to_s }
 					end
 					module Control
