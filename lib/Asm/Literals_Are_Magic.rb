@@ -359,7 +359,7 @@ module Asm
 =end
 		module GUI
 			module Names
-				Xrc_file	= './../lib/Asm/gui.xrc'
+				Xrc_file	= 'lib/Asm/gui.xrc'
 				Top_level	= 'Main_frame'
 				module Loader
 					Frame	= 'Loader_frame'
