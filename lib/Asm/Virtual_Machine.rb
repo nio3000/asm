@@ -242,9 +242,12 @@ module Asm
 		# R15 <- R15 + 1
 		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
 			unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
-				lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
-				lhs.add!( Asm::BCPU::Word.new( an_Integer ) ,false )	# should allow unsigned values to be assigned to program counter
-				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,lhs )
+				#lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
+				temp	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i
+				#lhs.add!( Asm::BCPU::Word.new( an_Integer ) ,false )	# should allow unsigned values to be assigned to program counter
+				temp	+= an_Integer
+				value	= ::Asm::BCPU::Memory::Value.new( ::Asm::BCPU::Memory::Location.new( temp ).the_bits )
+				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,value )
 			end
 		end
 	public

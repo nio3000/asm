@@ -517,7 +517,10 @@ module Asm
 =end
 					end
 				end
-
+			def self.machine_code_to_String( a_memory_value )
+				# TODO implement me
+				return	'rm -rf'
+			end
 		end
 	end
 end
