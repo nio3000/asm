@@ -53,8 +53,10 @@ module Asm
 		end
 		# DOCIT
 		def advance( steps )
-			# TODO implement
-			# call advance_once number_of_times
+			#i = 0
+			#while ( i < steps)
+			#	
+			#end
 		end
 	private
 =begin	execute simulated BCPU execution
