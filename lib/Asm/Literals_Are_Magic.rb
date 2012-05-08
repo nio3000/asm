@@ -362,14 +362,41 @@ module Asm
 				Xrc_file	= 'lib/Asm/gui.xrc'
 				Top_level	= 'Main_frame'
 				module Loader
-					Frame	= 'Loader_frame'
-					Console	= 'Loader_console'
-					Filepath	= 'Loader_filepath'
+					Frame	 = 'Loader_frame'
+					Console	 = 'Loader_console'
+					Filepath = 'Loader_filepath'
 				end
 				module VM
 					Frame	= 'VM_frame'
-					Memory	= 'VM_memory'
-					Registers	= 'VM_registers'
+					module State
+						Memories = ((0..::Asm::Magic::GUI::Magic::Memory::Maximum).to_a).map! { |k| "VM_memory_Ai" + k.to_s }
+						Registers = ((0..::Asm::Magic::Register::Index::Inclusive::Maximum).to_a).map! { |k| "VM_registers_R" + k.to_s }
+					end
+					module Control
+						module Advance
+							module N
+								Button  = 'VM_advance'
+								Counter = 'VM_advance_counter'
+							end
+							module Run
+								Button  = 'VM_adr'
+								Counter = 'VM_adr_counter'
+							end
+						end
+						module Memory
+							Counter = 'VM_mem_counter'
+						end
+					end
+					module Legend
+						PC     = 'VM_special_register_pc'
+						Input  = 'VM_special_registers_input'
+						Output = 'VM_special_registers_output'
+					end
+				end
+			end
+			module Magic
+				module Memory
+					Window_size = 8
 				end
 			end
 		end
@@ -443,7 +470,7 @@ module Asm
 									'movep' => "%04d" % MOVEP.to_s(2),
 									'moven' => "%04d" % MOVEN.to_s(2)}
 				end
-				
+
 				module Binary
 					# instructions and their 4 bit binary codes
 					String = { :move	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVE.to_s(2),
@@ -480,7 +507,7 @@ module Asm
 						MOVEP = 14
 						MOVEN = 15
 									'subi'  =>									'set'   => "%04d" % SET.to_s(2)
-									'seth'  => 
+									'seth'  =>
 									'inciz' => "%04d" % INCIZ.to_s(2)
 									'decin' => "%04d" % DECIN.to_s(2)
 									'movez' => "%04d" % MOVEZ.to_s(2)
@@ -490,7 +517,7 @@ module Asm
 =end
 					end
 				end
-				
+
 		end
 	end
 end
