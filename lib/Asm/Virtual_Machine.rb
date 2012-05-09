@@ -111,16 +111,16 @@ module Asm
 		# RD <- RA
 		def move( dest_reg, reg_a)
 			self.set_location_to_value(dest_reg, self.get_memory_value(reg_a))
-			self.increment_program_counter( dest_reg )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- bitwise NOT RA
 		def not( dest_reg, reg_a)
 			ra = self.get_memory_value(reg_a)
-			rb = self.get_memory_value(reg_b)
-			self.set_location_to_value(dest_reg, ra.not(rb))
+			ra = Asm::BCPU::Memory::Value.from_Bitset(~(ra.the_bits))
+			self.set_location_to_value(dest_reg, ra)
 
-			self.increment_program_counter( dest_reg )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- RA bitwise AND RB
@@ -129,62 +129,95 @@ module Asm
 			rb = self.get_memory_value(reg_b)
 			self.set_location_to_value(dest_reg, ra & rb)
 
-			self.increment_program_counter( dest_reg )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- RA bitwise OR RB
 		def or( dest_reg, reg_a, reg_b)
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
-			self.set_location_to_value(dest_reg, ra.bitwise_OR!(rb))
-
-			self.increment_program_counter( dest_reg )
+			ra.bitwise_OR!( rb )
+			self.set_location_to_value( dest_reg ,ra )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- RA + RB
 		def add( dest_reg, reg_a, reg_b)
-			ra = self.get_memory_value(reg_a)
-			rb = self.get_memory_value(reg_b)
-			self.set_location_to_value( dest_reg , ra.add_Word!(rb))
-
-			self.increment_program_counter( dest_reg )
+			#self.set_location_to_value( dest_reg , ra.add_Word!(rb))
+			ra = self.get_memory_value(reg_a).to_i
+			rb = self.get_memory_value(reg_b).to_i
+			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
+			::Asm::Magic::Binary::Twos_complement.assert_valid( rb )
+			self.set_location_to_value( dest_reg, Asm::BCPU::Memory::Value.from_integer_as_twos_complement( ra + rb ) )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- RA - RB
 		def sub( dest_reg, reg_a, reg_b)
 			ra = self.get_memory_value(reg_a).to_i
 			rb = self.get_memory_value(reg_b).to_i
-			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new(ra - rb))
-
-			self.increment_program_counter( dest_reg )
+			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
+			::Asm::Magic::Binary::Twos_complement.assert_valid( rb )
+			self.set_location_to_value( dest_reg, Asm::BCPU::Memory::Value.from_integer_as_twos_complement( ra - rb ) )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- RA + 4bit data
 		def addi( dest_reg, reg_a, reg_fourbit)
 			ra = self.get_memory_value(reg_a).to_i
-			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra + reg_fourbit.to_i ))
-
-			self.increment_program_counter( dest_reg )
+			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
+			::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
+			an_Integer	= ra + reg_fourbit.to_i
+			::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
+			result	= Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer )
+			self.set_location_to_value( dest_reg ,result )
+			self.increment_program_counter( dest_reg, true )
 		end
 
 		# RD <- RA - 4bit data
 		def subi( dest_reg, reg_a, reg_fourbit)
 			ra = self.get_memory_value(reg_a).to_i
-			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.new( ra - reg_fourbit.to_i ))
-
-			self.increment_program_counter( dest_reg )
+			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
+			::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
+			an_Integer	= ra - reg_fourbit.to_i
+			::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
+			result	= Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer )
+			self.set_location_to_value( dest_reg ,result )
+			self.increment_program_counter( dest_reg, true )
 		end
 
 		# RD <- 8 0's followed by 8 bit data
+		#def set( dest_reg, reg_eightbit)
+		#	Asm::Loader::map_bits_to_bits( 0..7,self.get_memory_value( dest_reg ), 0..7, reg_eightbit)
+		#	self.increment_program_counter( dest_reg )
+		#end# RD <- 8bit data follow by RD7, RD6, ... RD0
 		def set( dest_reg, reg_eightbit)
-			Asm::Loader::map_bits_to_bits( 0..7,self.get_memory_value( dest_reg ), 0..7, reg_eightbit)
-			self.increment_program_counter( dest_reg )
+			result	= ::Asm::BCPU::Memory::Value.new( )
+			# TODO verify correctness
+			puts '#set RD ' << reg_eightbit.to_s
+			for index in 0..(result.the_bits.size - 1 - 7)
+				#adjustment	= 8
+				result[index]	= reg_eightbit.the_bits[index]
+			end
+			#Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
+			puts '#set RD <- ' << result.to_s
+			self.set_location_to_value( dest_reg ,result )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- 8bit data follow by RD7, RD6, ... RD0
 		def seth( dest_reg, reg_eightbit)
-			Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
-			self.increment_program_counter( dest_reg )
+			result	= ::Asm::BCPU::Memory::Value.new( )
+			# TODO verify correctness
+			puts '#seth RD ' << reg_eightbit.to_s
+			for index in (result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)
+				#adjustment	= -8
+				result[index]	= reg_eightbit.the_bits[index]
+			end
+			#Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
+			puts '#seth RD <- ' << result.to_s
+			self.set_location_to_value( dest_reg ,result )
+			self.increment_program_counter( dest_reg ,true )
 		end
 
 		# RD <- RD + 4bit data if RB == 0 (zero)
@@ -204,8 +237,10 @@ module Asm
 		# RD <- RD - 4bit data if RB15 == 1 (neg)
 		def decin( dest_reg, reg_fourbit, reg_b )
 			dest_reg_altered	= false
-			if self.get_memory_value( reg_b ).to_i <= 0
-				an_Integer	= self.get_memory_value( dest_reg ).to_i + reg_fourbit.to_i
+			#if self.get_memory_value( reg_b ).to_i <= 0
+			if self.get_memory_value( reg_b ).the_bits[15] == true
+				an_Integer	= self.get_memory_value( dest_reg ).to_i - reg_fourbit.to_i
+				::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
 				::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 				self.set_location_to_value( dest_reg ,::Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer ) )
 				#self.set_location_to_value( dest_reg ,self.get_memory_value( dest_reg ).add!( -(reg_fourbit.to_i) ) )
@@ -234,7 +269,8 @@ module Asm
 
 		# RD <- RA if RB15 == 0 (positive)
 		def movep( dest_reg, reg_a, reg_b)
-			if self.get_memory_value( reg_b ).the_bits[15] == 0
+			#if self.get_memory_value( reg_b ).the_bits[15] == 0
+			if self.get_memory_value( reg_b ).the_bits[15] == false
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
@@ -243,7 +279,8 @@ module Asm
 
 		# RD <- RA if RB15 == 1 (negative)
 		def moven( dest_reg, reg_a, reg_b)
-			if self.get_memory_value( reg_b ).the_bits[15] == 1
+			#if self.get_memory_value( reg_b ).the_bits[15] == 1
+			if self.get_memory_value( reg_b ).the_bits[15] == true
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
@@ -255,7 +292,7 @@ module Asm
 			program_counter	= Asm::Magic::Register::Location::Program_counter.to_i
 			#unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
 			puts 'R15 |-> ' << program_counter.to_s << '; dest_reg_altered is ' << (dest_reg_altered ? 'true' : 'false')
-			if	( dest_reg.to_i == program_counter ) && dest_reg_altered
+			if	!(( dest_reg.to_i == program_counter ) && dest_reg_altered)
 				#lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 				temp	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i + an_Integer
 				#lhs.add!( Asm::BCPU::Word.new( an_Integer ) ,false )	# should allow unsigned values to be assigned to program counter

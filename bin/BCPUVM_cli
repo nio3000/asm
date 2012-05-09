@@ -9,13 +9,15 @@ module Asm
 	
 	#
 	#
-	# Print all Register locations and their values to cli
+	# Print all Register locations (and their values) and the current value of memory location the PC is pointing to in cli
 	def self.printAllRegs( v_machine, loader )
 		i = 0
 		while i < 16
 			self.printReg("r" + i.to_s, v_machine, loader)
 			i = i + 1
 		end
+		pc =  Asm::Magic::Register::Location::Program_counter
+		puts("Program Counter Value: " + v_machine.get_memory_value(pc).to_s)
 	end
 	
 	#
