@@ -68,6 +68,7 @@ module Asm
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:sub] )
 				self.sub( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:addi] )
+				puts("the_machine_code: " << the_machine_code.to_s)
 				self.addi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:subi] )
 				self.subi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
@@ -164,17 +165,12 @@ module Asm
 
 		# RD <- RA + 4bit data
 		def addi( dest_reg, reg_a, reg_fourbit)
+			#puts( "dest_reg: " << dest_reg.to_s << ", reg_a: " << reg_a.to_s << ", reg_fourbit: " << reg_fourbit.to_s)
 			ra = self.get_memory_value(reg_a).to_i
-			#raR = self.get_memory_value(self.get_memory_value(reg_a).the_bits.to_s.reverse).to_i
-			puts("Doom: " << reg_fourbit.to_s)
-			puts("The_Bits: " << reg_fourbit.the_bits.to_s.reverse)
-			fourbitReverse = Asm::BCPU::Memory::Value.from_binary_String(reg_fourbit.the_bits.to_s.reverse).to_i
 			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
-			#::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
-			::Asm::Magic::Binary::Unsigned.assert_valid( fourbitReverse )
-			#an_Integer	= ra + reg_fourbit.to_i
-			an_Integer	= ra + fourbitReverse.to_i
-			puts("Problem: (" << ra.to_s << ") + (" << fourbitReverse.to_i.to_s << ")")
+			::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
+			an_Integer	= ra + reg_fourbit.to_i
+			#puts("Problem: (" << ra.to_s << ") + (" << fourbitReverse.to_i.to_s << ")")
 			::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 			result	= Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer )
 			self.set_location_to_value( dest_reg ,result )
