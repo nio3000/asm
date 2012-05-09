@@ -110,7 +110,6 @@ module Asm
 		# Rasies exception when the check fails.
 		# Returns nothing.
 		def	self.raise_unless_type( argument ,type )
-			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
 			begin
 				raise "(#{argument}) argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
@@ -121,7 +120,6 @@ module Asm
 			return
 		end
 		def	self.puts_unless_type( argument ,type )
-			#raise "argument's type is " << argument.kind?() << ", not " << type.inspect() << "." unless argument.kind? == type
 			begin
 				puts "(#{argument}) argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue

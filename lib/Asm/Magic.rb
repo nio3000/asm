@@ -1,5 +1,5 @@
 =begin
-# /lib/Asm/Literals_are_Magic.rb
+# /lib/Asm/Magic.rb
 * complete definition of module Asm::Magic and all nested modules thereof
 =end
 module Asm
@@ -481,11 +481,11 @@ module Asm
 
 				module Binary
 					# instructions and their 4 bit binary codes
-					String = { :move	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVE.to_s(2),
-								:not	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::NOT.to_s(2),
-								:and	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::AND.to_s(2),
-								:or	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::OR.to_s(2),
-								:add	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADD.to_s(2),
+					String = { :move   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVE.to_s(2),
+								:not   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::NOT.to_s(2),
+								:and   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::AND.to_s(2),
+								:or    => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::OR.to_s(2),
+								:add   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADD.to_s(2),
 								:sub   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUB.to_s(2),
 								:addi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADDI.to_s(2),
 								:subi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUBI.to_s(2),
@@ -500,39 +500,34 @@ module Asm
 					end
 				end
 			def self.machine_code_to_String( a_memory_value )
-#				#TODO: Should be ::Bitset, temporarily ::String
-#				# see Virtual_Machine: get_memory_value()
-#				raise 'Aya' unless a_memory_value.instance_of? ::String
-#				machine_code_String = a_memory_value.to_s
-#				mc_qrtwords = []
-#				machine_code_String.split("").each_slice(4) { |qtrword| mc_qtrwords << qword }
-#				# TODO: process quarter words
-#				# C3, C2, C1, C0:
-#				# mc_qrtwords[0]
-#				# C7, C6, C5, C4:
-#				# mc_qrtwords[1]
-#				# C11, C10, C9, C8:
-#				# mc_qrtwords[2]
-#				# C15, C14, C13, C12:
-#				# mc_qrtwords[3]
-#				mc_qtrwords[0] # => e.g., [0, 1, 1, 0]
-#				mc_qtrwords[1] # => e.g., [0, 1, 1, 0]
-#				# Phase 2:
-#				mc_qtrwords[2] # => e.g., [0, 1, 1, 0]
-#
-#				# Phase 3: lookup instruction
-#				opcode = mc_qtrwords[3].reverse.join("")
-#				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcodel)).to_s
-#				opcode_key.upcase!
-#
-#				#Phase 4: concatenate strings
-#
-				return 'oh hai'
+				raise 'Maya' unless a_memory_value.instance_of? ::Asm::BCPU::Memory::Value
+				machine_code_String = a_memory_value.to_s
+				mc_qtrwords = []
+
+				# Slice BCPU word in memory into 4 quarterwords
+				machine_code_String.split("").each_slice(4) { |qword| mc_qtrwords << qword }
+				# TODO: process quarter words
+
+				# C3, C2, C1, C0:
+				# => e.g., [0, 1, 1, 0]
+				mc_qtrwords[0]
+
+				# C7, C6, C5, C4:
+				mc_qtrwords[1]
+
+				# C11, C10, C9, C8:
+				mc_qtrwords[2]
+
+				# C15, C14, C13, C12:
+				opcode = mc_qtrwords[3].reverse.join("")
+				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
+				opcode_key.upcase!
+
+				full_String = "#{opcode_key} 2 1 0"
+				return full_String
 			end
 		end
 	end
 end
 
-#require	'Asm/require_all.rb'
-#$LOAD_PATH << '.'
 # encoding: UTF-8

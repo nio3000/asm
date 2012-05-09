@@ -51,8 +51,6 @@ module Asm
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 			@stopped    = true
 			@timer = RunTimer.new
-			#self.set_name( "BCPU" )
-			# DOCIT
 			#::Wx::init_all_image_handlers()	# may be depreciated
 			xml	= ::Wx::XmlResource.get()
 			xml.init_all_handlers()
@@ -131,7 +129,7 @@ module Asm
 		# DOCIT
 		def process_memory_entry( a_memory_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
-			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ,false ).to_s << '; d' << temp.to_i( false ,true ).to_s << '; "' << ::Asm::Magic::ISA::machine_code_to_String( a_raw_memory_value ) << '"'
+			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ,false ).to_s << '; d' << temp.to_i( false ,true ).to_s << '; "' << ::Asm::Magic::ISA.machine_code_to_String(a_raw_memory_value) << '"'
 		end
 		# DOCIT
 		def process_register_entry( a_register_index ,a_raw_memory_value )
@@ -245,5 +243,4 @@ module Asm
 	end
 end
 
-#require	'Asm/require_all.rb'
 # encoding: UTF-8

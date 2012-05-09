@@ -184,7 +184,7 @@ module Asm
 				puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))
 				to_range_index	= to_range_index + 1
 			end
-			puts '#map_bits_to_bits |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''  
+			puts '#map_bits_to_bits |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''
 			return
 		end
 	public
@@ -241,7 +241,7 @@ module Asm
 			puts ::Asm::Magic::Regexp::String::Asm::Directive::Format::Asm
 			puts ::Asm::Magic::Regexp::String::Asm::Ignore::Comment
 			puts ::Asm::Magic::Regexp::String::Asm::Ignore::Blank
-			
+
 			puts capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA ).match(line_of_text)	# check if 'keyword RD RA' instruction format consumes line
 			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_RB ).match(line_of_text)
 			puts  capture = Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_data ).match(line_of_text)
@@ -594,6 +594,4 @@ module Asm
 	end
 end
 
-#require	'Asm/require_all.rb'
-#$LOAD_PATH << '.'
 # encoding: UTF-8

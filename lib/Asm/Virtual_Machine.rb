@@ -385,6 +385,4 @@ module Asm
 	end
 end
 
-#require	'Asm/require_all.rb'
-#$LOAD_PATH << '.'
 # encoding: UTF-8

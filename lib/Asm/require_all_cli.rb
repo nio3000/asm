@@ -1,7 +1,5 @@
-#$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
-
 =begin
-# /lib/Asm/require_all.rb
+# /lib/Asm/require_all_cli.rb
 * hardcoded require for each file containing code under module Asm
 * dependency on module Asm should be resolved by requiring this file
 	* no, don't bother just requiring the individual files you think you need.
@@ -10,8 +8,6 @@
 # 3rd party dependencies
 require 'bitset'
 require 'minitest/unit'
-#require 'wx'
-#include Wx
 require 'test/unit/assertions'
 module Asm
 	class Tests
@@ -20,7 +16,7 @@ module Asm
 end
 
 # misc functionality for consistency
-require 'Asm/Literals_Are_Magic.rb'
+require 'Asm/Magic.rb'
 require 'Asm/version.rb'
 require 'Asm/Boilerplate.rb'
 
@@ -28,8 +24,5 @@ require 'Asm/Boilerplate.rb'
 require 'Asm/BCPU.rb'
 require 'Asm/Loader.rb'
 require 'Asm/Virtual_Machine.rb'
-
-# application specific functionality
-#require 'Asm/Application.rb'
 
 # encoding: UTF-8
