@@ -125,9 +125,9 @@ module Asm
 
 		# RD <- RA bitwise AND RB
 		def and( dest_reg, reg_a, reg_b)
-			ra = self.get_memory_value(reg_a)
-			rb = self.get_memory_value(reg_b)
-			self.set_location_to_value(dest_reg, ra & rb)
+			ra = self.get_memory_value(reg_a).the_bits
+			rb = self.get_memory_value(reg_b).the_bits
+			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.from_Bitset((ra & rb)))
 
 			self.increment_program_counter( dest_reg ,true )
 		end
@@ -136,7 +136,7 @@ module Asm
 		def or( dest_reg, reg_a, reg_b)
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
-			ra.bitwise_OR!( rb )
+			ra.bitwise_OR!( rb.the_bits )
 			self.set_location_to_value( dest_reg ,ra )
 			self.increment_program_counter( dest_reg ,true )
 		end
@@ -165,9 +165,16 @@ module Asm
 		# RD <- RA + 4bit data
 		def addi( dest_reg, reg_a, reg_fourbit)
 			ra = self.get_memory_value(reg_a).to_i
+			#raR = self.get_memory_value(self.get_memory_value(reg_a).the_bits.to_s.reverse).to_i
+			puts("Doom: " << reg_fourbit.to_s)
+			puts("The_Bits: " << reg_fourbit.the_bits.to_s.reverse)
+			fourbitReverse = Asm::BCPU::Memory::Value.from_binary_String(reg_fourbit.the_bits.to_s.reverse).to_i
 			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
-			::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
-			an_Integer	= ra + reg_fourbit.to_i
+			#::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
+			::Asm::Magic::Binary::Unsigned.assert_valid( fourbitReverse )
+			#an_Integer	= ra + reg_fourbit.to_i
+			an_Integer	= ra + fourbitReverse.to_i
+			puts("Problem: (" << ra.to_s << ") + (" << fourbitReverse.to_i.to_s << ")")
 			::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 			result	= Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer )
 			self.set_location_to_value( dest_reg ,result )

@@ -17,7 +17,7 @@ module Asm
 			i = i + 1
 		end
 		pc =  Asm::Magic::Register::Location::Program_counter
-		puts("Program Counter Value: " + v_machine.get_memory_value(pc).to_s)
+		puts("Current Opcode: " + Asm::BCPU::Memory::Location.from_Bitset(v_machine.get_memory_value(pc).the_bits).to_s)
 	end
 	
 	#
