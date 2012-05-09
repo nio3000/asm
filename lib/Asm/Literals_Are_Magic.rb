@@ -500,8 +500,34 @@ module Asm
 					end
 				end
 			def self.machine_code_to_String( a_memory_value )
-				# TODO implement me
-				return	'rm -rf'
+#				#TODO: Should be ::Bitset, temporarily ::String
+#				# see Virtual_Machine: get_memory_value()
+#				raise 'Aya' unless a_memory_value.instance_of? ::String
+#				machine_code_String = a_memory_value.to_s
+#				mc_qrtwords = []
+#				machine_code_String.split("").each_slice(4) { |qtrword| mc_qtrwords << qword }
+#				# TODO: process quarter words
+#				# C3, C2, C1, C0:
+#				# mc_qrtwords[0]
+#				# C7, C6, C5, C4:
+#				# mc_qrtwords[1]
+#				# C11, C10, C9, C8:
+#				# mc_qrtwords[2]
+#				# C15, C14, C13, C12:
+#				# mc_qrtwords[3]
+#				mc_qtrwords[0] # => e.g., [0, 1, 1, 0]
+#				mc_qtrwords[1] # => e.g., [0, 1, 1, 0]
+#				# Phase 2:
+#				mc_qtrwords[2] # => e.g., [0, 1, 1, 0]
+#
+#				# Phase 3: lookup instruction
+#				opcode = mc_qtrwords[3].reverse.join("")
+#				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcodel)).to_s
+#				opcode_key.upcase!
+#
+#				#Phase 4: concatenate strings
+#
+				return 'oh hai'
 			end
 		end
 	end
