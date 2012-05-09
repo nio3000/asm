@@ -242,5 +242,4 @@ module Asm
 		end
 	end
 end
-
 # encoding: UTF-8

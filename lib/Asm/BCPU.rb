@@ -8,8 +8,6 @@
 	and Asm::BCPU::Memory::Value
 * largely undocumented and unimplemented
 =end
-
-# DOCIT
 module Asm::BCPU
 =begin
 	# Asm::BCPU::Word
@@ -624,7 +622,6 @@ module Asm::BCPU
 			def self.from_binary_String( a_binary_String )
 				# Paranoid type checking
 				Asm::Boilerplate.raise_unless_type( a_binary_String ,::String)
-
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_binary_String( a_binary_String )
@@ -687,7 +684,6 @@ module Asm::BCPU
 		end
 	end
 end
-
 =begin
 	# Asm::Magic::Register::Location
 	* memory locations of unique special function registers
@@ -705,5 +701,4 @@ module	Asm::Magic::Register::Locations
 	Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.from_integer_as_unsigned( index ) }
 	Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.from_integer_as_unsigned( index ) }
 end
-
 # encoding: UTF-8

@@ -2,7 +2,6 @@
 # /lib/Asm/Boilerplate.rb
 * refactored boilerplate code living under module Asm::Boilerplate
 =end
-
 =begin
 # Asm
 * highest-level namespace for the project.
@@ -19,7 +18,6 @@ module Asm
 				return "0"
 			end
 		end
-
 		module Machine
 			module Code
 				# DOCIT
@@ -88,7 +86,6 @@ module Asm
 			raise "you passed a noninteger to Asm::Boilerplate.get_twos_complement_bits_as_String; don't do that!" unless  an_Integer.integer?
 			if	an_Integer.instance_of? ::Fixnum
 				a_binary_String	= ''
-
 				(0..(::Asm::Magic::Memory::Bits_per::Word - 1 - 1)).each do |index|
 					#a_binary_String << an_Integer[index].to_s( 2 )
 					a_binary_String	= an_Integer[index].to_s( 2 ) << a_binary_String
@@ -181,5 +178,4 @@ module Asm
 		end
 	end
 end
-
 # encoding: UTF-8
