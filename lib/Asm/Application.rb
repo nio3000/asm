@@ -25,13 +25,19 @@ module Asm
 		Default	= ::Wx::WHITE
 	end
 	class RunTimer < ::Wx::Timer
+		def initialize( the_Application )
+			@the_Application	= the_Application
+			puts 'RunTimmer#initialize'
+		end
 		def notify
-			if @stopped == true
-				@timer.stop()
-				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).enable()
+			puts 'RunTimmer#notify'
+			if @the_Application.stopped == true
+				#@the_Application.timer.stop()
+				self.stop()
+				@the_Application.main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).enable()
 			else
-				@the_BCPU.advance_once
-				self.update_VM_display
+				@the_Application.the_BCPU.advance_once
+				@the_Application.update_VM_display
 			end
 		end
 	end
@@ -44,13 +50,14 @@ module Asm
 	public
 =begin	Wx::App callbacks
 =end
+		attr_accessor :the_BCPU ,:the_Loader ,:stopped ,:timer ,:main_GUI_sheet
 		# WxRuby callback, no need to register; program initialization
 		def on_init
 			# application-specific initialization
 			@the_BCPU	= Asm::Virtual_Machine.new
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 			@stopped    = true
-			@timer = RunTimer.new
+			@timer = RunTimer.new( self )
 			#::Wx::init_all_image_handlers()	# may be depreciated
 			xml	= ::Wx::XmlResource.get()
 			xml.init_all_handlers()
@@ -232,11 +239,13 @@ module Asm
 		#
 		# Returns nothing
 		def handle_go_stop_button( an_Event )
+			puts '#handle_go_stop_button( ' << an_Event.inspect << ' )'
 			@stopped = !@stopped
 			if @stopped == false
-				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).disable()
-				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).get_value * 1000
-				@timer.start(temp)
+				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).disable()
+				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).get_value * 1000
+				puts 'Aya' unless @timer.start(temp)
+				puts 'Aya Aya' unless @timer.is_running
 			end
 			return
 		end

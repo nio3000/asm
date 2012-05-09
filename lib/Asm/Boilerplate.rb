@@ -58,6 +58,15 @@ module Asm
 					end
 					return result
 				end
+				# DOCIT
+				def self.get_value_from_bit_range__reversi( a_Memory_Value ,a_bit_range )
+					result = ::Asm::BCPU::Memory::Location.new
+					for index in a_bit_range
+						to_index	= result.the_bits.size - 1 - index
+						result.the_bits[to_index] = a_Memory_Value.the_bits[index]
+					end
+					return result
+				end
 			end
 		end
 		# DOCIT
