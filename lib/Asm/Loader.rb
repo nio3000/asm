@@ -104,7 +104,7 @@ module Asm
 			if !binary_match_info && decimal_match_info
 				result.assign_decimal_String( decimal_match_info[::Asm::Magic::Regexp::String::Names::Value] )
 			elsif binary_match_info && !decimal_match_info
-				result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value] )
+				result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value].reverse )
 			elsif binary_match_info && decimal_match_info
 				raise "decimal or binary literal expected from \"#{a_numeric_literal}\", but it\'s too ambiguous to tell which"
 			else
@@ -463,7 +463,7 @@ module Asm
 			#
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
-			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 4..7, value)
+			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 0..3, value)
 
 			if keyword == 'ADDI'
 				value.the_bits[13] = true

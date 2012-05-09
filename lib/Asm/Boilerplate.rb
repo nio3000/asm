@@ -50,10 +50,14 @@ module Asm
 				end
 				# DOCIT
 				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
+					puts("Memory Value: " + a_Memory_Value.to_s)
 					result = ::Asm::BCPU::Memory::Location.new
+					puts("Results 1: " + result.to_s)
 					a_bit_range.each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
+						puts("" << result.the_bits[index].to_s << " = " << a_Memory_Value.the_bits[index].to_s)
 					end
+					puts("Results 2: " + result.to_s)
 					return result
 				end
 				# DOCIT
