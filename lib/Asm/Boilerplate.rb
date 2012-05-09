@@ -96,6 +96,12 @@ module Asm
 			offset	= (::Asm::Magic::Memory::Bits_per::Word - 1)
 			return	(offset - a_Range.last)..(offset - a_Range.first)
 		end
+		# DOCIT
+		# strings got padded, this is a hotfix
+		def	self.socks!( a_Range ,index )
+			offset	= (a_Range.last - a_Range.first) - 2 * index
+			return	a_Range.first( index + 1 )[index]
+		end
 		# paranoid typechecking boilerplate
 		#
 		# argument - an object whose type is being checked

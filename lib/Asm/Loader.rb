@@ -150,6 +150,8 @@ module Asm
 		# Raises if the range's don't match up in cardinality
 		# Returns nothing
 		def map_bits_to_bits( from_Range ,from_Word ,to_Range ,to_Word ,bCPU_range_checking = true )
+			puts '#map_bits_to_bits,args |-> from_Range = ' << from_Range.to_s << '; to_Range = ' << to_Range.to_s << ''
+			puts '#map_bits_to_bits,args |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''
 			# paranoid type checking
 			Asm::Boilerplate::raise_unless_type( from_Range ,::Range )
 			Asm::Boilerplate::raise_unless_type( to_Range ,::Range )
@@ -172,11 +174,17 @@ module Asm
 			end
 			# do the mapping
 			adjustment	= to_Range.begin - from_Range.begin
+			to_range_index	= 0
 			from_Range.each do |from_index|
-				to_index	= from_index + adjustment
+				to_index	= ::Asm::Boilerplate.socks!( to_Range, to_range_index )
 				raise 'shenanigans' unless to_Range.include?( to_index )
+				puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))	<< '[' << to_index.to_s << ']=' << ((from_Word.the_bits[from_index])?('true'):('false'))	<< '[' << from_index.to_s << ']'
 				to_Word.the_bits[to_index]	= from_Word.the_bits[from_index]
+				to_Word.the_bits[to_index]	= ((from_Word.the_bits[from_index])?(true):(false))
+				puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))
+				to_range_index	= to_range_index + 1
 			end
+			puts '#map_bits_to_bits |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''  
 			return
 		end
 	public
@@ -412,7 +420,7 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
-			#
+			#)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
 
