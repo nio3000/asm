@@ -211,9 +211,9 @@ module Asm::BCPU
 			# twos complement range checking
 			Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 			# convert to binary String twos complement encoding
-			puts '#assign_integer_as_twos_complement( ' << an_Integer.to_s << ' ) |-> ' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer )  << '<<' << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )
+			#puts '#assign_integer_as_twos_complement( ' << an_Integer.to_s << ' ) |-> ' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer )  << '<<' << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )
 			a_String	= '' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer ) << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )
-			puts '#assign_integer_as_twos_complement( ' << an_Integer.to_s << ' ) |-> ' << a_String << ' ; (String#to_i)' << a_String.to_i( 2 )
+			#puts '#assign_integer_as_twos_complement( ' << an_Integer.to_s << ' ) |-> ' << a_String << ' ; (String#to_i)' << a_String.to_i( 2 )
 			Asm::Magic::Binary::String.assert_valid( a_String )
 			# dispatch to new method
 			self.assign_binary_String( a_String )
@@ -237,9 +237,9 @@ module Asm::BCPU
 			# pure binary string checking
 			Asm::Magic::Binary::String.assert_valid( a_String )
 			# convert to Bitset
-			puts	'#assign_binary_String -> ' << a_String << ' ;' << a_String.to_i( 2 ).to_s( 10 )
+			#puts	'#assign_binary_String -> ' << a_String << ' ;' << a_String.to_i( 2 ).to_s( 10 )
 			a_Bitset	= ::Bitset.from_s( a_String.rjust( ::Asm::Magic::Memory::Bits_per::Word ,'0' ) )
-			puts	'#assign_binary_String -> ' << a_Bitset.to_s
+			#puts	'#assign_binary_String -> ' << a_Bitset.to_s
 			# dispatch to new method
 			self.assign_Bitset( a_Bitset )
 			# puts looks fine.
@@ -273,10 +273,10 @@ module Asm::BCPU
 			# content preservation checking
 			Asm::Magic::Binary::Bitset.assert_valid( a_Bitset )
 			# make the assignment to @the_bits
-			puts	'#assign_Bitset -> ' << @the_bits.to_s << ' | ' << a_Bitset.to_s
+			#puts	'#assign_Bitset -> ' << @the_bits.to_s << ' | ' << a_Bitset.to_s
 			@the_bits	= Bitset.new( Asm::Magic::Memory::Bits_per::Word )	# 0000 0000 0000 0000
 			self.bitwise_OR!( a_Bitset )	# 1s from a_Bitset will appear in @the_bits
-			puts	'#assign_Bitset -> ' << @the_bits.to_s << ' | ' << a_Bitset.to_s
+			#puts	'#assign_Bitset -> ' << @the_bits.to_s << ' | ' << a_Bitset.to_s
 			self.assert_valid
 			return
 			# puts looks fine.
