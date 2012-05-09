@@ -41,12 +41,12 @@ module Asm
 				end
 				# DOCIT
 				def	self.valid?( an_Integer )
-					raise 'Aya' unless an_Integer.integer?
+					raise 'TypeError' unless an_Integer.integer?
 					return	( an_Integer > ::Asm::Magic::Memory::Index::Exclusive::Minimum ) && ( an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum )
 				end
 				# DOCIT
 				def	self.assert_valid( an_Integer )
-					raise 'Aya' unless an_Integer.integer?
+					raise 'TypeError' unless an_Integer.integer?
 					if !(an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum)
 						raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive to be a memory location index.'
 					elsif !(::Asm::Magic::Memory::Index::Exclusive::Minimum < an_Integer)
@@ -510,7 +510,7 @@ module Asm
 				end
 			def self.machine_code_to_String( a_memory_value )
 				# Paranoid type checking
-				raise 'Maya' unless a_memory_value.instance_of? ::Asm::BCPU::Memory::Value
+				raise 'TypeError' unless a_memory_value.instance_of? ::Asm::BCPU::Memory::Value
 				machine_code_String = a_memory_value.to_s
 
 				# Slice BCPU word in memory into 4 quarterwords
