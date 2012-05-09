@@ -29,7 +29,7 @@ module Asm
 				# DOCIT
 				def self.get_RD_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
-					for index in (8..11)
+					(8..11).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
 					return result
@@ -37,7 +37,7 @@ module Asm
 				# DOCIT
 				def self.get_RA_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
-					for index in (4..7)
+					(4..7).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
 					return result
@@ -45,7 +45,7 @@ module Asm
 				# DOCIT
 				def self.get_RB_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
-					for index in (0..3)
+					(0..3).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
 					return result
@@ -53,7 +53,7 @@ module Asm
 				# DOCIT
 				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
 					result = ::Asm::BCPU::Memory::Location.new
-					for index in a_bit_range
+					a_bit_range.each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
 					return result

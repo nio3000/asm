@@ -536,12 +536,13 @@ module Asm
 				dest_reg = "R#{decimal_value_dest}"
 
 				# C7, C6, C5, C4
+				instruction = opcode_key.downcase.to_sym
 				decimal_value_a = mc_qtrwords[1].reverse.join("").to_i(2)
-				if ra.include? opcode_key.downcase.to_sym
+				if ra.include? instruction
 					reg_a = "R#{decimal_value_a}"
-				elsif ra_d4bit.include? opcode_key.downcase.to_sym
+				elsif ra_d4bit.include? instruction
 					reg_a = "d#{decimal_value_a}"
-				elsif ra_d8bit.include? opcode_key.downcase.to_sym
+				elsif ra_d8bit.include? instruction
 					reg_a = "d#{decimal_value_a + 256}"
 				else
 					raise "Unknown format for opcode #{opcode_key}"
@@ -549,11 +550,11 @@ module Asm
 
 				# C3, C2, C1, C0:
 				decimal_value_b = mc_qtrwords[0].reverse.join("").to_i(2)
-				if rb.include? opcode_key.downcase.to_sym
+				if rb.include? instruction
 					reg_b = "R#{decimal_value_b}"
-				elsif rb_d4bit.include? opcode_key.downcase.to_sym
+				elsif rb_d4bit.include? instruction
 					reg_b = "d#{decimal_value_b}"
-				elsif rb_empty.include? opcode_key.downcase.to_sym
+				elsif rb_empty.include? instruction
 					reg_b = ""
 				else
 					raise "Unknown format for opcode #{opcode_key}"

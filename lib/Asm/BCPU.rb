@@ -306,7 +306,7 @@ module Asm::BCPU
 			elsif an_Object.instance_of?( ::Bitset )
 				if an_Object.size < @the_bits.size
 					raise 'implementation fault: Bitset\'s | operation is broken in the case you tried to use it in; ask for a workaround asap.'
-					for index in (0..an_Object.size - 1)
+					(0..an_Object.size - 1).each do |index|
 						# TODO this code needs adjustment maybe?, but other code should be avoiding this section now. . .maybe
 						@the_bits[index]	= @the_bits[index] |  an_Object[index]
 					end
@@ -348,14 +348,14 @@ module Asm::BCPU
 			#a_bits = the_bits
 			# interpret as unsigned
 			unsigned_result	= 0
-			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
+			(0..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |index|
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
 				unsigned_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
 			Asm::Magic::Binary::Unsigned.assert_valid( unsigned_result )
 			# interpret as twos complement
 			twos_complement_result	= 0
-			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 2)
+			(0..(Asm::Magic::Memory::Bits_per::Word - 2)).each do |index|
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
 				twos_complement_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
