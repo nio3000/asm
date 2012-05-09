@@ -1,5 +1,3 @@
-#$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
-
 =begin
 # /lib/Asm/require_all.rb
 * hardcoded require for each file containing code under module Asm
@@ -10,8 +8,6 @@
 # 3rd party dependencies
 require 'bitset'
 require 'minitest/unit'
-#require 'wx'
-#include Wx
 require 'test/unit/assertions'
 module Asm
 	class Tests
@@ -28,8 +24,5 @@ require 'Asm/Boilerplate.rb'
 require 'Asm/BCPU.rb'
 require 'Asm/Loader.rb'
 require 'Asm/Virtual_Machine.rb'
-
-# application specific functionality
-#require 'Asm/Application.rb'
 
 # encoding: UTF-8

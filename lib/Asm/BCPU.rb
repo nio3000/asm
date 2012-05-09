@@ -130,7 +130,6 @@ module Asm::BCPU
 				@the_bits	= Bitset.new( Asm::Magic::Memory::Bits_per::Word )
 			elsif an_Object.instance_of?( ::String )
 				self.assign_String( an_Object ,force_twos_complement )
-			# TODO double check that this catches all integer compatible types
 			elsif an_Object.instance_of?( ::Bitset )
 				self.assign_Bitset( an_Object )
 			elsif an_Object.instance_of?( ::Asm::BCPU::Word )
@@ -450,8 +449,6 @@ module Asm::BCPU
 			# assign will attempt to represent the result in 16 bits; failure indicates overflow
 			begin
 				self.assign( result ,force_twos_complement )
-			#TODO: Else without rescue is useless according to:
-			# $ ruby -wc thisFile.rb
 			rescue
 			else
 				self.assign( 0 )

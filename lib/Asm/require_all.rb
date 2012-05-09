@@ -1,5 +1,3 @@
-#$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib') unless $LOAD_PATH.include?(File.dirname(__FILE__) + '/../../lib')
-
 =begin
 # /lib/Asm/require_all.rb
 * hardcoded require for each file containing code under module Asm

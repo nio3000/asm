@@ -51,8 +51,6 @@ module Asm
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 			@stopped    = true
 			@timer = RunTimer.new
-			#self.set_name( "BCPU" )
-			# DOCIT
 			#::Wx::init_all_image_handlers()	# may be depreciated
 			xml	= ::Wx::XmlResource.get()
 			xml.init_all_handlers()
@@ -245,5 +243,4 @@ module Asm
 	end
 end
 
-#require	'Asm/require_all.rb'
 # encoding: UTF-8
