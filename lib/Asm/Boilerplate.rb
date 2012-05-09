@@ -130,7 +130,7 @@ module Asm
 		end
 		def	self.puts_unless_type( argument ,type )
 			begin
-				puts "(#{argument}) argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
+				puts "(#{argument}) argument's type is #{argument.kind_of()}" << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
 				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue

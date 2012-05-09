@@ -141,7 +141,7 @@ module Asm
 			program_counter	= ::Asm::BCPU::Memory::Location.from_binary_String( program_counter_value.the_bits.to_s ).to_i
 			# write registers
 			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Maximum )
-			for index in 0..(raw_registers.size - 1)
+			(0..(raw_registers.size - 1)).each do |index|
 				raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'aregaerghaerhaerh (incoherent rage error)' << raw_registers.size.to_s << '==' << (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum).to_s ) unless (raw_registers.size == (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum))
 				processed_version	= self.process_register_entry( ::Asm::Magic::Register::Index::Inclusive::Minimum + index ,raw_registers[index] )
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Registers[index] ).change_value( processed_version )
@@ -168,7 +168,7 @@ module Asm
 			memory_window_low_bound	= memory_window_high_bound - ( Asm::Magic::GUI::Magic::Memory::Window_size - 1 )
 			::Asm::Magic::Memory::Index::assert_valid( memory_window_low_bound )
 			raw_memory	= @the_BCPU.get_memory_range( memory_window_low_bound ,memory_window_high_bound + 1 )
-			for index in 0..(raw_memory.size - 1)
+			(0..(raw_memory.size - 1)).each do |index|
 				raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'aregaerghaerhaerh (incoherent rage error)' << raw_memory.size.to_s << '==' << Asm::Magic::GUI::Magic::Memory::Window_size.to_s ) unless (raw_memory.size == Asm::Magic::GUI::Magic::Memory::Window_size)
 				processed_version	= self.process_memory_entry( memory_window_low_bound + index ,raw_memory[index] )
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).change_value( processed_version )
