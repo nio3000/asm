@@ -544,7 +544,7 @@ module Asm
 				elsif ra_d8bit.include? opcode_key.downcase.to_sym
 					reg_a = "d#{decimal_value_a + 256}"
 				else
-					raise 'Rising Sun'
+					raise "Unknown format for opcode #{opcode_key}"
 				end
 
 				# C3, C2, C1, C0:
@@ -556,7 +556,7 @@ module Asm
 				elsif rb_empty.include? opcode_key.downcase.to_sym
 					reg_b = ""
 				else
-					raise 'Rising Sun'
+					raise "Unknown format for opcode #{opcode_key}"
 				end
 
 				if reg_b == ""
