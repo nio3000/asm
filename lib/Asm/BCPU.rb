@@ -54,63 +54,63 @@ module Asm::BCPU
 		# DOCIT
 		def self.from_binary_String( a_binary_String )
 			# Paranoid type checking
-			raise 'Aya' unless a_binary_String.instance_of? ::String
+			raise 'TypeError' unless a_binary_String.instance_of? ::String
 			result	= ::Asm::BCPU::Word.new
-			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
+			raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_binary_String( a_binary_String )
 			return	result
 		end
 		# DOCIT
 		def self.from_decimal_String( a_decimal_String )
 			# Paranoid type checking
-			raise ' Aya' unless a_decimal_String.instance_of? ::String
+			raise ' TypeError' unless a_decimal_String.instance_of? ::String
 			result	= ::Asm::BCPU::Word.new
-			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
+			raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_decimal_String( a_decimal_String )
 			return	result
 		end
 		# DOCIT
 		def self.from_integer( an_Integer )
 			# Paranoid type checking
-			raise 'Aya' unless an_Integer.instance_of? ::Integer
+			raise 'TypeError' unless an_Integer.instance_of? ::Integer
 			result	= ::Asm::BCPU::Word.new
-			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
+			raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer( an_Integer )
 			return	result
 		end
 		# DOCIT
 		def self.from_integer_as_unsigned( an_Integer )
 			# Paranoid type checking
-			raise 'Aya' unless an_Integer.instance_of? ::Integer
+			raise 'TypeError' unless an_Integer.instance_of? ::Integer
 			result	= ::Asm::BCPU::Word.new
-			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
+			raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer_as_unsigned( an_Integer )
 			return	result
 		end
 		# DOCIT
 		def self.from_integer_as_twos_complement( an_Integer )
 			# Paranoid type checking
-			raise 'Aya' unless an_Integer.instance_of? ::Integer
+			raise 'TypeError' unless an_Integer.instance_of? ::Integer
 			result	= ::Asm::BCPU::Word.new
-			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
+			raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_integer_as_twos_complement( an_Integer )
 			return	result
 		end
 		# DOCIT
 		def self.from_Bitset( a_Bitset )
 			# Paranoid type checking
-			raise 'Aya' unless a_Bitset.instance_of? ::Bitset
+			raise 'TypeError' unless a_Bitset.instance_of? ::Bitset
 			result	= ::Asm::BCPU::Word.new
-			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
+			raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_Bitset( a_Bitset )
 			return	result
 		end
 		# DOCIT
 		def self.from_BCPU_Word( a_Word )
 			# Paranoid type checking
-			raise 'Aya' unless a_Word.instance_of? ::Asm::BCPU::Word
+			raise 'TypeError' unless a_Word.instance_of? ::Asm::BCPU::Word
 			result	= ::Asm::BCPU::Word.new
-			raise ' Aya' unless result.instance_of? ::Asm::BCPU::Word
+			raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Word
 			result.assign_Word( a_Word )
 			return	result
 		end
@@ -538,18 +538,18 @@ module Asm::BCPU
 			# DOCIT
 			def self.from_binary_String( a_binary_String )
 				# Paranoid type checking
-				raise 'Aya' unless a_binary_String.instance_of? ::String
+				raise 'TypeError' unless a_binary_String.instance_of? ::String
 				result	= ::Asm::BCPU::Memory::Location.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_binary_String( a_binary_String )
 				return	result
 			end
 			# DOCIT
 			def self.from_decimal_String( a_decimal_String )
 				# Paranoid type checking
-				raise 'Aya' unless a_decimal_String.instance_of? ::String
+				raise 'TypeError' unless a_decimal_String.instance_of? ::String
 				result	= ::Asm::BCPU::Memory::Location.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_decimal_String( a_decimal_String )
 				return	result
 			end
@@ -558,7 +558,7 @@ module Asm::BCPU
 				# Paranoid type checking
 				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Location.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer( an_Integer )
 				return	result
 			end
@@ -567,7 +567,7 @@ module Asm::BCPU
 				# Paranoid type checking
 				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Location.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer_as_unsigned( an_Integer )
 				return	result
 			end
@@ -576,25 +576,25 @@ module Asm::BCPU
 				# Paranoid type checking
 				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Location.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_integer_as_twos_complement( an_Integer )
 				return	result
 			end
 			# DOCIT
 			def self.from_Bitset( a_Bitset )
 				# Paranoid type checking
-				raise 'Aya' unless a_Bitset.instance_of? ::Bitset
+				raise 'TypeError' unless a_Bitset.instance_of? ::Bitset
 				result	= ::Asm::BCPU::Memory::Location.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_Bitset( a_Bitset )
 				return	result
 			end
 			# DOCIT
 			def self.from_BCPU_Word( a_Word )
 				# Paranoid type checking
-				raise 'Aya' unless a_Word.instance_of? ::Asm::BCPU::Word
+				raise 'TypeError' unless a_Word.instance_of? ::Asm::BCPU::Word
 				result	= ::Asm::BCPU::Memory::Location.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Location
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Location
 				result.assign_Word( a_Word )
 				return	result
 			end
@@ -626,16 +626,16 @@ module Asm::BCPU
 				Asm::Boilerplate.raise_unless_type( a_binary_String ,::String)
 
 				result	= ::Asm::BCPU::Memory::Value.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_binary_String( a_binary_String )
 				return	result
 			end
 			# DOCIT
 			def self.from_decimal_String( a_decimal_String )
 				# Paranoid type checking
-				raise 'Aya' unless a_decimal_String.instance_of? ::String
+				raise 'TypeError' unless a_decimal_String.instance_of? ::String
 				result	= ::Asm::BCPU::Memory::Value.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_decimal_String( a_decimal_String )
 				return	result
 			end
@@ -644,7 +644,7 @@ module Asm::BCPU
 				# Paranoid type checking
 				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Value.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer( an_Integer )
 				return	result
 			end
@@ -653,7 +653,7 @@ module Asm::BCPU
 				# Paranoid type checking
 				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Value.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer_as_unsigned( an_Integer )
 				return	result
 			end
@@ -662,25 +662,25 @@ module Asm::BCPU
 				# Paranoid type checking
 				raise 'argument is not an integer' unless an_Integer.integer?
 				result	= ::Asm::BCPU::Memory::Value.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_integer_as_twos_complement( an_Integer )
 				return	result
 			end
 			# DOCIT
 			def self.from_Bitset( a_Bitset )
 				# Paranoid type checking
-				raise 'Aya' unless a_Bitset.instance_of? ::Bitset
+				raise 'TypeError' unless a_Bitset.instance_of? ::Bitset
 				result	= ::Asm::BCPU::Memory::Value.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_Bitset( a_Bitset )
 				return	result
 			end
 			# DOCIT
 			def self.from_BCPU_Word( a_Word )
 				# Paranoid type checking
-				raise 'Aya' unless a_Word.instance_of? ::Asm::BCPU::Word
+				raise 'TypeError' unless a_Word.instance_of? ::Asm::BCPU::Word
 				result	= ::Asm::BCPU::Memory::Value.new
-				raise ' Aya' unless result.instance_of? ::Asm::BCPU::Memory::Value
+				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_Word( a_Word )
 				return	result
 			end

@@ -1,5 +1,5 @@
 =begin
-# /lib/Asm/Magic.rb
+# /lib/Asm/Literals_are_Magic.rb
 * complete definition of module Asm::Magic and all nested modules thereof
 =end
 module Asm
@@ -41,12 +41,12 @@ module Asm
 				end
 				# DOCIT
 				def	self.valid?( an_Integer )
-					raise 'TypeError' unless an_Integer.integer?
+					raise 'Aya' unless an_Integer.integer?
 					return	( an_Integer > ::Asm::Magic::Memory::Index::Exclusive::Minimum ) && ( an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum )
 				end
 				# DOCIT
 				def	self.assert_valid( an_Integer )
-					raise 'TypeError' unless an_Integer.integer?
+					raise 'Aya' unless an_Integer.integer?
 					if !(an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum)
 						raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive to be a memory location index.'
 					elsif !(::Asm::Magic::Memory::Index::Exclusive::Minimum < an_Integer)
@@ -339,15 +339,6 @@ module Asm
 						RD_RA_data	= '(ADDI)|(SUBI)'
 						RD_data_RB	= '(INCIZ)|(DECIN)'
 						RD_data	= '(SET)|(SETH)'
-
-						module Array
-							RD_RA      = [:move, :not]
-							RD_RA_RB   = [:and, :or, :add, :sub, :movez, :movex, :movep, :moven]
-							RD_RA_data = [:addi, :subi]
-							RD_data_RB = [:inciz, :decin]
-							RD_data    = [:set, :seth]
-						end
-
 						module	Capture
 							RD_RA	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Keyword::RD_RA ,::Asm::Magic::Regexp::String::Names::Keyword )
 							RD_RA_RB	= ::Asm::Magic::Regexp::String.named_capture( ::Asm::Magic::Regexp::String::Asm::Keyword::RD_RA_RB ,::Asm::Magic::Regexp::String::Names::Keyword )
@@ -490,11 +481,11 @@ module Asm
 
 				module Binary
 					# instructions and their 4 bit binary codes
-					String = { :move   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVE.to_s(2),
-								:not   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::NOT.to_s(2),
-								:and   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::AND.to_s(2),
-								:or    => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::OR.to_s(2),
-								:add   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADD.to_s(2),
+					String = { :move	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVE.to_s(2),
+								:not	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::NOT.to_s(2),
+								:and	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::AND.to_s(2),
+								:or	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::OR.to_s(2),
+								:add	=> "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADD.to_s(2),
 								:sub   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUB.to_s(2),
 								:addi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADDI.to_s(2),
 								:subi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUBI.to_s(2),
@@ -509,66 +500,39 @@ module Asm
 					end
 				end
 			def self.machine_code_to_String( a_memory_value )
-				# Paranoid type checking
-				raise 'TypeError' unless a_memory_value.instance_of? ::Asm::BCPU::Memory::Value
-				machine_code_String = a_memory_value.to_s
-
-				# Slice BCPU word in memory into 4 quarterwords
-				mc_qtrwords = []
-				machine_code_String.split("").each_slice(4) { |qword| mc_qtrwords << qword }
-
-				# Build format arrays
-				ra = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_RB + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_data
-				ra_d4bit = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_data_RB
-				ra_d8bit = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_data
-				rb = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_RB + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_data_RB
-				rb_d4bit = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_data
-				rb_empty = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_data
-
-				# C15, C14, C13, C12
-				# => e.g., [0, 1, 1, 0]
-				opcode = mc_qtrwords[3].reverse.join("")
-				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
-				opcode_key.upcase!
-
-				# C11, C10, C9, C8
-				decimal_value_dest = mc_qtrwords[2].reverse.join("").to_i(2)
-				dest_reg = "R#{decimal_value_dest}"
-
-				# C7, C6, C5, C4
-				decimal_value_a = mc_qtrwords[1].reverse.join("").to_i(2)
-				if ra.include? opcode_key.downcase.to_sym
-					reg_a = "R#{decimal_value_a}"
-				elsif ra_d4bit.include? opcode_key.downcase.to_sym
-					reg_a = "d#{decimal_value_a}"
-				elsif ra_d8bit.include? opcode_key.downcase.to_sym
-					reg_a = "d#{decimal_value_a + 256}"
-				else
-					raise "Unknown format for opcode #{opcode_key}"
-				end
-
-				# C3, C2, C1, C0:
-				decimal_value_b = mc_qtrwords[0].reverse.join("").to_i(2)
-				if rb.include? opcode_key.downcase.to_sym
-					reg_b = "R#{decimal_value_b}"
-				elsif rb_d4bit.include? opcode_key.downcase.to_sym
-					reg_b = "d#{decimal_value_b}"
-				elsif rb_empty.include? opcode_key.downcase.to_sym
-					reg_b = ""
-				else
-					raise "Unknown format for opcode #{opcode_key}"
-				end
-
-				if reg_b == ""
-					full_String = "#{opcode_key} #{dest_reg}, #{reg_a}"
-				else
-					full_String = "#{opcode_key} #{dest_reg}, #{reg_a}, #{reg_b}"
-				end
-
-				return full_String
+#				#TODO: Should be ::Bitset, temporarily ::String
+#				# see Virtual_Machine: get_memory_value()
+#				raise 'Aya' unless a_memory_value.instance_of? ::String
+#				machine_code_String = a_memory_value.to_s
+#				mc_qrtwords = []
+#				machine_code_String.split("").each_slice(4) { |qtrword| mc_qtrwords << qword }
+#				# TODO: process quarter words
+#				# C3, C2, C1, C0:
+#				# mc_qrtwords[0]
+#				# C7, C6, C5, C4:
+#				# mc_qrtwords[1]
+#				# C11, C10, C9, C8:
+#				# mc_qrtwords[2]
+#				# C15, C14, C13, C12:
+#				# mc_qrtwords[3]
+#				mc_qtrwords[0] # => e.g., [0, 1, 1, 0]
+#				mc_qtrwords[1] # => e.g., [0, 1, 1, 0]
+#				# Phase 2:
+#				mc_qtrwords[2] # => e.g., [0, 1, 1, 0]
+#
+#				# Phase 3: lookup instruction
+#				opcode = mc_qtrwords[3].reverse.join("")
+#				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcodel)).to_s
+#				opcode_key.upcase!
+#
+#				#Phase 4: concatenate strings
+#
+				return 'oh hai'
 			end
 		end
 	end
 end
 
+#require	'Asm/require_all.rb'
+#$LOAD_PATH << '.'
 # encoding: UTF-8
