@@ -119,8 +119,10 @@ module Asm
 		def and( dest_reg, reg_a, reg_b)
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
-			self.set_location_to_value(dest_reg, ra & rb)
-
+			#self.set_location_to_value(dest_reg, ra & rb)
+			# TODO: Double check the next two lines work properly
+			rab = Asm::BCPU::Memory::Value.from_Bitset((ra.the_bits) & (rb.the_bits))
+			self.set_location_to_value(dest_reg, rab)
 			self.increment_program_counter( dest_reg ,true )
 		end
 

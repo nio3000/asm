@@ -315,7 +315,7 @@ module Asm::BCPU
 					@the_bits	= @the_bits | an_Object
 				end
 			else
-				raise 'Ojou-sama, that is inappropriate.'
+				raise 'TypeError'
 			end
 			self.assert_valid
 			return
