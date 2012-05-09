@@ -18,7 +18,7 @@ module Asm
 end
 
 # misc functionality for consistency
-require 'Asm/Literals_Are_Magic.rb'
+require 'Asm/Magic.rb'
 require 'Asm/version.rb'
 require 'Asm/Boilerplate.rb'
 

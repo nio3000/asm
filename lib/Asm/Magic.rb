@@ -1,5 +1,5 @@
 =begin
-# /lib/Asm/Literals_are_Magic.rb
+# /lib/Asm/Magic.rb
 * complete definition of module Asm::Magic and all nested modules thereof
 =end
 module Asm
