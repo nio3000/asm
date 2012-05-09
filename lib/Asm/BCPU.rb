@@ -27,15 +27,15 @@ module Asm::BCPU
 		* see the repo for Bitset for details & methods available if you need to get at indivudal bits in the Bitset
 =end
 		# get @the_bits
-		#attr_accessor :the_bits
-		def the_bits
-			temp	= @the_bits.to_s
-			Bitset.from_s( temp )
-		end
-		def the_bits=( a_Bitset )
-			temp	= a_Bitset.to_s
-			@the_bits.from_s( temp )
-		end
+		attr_accessor :the_bits
+		#def the_bits
+		#	temp	= @the_bits.to_s
+		#	Bitset.from_s( temp )
+		#end
+		#def the_bits=( a_Bitset )
+		#	temp	= a_Bitset.to_s
+		#	@the_bits	= ::Bitset.from_s( temp )
+		#end
 		# initializing constructor, implicitly default constructor
 		# argument - see Asm::BCPU::Word::assign for restrictions
 		# force_twos_complement - see Asm::BCPU::Word::assign for usage
