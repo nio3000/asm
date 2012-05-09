@@ -187,6 +187,7 @@ module Asm
 			puts '#map_bits_to_bits |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''
 			return
 		end
+		
 	public
 =begin	interface related to telling the Loader to load into the virtual machine
 =end
@@ -420,7 +421,7 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( wordRD ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( wordRA ,::Asm::BCPU::Word )
 			Asm::Boilerplate::raise_unless_type( value ,::Asm::BCPU::Memory::Value )
-			#)
+			
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRA, 4..7, value)
 

@@ -117,8 +117,8 @@ module Asm
 		# RD <- bitwise NOT RA
 		def not( dest_reg, reg_a)
 			ra = self.get_memory_value(reg_a)
-			rb = self.get_memory_value(reg_b)
-			self.set_location_to_value(dest_reg, ra.not(rb))
+			ra = Asm::BCPU::Memory::Value.from_Bitset(~(ra.the_bits))
+			self.set_location_to_value(dest_reg, ra)
 
 			self.increment_program_counter( dest_reg ,true )
 		end
