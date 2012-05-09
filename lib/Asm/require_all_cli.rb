@@ -1,5 +1,5 @@
 =begin
-# /lib/Asm/require_all.rb
+# /lib/Asm/require_all_cli.rb
 * hardcoded require for each file containing code under module Asm
 * dependency on module Asm should be resolved by requiring this file
 	* no, don't bother just requiring the individual files you think you need.
