@@ -2,7 +2,6 @@
 # /lib/Asm/Boilerplate.rb
 * refactored boilerplate code living under module Asm::Boilerplate
 =end
-
 =begin
 # Asm
 * highest-level namespace for the project.
@@ -19,7 +18,6 @@ module Asm
 				return "0"
 			end
 		end
-
 		module Machine
 			module Code
 				# DOCIT
@@ -29,7 +27,7 @@ module Asm
 				# DOCIT
 				def self.get_RD_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
-					for index in (8..11)
+					(8..11).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
 					return result
@@ -37,7 +35,7 @@ module Asm
 				# DOCIT
 				def self.get_RA_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
-					for index in (4..7)
+					(4..7).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
 					return result
@@ -45,7 +43,7 @@ module Asm
 				# DOCIT
 				def self.get_RB_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
-					for index in (0..3)
+					(0..3).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
 					return result
@@ -55,7 +53,7 @@ module Asm
 					puts("Memory Value: " + a_Memory_Value.to_s)
 					result = ::Asm::BCPU::Memory::Location.new
 					puts("Results 1: " + result.to_s)
-					for index in a_bit_range
+					a_bit_range.each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 						puts("" << result.the_bits[index].to_s << " = " << a_Memory_Value.the_bits[index].to_s)
 					end
@@ -92,7 +90,6 @@ module Asm
 			raise "you passed a noninteger to Asm::Boilerplate.get_twos_complement_bits_as_String; don't do that!" unless  an_Integer.integer?
 			if	an_Integer.instance_of? ::Fixnum
 				a_binary_String	= ''
-
 				(0..(::Asm::Magic::Memory::Bits_per::Word - 1 - 1)).each do |index|
 					#a_binary_String << an_Integer[index].to_s( 2 )
 					a_binary_String	= an_Integer[index].to_s( 2 ) << a_binary_String
@@ -134,7 +131,7 @@ module Asm
 		end
 		def	self.puts_unless_type( argument ,type )
 			begin
-				puts "(#{argument}) argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
+				puts "(#{argument}) argument's type is #{argument.kind_of()}" << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
 				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
 			rescue
@@ -185,5 +182,4 @@ module Asm
 		end
 	end
 end
-
 # encoding: UTF-8

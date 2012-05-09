@@ -89,22 +89,14 @@ module Asm
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:moven] )
 				self.moven( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
 			else
-				#puts	'BANKAI: ' + op_code_binary_string + " = " + Asm::Magic::ISA::Opcode::Binary::String[:move]
+				raise "BANKAI: #{op_code_binary_string}  =  #{Asm::Magic::ISA::Opcode::Binary::String[:move]}"
 			end
 		end
 		# DOCIT
 		def advance( steps )
-			#puts 'chii' unless steps.integer?
-			if	( steps > 0 )
-				for index in 1..steps
-					self.advance_once
-				end
-			else
-				if	steps == 0
-				else
-					#puts "don't do that"
-				end
-			end
+			raise "TypeError" unless steps.integer?
+			# TODO: Double check that advancing 0 steps doesn't break anything
+			steps.times { self.advance_once }
 		end
 	#private
 =begin	execute simulated BCPU execution
@@ -126,10 +118,12 @@ module Asm
 
 		# RD <- RA bitwise AND RB
 		def and( dest_reg, reg_a, reg_b)
-			ra = self.get_memory_value(reg_a).the_bits
-			rb = self.get_memory_value(reg_b).the_bits
-			self.set_location_to_value(dest_reg, Asm::BCPU::Memory::Value.from_Bitset((ra & rb)))
-
+			ra = self.get_memory_value(reg_a)
+			rb = self.get_memory_value(reg_b)
+			#self.set_location_to_value(dest_reg, ra & rb)
+			# TODO: Double check the next two lines work properly
+			rab = Asm::BCPU::Memory::Value.from_Bitset((ra.the_bits) & (rb.the_bits))
+			self.set_location_to_value(dest_reg, rab)
 			self.increment_program_counter( dest_reg ,true )
 		end
 
@@ -198,7 +192,7 @@ module Asm
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
 			puts '#set RD ' << reg_eightbit.to_s
-			for index in 0..(result.the_bits.size - 1 - 7)
+			(0..(result.the_bits.size - 1 - 7)).each do |index|
 				#adjustment	= 8
 				result[index]	= reg_eightbit.the_bits[index]
 			end
@@ -213,7 +207,7 @@ module Asm
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
 			puts '#seth RD ' << reg_eightbit.to_s
-			for index in (result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)
+			((result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)).each do |index|
 				#adjustment	= -8
 				result[index]	= reg_eightbit.the_bits[index]
 			end
@@ -362,7 +356,7 @@ module Asm
 			#puts "The minimum is not less than the maximum" unless inclusive_minimum < exclusive_maximum
 			# force all values available
 			values	= []
-			for index in (inclusive_minimum..(exclusive_maximum-1))
+			(inclusive_minimum..(exclusive_maximum-1)).each do |index|
 				values.push self.get_memory_value( ::Asm::BCPU::Memory::Location.from_integer_as_unsigned( index ) )
 			end
 =begin

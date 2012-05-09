@@ -8,8 +8,6 @@
 	and Asm::BCPU::Memory::Value
 * largely undocumented and unimplemented
 =end
-
-# DOCIT
 module Asm::BCPU
 =begin
 	# Asm::BCPU::Word
@@ -306,7 +304,7 @@ module Asm::BCPU
 			elsif an_Object.instance_of?( ::Bitset )
 				if an_Object.size < @the_bits.size
 					raise 'implementation fault: Bitset\'s | operation is broken in the case you tried to use it in; ask for a workaround asap.'
-					for index in (0..an_Object.size - 1)
+					(0..an_Object.size - 1).each do |index|
 						# TODO this code needs adjustment maybe?, but other code should be avoiding this section now. . .maybe
 						@the_bits[index]	= @the_bits[index] |  an_Object[index]
 					end
@@ -317,7 +315,7 @@ module Asm::BCPU
 					@the_bits	= @the_bits | an_Object
 				end
 			else
-				raise 'Ojou-sama, that is inappropriate.'
+				raise 'TypeError'
 			end
 			self.assert_valid
 			return
@@ -348,14 +346,14 @@ module Asm::BCPU
 			#a_bits = the_bits
 			# interpret as unsigned
 			unsigned_result	= 0
-			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 1)
+			(0..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |index|
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
 				unsigned_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
 			Asm::Magic::Binary::Unsigned.assert_valid( unsigned_result )
 			# interpret as twos complement
 			twos_complement_result	= 0
-			for index in 0..(Asm::Magic::Memory::Bits_per::Word - 2)
+			(0..(Asm::Magic::Memory::Bits_per::Word - 2)).each do |index|
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
 				twos_complement_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
@@ -624,7 +622,6 @@ module Asm::BCPU
 			def self.from_binary_String( a_binary_String )
 				# Paranoid type checking
 				Asm::Boilerplate.raise_unless_type( a_binary_String ,::String)
-
 				result	= ::Asm::BCPU::Memory::Value.new
 				raise ' TypeError' unless result.instance_of? ::Asm::BCPU::Memory::Value
 				result.assign_binary_String( a_binary_String )
@@ -687,7 +684,6 @@ module Asm::BCPU
 		end
 	end
 end
-
 =begin
 	# Asm::Magic::Register::Location
 	* memory locations of unique special function registers
@@ -705,5 +701,4 @@ module	Asm::Magic::Register::Locations
 	Input_registers	 = Asm::Magic::Register::Indicies::Input_registers.each { |index| Asm::BCPU::Memory::Location.from_integer_as_unsigned( index ) }
 	Output_registers = Asm::Magic::Register::Indicies::Output_registers.each { |index| Asm::BCPU::Memory::Location.from_integer_as_unsigned( index ) }
 end
-
 # encoding: UTF-8
