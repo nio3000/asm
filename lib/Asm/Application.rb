@@ -1,12 +1,3 @@
-# This code still freezes for me with:
-# Gtk-CRITICAL **: gtk_widget_get_direction: assertion `GTK_IS_WIDGET (widget)' failed
-# The only relevent links I could find on the issue (related to wx) was:
-# http://forums.wxwidgets.org/viewtopic.php?f=23&t=20535
-# Leads me to believe that I am forgetting to declare/set something... I've been fighting with it all day. No luck.
-
-# Ignore the temporary changes, I wanted to work primarily on the GUI and didn't have time to fix all the uninitialized constants, NameErrors and other issues.
-# The code as it stands works up to the point of GTK failing assertions. Prior tomy changes it wouldn't even run (Ruby errors). Feel free to fix the other problems in references to Asm:: classes...
-
 =begin
 # /lib/Asm/Application.rb
 * complete definition of class Asm::Application
