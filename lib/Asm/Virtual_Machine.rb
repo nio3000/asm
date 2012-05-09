@@ -335,7 +335,7 @@ module Asm
 				#puts 'location=' << location.to_s << ' was previously undefined'
 				self.set_location_to_value( location ,Asm::BCPU::Memory::Value.new )
 			else
-				#puts 'QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ'
+				#puts 'QQQ'
 			end
 			#puts 'Aya; @the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s unless @the_memory[location.to_s].instance_of?( Asm::BCPU::Memory::Value )
 			# return association by value
