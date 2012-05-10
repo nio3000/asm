@@ -338,7 +338,7 @@ module Asm::BCPU
 			# DOCIT
 			if	!(force_twos_complement == !force_unsigned)
 				if	force_twos_complement == true
-					raise 'Aya'
+					::Asm::Boilerplate::DEBUG::Exception.assert( Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage )
 				end
 			end
 			#
@@ -391,6 +391,9 @@ module Asm::BCPU
 				end
 			end
 =end
+			::Asm::Boilerplate::DEBUG::Console.announce( ::Asm::Boilerplate::DEBUG::String.report_an_Integer( twos_complement_result ,"2's comp -> " ) + '; ' + ::Asm::Boilerplate::DEBUG::String.report_an_Integer( unsigned_result ,"unsigned -> " ) ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
+			::Asm::Boilerplate::DEBUG::Console.announce( ::Asm::Boilerplate::DEBUG::String.report_an_Integer( result ,"returned result -> " ) ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
+			::Asm::Boilerplate::DEBUG::Exception.assert( (result == twos_complement_result) || (result == unsigned_result) ,"returned result is neither of the expected possible results." )
 			result
 		end
 		# DOCIT
