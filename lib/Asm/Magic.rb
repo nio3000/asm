@@ -411,6 +411,7 @@ module Asm
 					Frame	 = 'Loader_frame'
 					Console	 = 'Loader_console'
 					Filepath = 'Loader_filepath'
+					Reset	= 'Loader_reset'
 				end
 				module VM
 					Frame	= 'VM_frame'
