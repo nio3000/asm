@@ -531,21 +531,34 @@ module Asm
 
 				instruction = opcode_key.to_sym
 				decimal_value_a = mc_qtrwords[2].reverse.join("").to_i(2)
+				binary_value_a = mc_qtrwords[2].reverse.join("")
 				if ra.include? instruction
 					reg_a = "R#{decimal_value_a}"
 				elsif ra_d4bit.include? instruction
 					reg_a = "d#{decimal_value_a}"
 				elsif ra_d8bit.include? instruction
-					reg_a = "d#{decimal_value_a + 256}"
+					if instruction == :SET
+						reg_a = "0b"
+					else
+						reg_a = "0b#{binary_value_a}"
+					end
 				else
 					raise "Unknown format for opcode #{opcode_key}"
 				end
 
 				decimal_value_b = mc_qtrwords[3].reverse.join("").to_i(2)
+				binary_value_b = mc_qtrwords[3].join("")
 				if rb.include? instruction
 					reg_b = "R#{decimal_value_b}"
 				elsif rb_d4bit.include? instruction
 					reg_b = "d#{decimal_value_b}"
+				elsif ra_d8bit.include? instruction
+					if instruction == :SET
+						reg_a << "#{binary_value_b}#{binary_value_a}"
+					else
+						reg_a << "#{binary_value_b}"
+					end
+					reg_b = ""
 				elsif rb_empty.include? instruction
 					reg_b = ""
 				else
