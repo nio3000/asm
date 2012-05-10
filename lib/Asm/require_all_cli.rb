@@ -8,12 +8,6 @@
 # 3rd party dependencies
 require 'bitset'
 require 'minitest/unit'
-require 'test/unit/assertions'
-module Asm
-	class Tests
-		include Test::Unit::Assertions
-	end
-end
 
 # misc functionality for consistency
 require 'Asm/Magic.rb'

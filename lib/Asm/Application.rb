@@ -9,17 +9,20 @@ include Wx
 * highest-level namespace for the project.
 =end
 module Asm
-=begin	# WxRuby References to colors as they will be used to identify concepts in the GUI
+=begin
+		# WxRuby References to colors as they will be used to identify concepts in the GUI
+		  Available built in colors:
+			* Red   = ::Wx::RED
+			* Blue  = ::Wx::BLUE
+			* Green = ::Wx::GREEN
+			* White = ::Wx::WHITE
+			* Light grey = ::Wx::LIGHT_GREY
 =end
 	module	::Asm::Magic::GUI::Colour
 		Output_register	= ::Wx::Colour.new( 0x20 ,0xB2 ,0xAA ,0xFF )
 		Input_register	= ::Wx::Colour.new( 0x00 ,0xB7 ,0xEB ,0xFF )
 		Program_counter	= ::Wx::Colour.new( 0x00 ,0xFF ,0xFF ,0xFF )
 		Default	= ::Wx::LIGHT_GREY
-		#Output_register	= ::Wx::GREEN
-		#Input_register	= ::Wx::BLUE
-		#Program_counter	= ::Wx::RED
-		#Default	= ::Wx::WHITE
 	end
 =begin
 	# Asm::Application
@@ -37,7 +40,7 @@ module Asm
 				::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			end
 			def notify
-				puts 'RunTimmer#notify'
+				puts 'RunTimer#notify'
 				if @the_Application.stopped == true
 					#@the_Application.timer.stop()
 					self.stop()
@@ -56,7 +59,7 @@ module Asm
 			super
 			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 		end
-=begin	GUI 
+=begin	GUI
 =end
 =begin	Wx::App callbacks
 =end
@@ -146,6 +149,8 @@ module Asm
 		# DOCIT
 		def process_memory_entry( a_memory_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
+			::Asm::Boilerplate::DEBUG::Console.announce( "Binary String: #{Asm::Magic::ISA::Opcode::Binary::String}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
+			::Asm::Boilerplate::DEBUG::Console.announce( "\n APP Memory Index: #{a_memory_index} \n APP Raw memory value: #{a_raw_memory_value}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ,false ).to_s << '; d' << temp.to_i( false ,true ).to_s << '; "' << ::Asm::Magic::ISA.machine_code_to_String(a_raw_memory_value) << '"'
 		end
 		# DOCIT
@@ -159,8 +164,7 @@ module Asm
 			# info
 			program_counter_value	= @the_BCPU.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 			program_counter	= ::Asm::BCPU::Memory::Location.from_binary_String( program_counter_value.the_bits.to_s ).to_i
-			# TODO the to_i method may be causing the problem in the GUI where advance does not update the program counter disply sensically.
-			# write registers
+			::Asm::Boilerplate::DEBUG::Console.announce( "\n PC (memloc): #{program_counter} \n PC (memval): #{program_counter_value.to_i}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Maximum )
 			(0..(raw_registers.size - 1)).each do |index|
 				raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'aregaerghaerhaerh (incoherent rage error)' << raw_registers.size.to_s << '==' << (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum).to_s ) unless (raw_registers.size == (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum))
@@ -264,8 +268,8 @@ module Asm
 			if @stopped == false
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).disable()
 				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).get_value * 1000
-				puts 'Aya' unless @timer.start(temp)
-				puts 'Aya Aya' unless @timer.is_running
+				raise 'Aya' unless @timer.start(temp)
+				raise 'Aya Aya' unless @timer.is_running
 			end
 			return
 		end
