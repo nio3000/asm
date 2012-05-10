@@ -2,7 +2,10 @@
 
 ## Description
 
-Asm is an assembly simulator project for the requirements of CSC 521. Due to this being a class project, pull requests will not be accepted at this time and is only presented for convenience. Browse at the code if you like.
+Asm is an assembly simulator project for the requirements of CSC 521. Due to this being a class project, pull requests will not be accepted at this time and is only presented for convenience. Browse or fork the code if you like.
+
+## License
+Don't be a dick.
 
 ## Authors
 
