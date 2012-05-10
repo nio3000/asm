@@ -142,9 +142,6 @@ module Asm
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
 			ra = self.get_memory_value(reg_a)
 			rb = self.get_memory_value(reg_b)
-			#self.set_location_to_value(dest_reg, ra & rb)
-			# TODO: Double check the next two lines work properly
-			#NOT WORKING: Not getting proper value for location reg_b
 			::Asm::Boilerplate::DEBUG::Console.announce( "ra:#{ra.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
 			::Asm::Boilerplate::DEBUG::Console.announce( "ra_location:#{reg_a.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
 			::Asm::Boilerplate::DEBUG::Console.announce( "rb:#{rb.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
@@ -211,6 +208,7 @@ module Asm
 		# RD <- RA - 4bit data
 		def subi( dest_reg, reg_a, reg_fourbit)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
+			::Asm::Boilerplate::DEBUG::Console.announce( "ra:#{ra}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 			ra = self.get_memory_value(reg_a).to_i
 			::Asm::Boilerplate::DEBUG::Console.announce( "ra:#{ra}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
