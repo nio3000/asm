@@ -241,7 +241,6 @@ module Asm
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			::Asm::Boilerplate::DEBUG::Console.announce( "dest_reg.to_i:#{dest_reg.to_i}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
 			result	= ::Asm::BCPU::Memory::Value.new( )
-			# TODO verify correctness
 			puts '#set RD ' << reg_eightbit.to_s
 			(0..(result.the_bits.size - 1 - 7)).each do |index|
 				adjustment	= 7
@@ -260,7 +259,6 @@ module Asm
 		def seth( dest_reg, reg_eightbit)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			result	= ::Asm::BCPU::Memory::Value.new( )
-			# TODO verify correctness
 			puts '#seth RD ' << reg_eightbit.to_s
 			dest_reg_value = self.get_memory_value( dest_reg )
 			::Asm::Boilerplate::DEBUG::Console.announce( "dest_reg_value:#{dest_reg_value}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
