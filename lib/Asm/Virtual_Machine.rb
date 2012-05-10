@@ -55,6 +55,8 @@ module Asm
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
+
+			# TODO: Exploit ::Asm::Magic::Regexp::String::Asm::Keyword::Array and ruby 'blocks' to make refactor this code duplication
 			if op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:move] )
 				self.move( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:not] )
@@ -68,7 +70,7 @@ module Asm
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:sub] )
 				self.sub( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:addi] )
-				puts("the_machine_code: " << the_machine_code.to_s)
+				puts "the_machine_code: #{the_machine_code}"
 				self.addi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:subi] )
 				self.subi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
@@ -191,7 +193,7 @@ module Asm
 		def set( dest_reg, reg_eightbit)
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
-			puts '#set RD ' << reg_eightbit.to_s
+			puts "#set RD #{reg_eightbit}"
 			(0..(result.the_bits.size - 1 - 7)).each do |index|
 				#adjustment	= 8
 				result[index]	= reg_eightbit.the_bits[index]

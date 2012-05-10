@@ -184,7 +184,7 @@ module Asm
 				puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))
 				to_range_index	= to_range_index + 1
 			end
-			puts '#map_bits_to_bits |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''
+			puts "#map_bits_to_bits |-> from_Word = #{from_Word}; to_Word = #{to_Word}"
 			return
 		end
 
@@ -205,19 +205,17 @@ module Asm
 					begin
 						self.handle( line )
 					rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
-						messages.push 'syntax error on line' << line_count.to_s << ": \"" << a_syntax_error.message << "\""
+						messages.push "syntax error on line #{line_count}: \"#{a_syntax_error.message}\""
 					rescue Asm::Boilerplate::Exception::Overflow => an_overflow_error
-						messages.push 'overflow error on line' << line_count.to_s << ": \"" << an_overflow_error.message << "\""
+						messages.push "overflow error on line #{line_count}: \"#{an_overflow_error.message}\""
 					rescue ::Exception => an_error
-						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\" " << an_error.backtrace.to_s
+						messages.push "unexpected error on line #{line_count}: \"#{an_error.message}\" #{an_error.backtrace}"
 					rescue ::String => an_error
-						messages.push 'unexpected error on line' << line_count.to_s << ": \"" << an_error.message << "\""
+						messages.push "unexpected error on line #{line_count}: \"#{an_error.message}\""
 					end
-					puts 'DEBUG: load index after line ' << line_count.to_s << ' is ' << self.load_index.to_s << '.'
+					puts "DEBUG: load index after line #{line_count} is #{self.load_index}."
 				end
-			else
-				messages.push '\'' << path << '\' is not a file.'
-			end
+			else messages.push '\'' << path << '\' is not a file.' end
 			messages
 		end
 	#private
@@ -398,7 +396,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
-			puts '#instruction_format__keyword_RD_RA_RB, location = ' << location.to_s << ';value = ' << value.to_s
+			puts "#instruction_format__keyword_RD_RA_RB, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -434,7 +432,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
-			puts '#instruction_format__keyword_RD_RA, location = ' << location.to_s << ';value = ' << value.to_s
+			puts "#instruction_format__keyword_RD_RA, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -477,7 +475,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
-			puts '#instruction_format__keyword_RD_RA_literal, location = ' << location.to_s << ';value = ' << value.to_s
+			puts "#instruction_format__keyword_RD_RA_literal, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -575,7 +573,7 @@ module Asm
 			wordLit = self.word_from_numeric_literal( memory_value_literal )
 			value = Asm::BCPU::Memory::Value.new( wordLit.the_bits )
 
-			puts "location.to_s=\"#{location.to_s}\"; value.to_s=\"#{value.to_s}\";" # confirmed that location and value have the correct content.
+			puts "location.to_s=\"#{location}\"; value.to_s=\"#{value}\";" # confirmed that location and value have the correct content.
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
