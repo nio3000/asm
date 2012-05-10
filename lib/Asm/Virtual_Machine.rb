@@ -55,22 +55,7 @@ module Asm
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
 			::Asm::Boilerplate::DEBUG::Console.announce( "the_machine_code.to_s:#{the_machine_code.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
-			# Reference:
-			# include Asm::Magic::ISA
-			# opcodes = Opcode::Integer.constants
-			# binary = lambda { |x| x.to_s(2).rjust(4,'0') }
-			# String = Hash.new
-			# opcodes.each do |code|
-			# 	String[code] = binary.call(Opcode::Integer.const_get(code))
-			# end
-			#
-			# rd = Asm::Boilerplate::Machine::Code.get_RD_location( mc )
-			# ra = Asm::Boilerplate::Machine::Code.get_RA_location( mc )
-			# rb = Asm::Boilerplate::Machine::Code.get_RB_location( mc )
-			# bit = Asm::Boilerplate::Machine::Code.get_value_from_bit_range( mc, range )
-			# self.code( rd, ra, rb, bit )
-			#
-			# TODO: Refactor this
+			# TODO: Refactor this, possible implementation (pseudoruby):
 			# include Asm::Magic::Regexp::String::Asm::Keyword::Array
 			# include Asm::Boilerplate::Machine
 			#
@@ -83,15 +68,15 @@ module Asm
 			# formats: rdra, rdrarb,rdrabit,rdbit,rdbitrb
 			# opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(op_code_binary_string)).to_s
 			# if RD_RA.include? op_code_binary_string
-			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), ra(the_machine_code))"
+			#	eval "self.#{opcode_key.downcase}(rd.call(the_machine_code), ra.call(the_machine_code))"
 			# elsif RD_RA_RB.include? op_code_binary_string
-			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), ra(the_machine_code), rb(the_machine_code))"
+			#	eval "self.#{opcode_key.downcase}(rd.call(the_machine_code), ra.call(the_machine_code), rb.call(the_machine_code))"
 			# elsif RD_RA_data.include? op_code_binary_string
-			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), ra(the_machine_code), bit(the_machine_code, (0..3)))"
+			#	eval "self.#{opcode_key.downcase}(rd.call(the_machine_code), ra.call(the_machine_code), bit.call(the_machine_code, (0..3)))"
 			# elsif RD_data_RB.include? op_code_binary_string
-			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), bit(the_machine_code, (4..7)), ra(the_machine_code))"
+			#	eval "self.#{opcode_key.downcase}(rd.call(the_machine_code), bit.call(the_machine_code, (4..7)), ra.call(the_machine_code))"
 			# elsif RD_data.include? op_code_binary_string
-			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), bit(the_machine_code, (0..7)))"
+			#	eval "self.#{opcode_key.downcase}(rd.call(the_machine_code), bit.call(the_machine_code, (0..7)))"
 			#
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
 			::Asm::Boilerplate::DEBUG::Console.announce( "opcode:#{op_code_binary_string}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
