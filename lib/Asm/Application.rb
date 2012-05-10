@@ -40,7 +40,7 @@ module Asm
 				::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			end
 			def notify
-				puts 'RunTimmer#notify'
+				puts 'RunTimer#notify'
 				if @the_Application.stopped == true
 					#@the_Application.timer.stop()
 					self.stop()
@@ -149,6 +149,7 @@ module Asm
 		# DOCIT
 		def process_memory_entry( a_memory_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
+			::Asm::Boilerplate::DEBUG::Console.announce( "\n APP Memory Index: #{a_memory_index} \n APP Raw memory value: #{a_raw_memory_value}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ,false ).to_s << '; d' << temp.to_i( false ,true ).to_s << '; "' << ::Asm::Magic::ISA.machine_code_to_String(a_raw_memory_value) << '"'
 		end
 		# DOCIT
@@ -162,8 +163,7 @@ module Asm
 			# info
 			program_counter_value	= @the_BCPU.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 			program_counter	= ::Asm::BCPU::Memory::Location.from_binary_String( program_counter_value.the_bits.to_s ).to_i
-			# TODO: Fix observable bug from the debug announce below. Odd PC (memory value) values are incorrect (don't match)
-			::Asm::Boilerplate::DEBUG::Console.announce( "\n PC (memloc): #{program_counter} \n PC (memvalue): #{program_counter_value.to_i}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
+			::Asm::Boilerplate::DEBUG::Console.announce( "\n PC (memloc): #{program_counter} \n PC (memval): #{program_counter_value.to_i}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Maximum )
 			(0..(raw_registers.size - 1)).each do |index|
 				raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'aregaerghaerhaerh (incoherent rage error)' << raw_registers.size.to_s << '==' << (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum).to_s ) unless (raw_registers.size == (::Asm::Magic::Register::Index::Exclusive::Maximum - ::Asm::Magic::Register::Index::Inclusive::Minimum))
@@ -267,8 +267,8 @@ module Asm
 			if @stopped == false
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).disable()
 				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).get_value * 1000
-				puts 'Aya' unless @timer.start(temp)
-				puts 'Aya Aya' unless @timer.is_running
+				raise 'Aya' unless @timer.start(temp)
+				raise 'Aya Aya' unless @timer.is_running
 			end
 			return
 		end
