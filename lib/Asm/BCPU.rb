@@ -356,12 +356,21 @@ module Asm::BCPU
 			Asm::Magic::Binary::Unsigned.assert_valid( unsigned_result )
 			# interpret as twos complement
 			twos_complement_result	= 0
-			(1..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |index|
-				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
-				twos_complement_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
-			end
-			if a_String[0].to_s.to_i( 2 ) == 1
-				twos_complement_result	= -twos_complement_result
+			if a_String[0].to_s.to_i( 2 ) == 0
+				twos_complement_result	= unsigned_result
+			else
+				(0..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |index|
+					a_String[index]	= (a_String[index] == '0') ? ('1') : ('0')
+					exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
+					twos_complement_result	-= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
+				end
+				twos_complement_result	= twos_complement_result - 1
+				# (1..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |index|
+					# exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
+					# twos_complement_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
+				# end
+			#if a_String[0].to_s.to_i( 2 ) == 1
+			#	twos_complement_result	= -twos_complement_result
 				# twos_complement_result	= (2**16) - twos_complement_result + 1
 			end
 			#
