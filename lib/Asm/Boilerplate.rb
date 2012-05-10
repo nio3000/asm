@@ -161,7 +161,7 @@ module Asm
 					* Scope	# when are you where
 =end
 				module Concern
-					GUI	= true
+					GUI	= false
 					Loader	= true
 						Directive	= true
 						Key_RD_RA	= true
@@ -172,9 +172,9 @@ module Asm
 						Comment	= false
 					VM	= true
 						Instructions	= true
-							AND		= false
-							SUBI	= false
-							INCIZ	= false
+							AND		= true
+							SUBI	= true
+							INCIZ	= true
 							SET	= true
 							MOVEP = false
 						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range

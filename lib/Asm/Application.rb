@@ -44,7 +44,7 @@ module Asm
 				if @the_Application.stopped == true
 					#@the_Application.timer.stop()
 					self.stop()
-					@the_Application.main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).enable()
+					@the_Application.main_GUI_sheet.find_window_by_name( ::Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).enable()
 				else
 					@the_Application.the_BCPU.advance_once
 					@the_Application.update_VM_display
@@ -269,6 +269,7 @@ module Asm
 			if @stopped == false
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).disable()
 				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).get_value * 1000
+				@the_BCPU.advance_once
 				raise 'Aya' unless @timer.start(temp)
 				raise 'Aya Aya' unless @timer.is_running
 			end
