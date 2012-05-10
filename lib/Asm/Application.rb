@@ -35,7 +35,7 @@ module Asm
 		* makes periodic calls to `the_BCPU.advance_once` after `self.start( delay_in_milliseconds)` is invoked
 =end
 		class RunTimer < ::Wx::Timer
-			def initialize( the_Application )
+			def assign( the_Application )
 				@the_Application	= the_Application
 				::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			end
@@ -70,7 +70,8 @@ module Asm
 			@the_BCPU	= Asm::Virtual_Machine.new
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 			@stopped    = true
-			@timer = Asm::Application::RunTimer.new( self )
+			@timer = Asm::Application::RunTimer.new( @main_GUI_sheet )
+			@timer.assign( self )
 			#::Wx::init_all_image_handlers()	# may be depreciated
 			xml	= ::Wx::XmlResource.get()
 			xml.init_all_handlers()
