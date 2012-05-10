@@ -538,7 +538,7 @@ module Asm
 				value.the_bits[13] = true
 				value.the_bits[12] = true
 			else
-				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
+				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognized operation' )
 			end
 			location = self.getLocationFromLoadIndex()
 			self.incrementLoadIndex()

@@ -202,7 +202,7 @@ module Asm
 							AND		= false
 							SUBI	= true
 						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
-					BCPU	= true	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
+					BCPU	= false	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
 						Lexical_casting	= false	# uses thus far: BCPU::Word#to_i
 					Scope	= true	# lifetime and where one is in the code in general
 					Invalid_usage	= true

@@ -335,6 +335,7 @@ module Asm::BCPU
 		# Raises if something really wierd happens
 		# Returns Integer
 		def to_i( force_twos_complement = true ,force_unsigned = false )
+			#::Asm::Boilerplate::DEBUG::Console.announce( )
 			# DOCIT
 			if	!(force_twos_complement == !force_unsigned)
 				if	force_twos_complement == true
@@ -360,6 +361,7 @@ module Asm::BCPU
 			end
 			if a_String[0].to_s.to_i( 2 ) == 1
 				twos_complement_result	= -twos_complement_result
+				# twos_complement_result	= (2**16) - twos_complement_result + 1
 			end
 			#
 			result	= -666
