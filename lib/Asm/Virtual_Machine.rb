@@ -95,7 +95,6 @@ module Asm
 		# DOCIT
 		def advance( steps )
 			raise "TypeError" unless steps.integer?
-			# TODO: Double check that advancing 0 steps doesn't break anything
 			steps.times { self.advance_once }
 		end
 	#private
