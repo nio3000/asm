@@ -260,11 +260,12 @@ module Asm
 			puts '#set RD ' << reg_eightbit.to_s
 			(0..(result.the_bits.size - 1 - 7)).each do |index|
 				adjustment	= 7
-				result.the_bits[index + adjustment]	= reg_eightbit.the_bits[index]
+				result.the_bits[index + adjustment]	= reg_eightbit.the_bits[index + adjustment]
+				result.the_bits[index] = false
 				::Asm::Boilerplate::DEBUG::Console.announce( "result[#{index}]:#{result.to_i} <- reg_eightbit.the_bits[#{index}]: #{reg_eightbit.the_bits[index]}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
 			end
 			#Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
-			puts '#set RD <- ' << result.to_s
+			puts '#set RD HOPE: <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
@@ -276,11 +277,19 @@ module Asm
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
 			puts '#seth RD ' << reg_eightbit.to_s
-			((result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)).each do |index|
-				#adjustment	= -8
-				result.the_bits[index]	= reg_eightbit.the_bits[index]
-			end
+			dest_reg_value = self.get_memory_value( dest_reg )
+			::Asm::Boilerplate::DEBUG::Console.announce( "dest_reg_value:#{dest_reg_value}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
+			#((result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)).each do |index|
+			#	#adjustment	= -8
+			#	result.the_bits[index]	= reg_eightbit.the_bits[index]
+			#end
 			#Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
+			(0..(result.the_bits.size - 1 - 7)).each do |index|
+				adjustment	= 7
+				result.the_bits[index]	= reg_eightbit.the_bits[index + adjustment]
+				result.the_bits[index + adjustment] = dest_reg_value.the_bits[index + adjustment]
+				::Asm::Boilerplate::DEBUG::Console.announce( "result[#{index}]:#{result.to_i} <- reg_eightbit.the_bits[#{index}]: #{reg_eightbit.the_bits[index]}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
+			end
 			puts '#seth RD <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
@@ -347,7 +356,8 @@ module Asm
 		def movep( dest_reg, reg_a, reg_b)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#if self.get_memory_value( reg_b ).the_bits[15] == 0
-			if self.get_memory_value( reg_b ).the_bits[15] == false
+			::Asm::Boilerplate::DEBUG::Console.announce( "MOVEP: get_memory_value( reg_b ).the_bits[0]: #{get_memory_value( reg_b ).the_bits[0].to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::MOVEP )
+			if self.get_memory_value( reg_b ).the_bits[0] == false
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
@@ -359,7 +369,7 @@ module Asm
 		def moven( dest_reg, reg_a, reg_b)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#if self.get_memory_value( reg_b ).the_bits[15] == 1
-			if self.get_memory_value( reg_b ).the_bits[15] == true
+			if self.get_memory_value( reg_b ).the_bits[0] == true
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
@@ -400,7 +410,12 @@ module Asm
 			Asm::Boilerplate::puts_unless_type( value ,Asm::BCPU::Memory::Value )
 			#puts 'VM#set_location_to_value( loc=' << location.to_s << ' ,val=' << value.to_s << ' )'
 			# assignment; creates association if none existed, else overwrites.
-			@the_memory[location.to_s]	= value
+			if !(::Asm::Magic::Register::Indicies::Input_registers.include?( location.to_i ))
+				@the_memory[location.to_s]	= value
+			else
+				@the_memory[location.to_s]	= Asm::BCPU::Memory::Value.new
+				::Asm::Boilerplate::DEBUG::Console.announce( 'input register write attempt silently ignored' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
+			end
 			#puts '	@the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s
 			# return nothing
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
