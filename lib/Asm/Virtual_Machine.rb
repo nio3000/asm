@@ -221,7 +221,7 @@ module Asm
 		end
 
 		# RD <- 8bit data follow by RD7, RD6, ... RD0
-		def seth( dest_reg, reg_eightbit))
+		def seth( dest_reg, reg_eightbit)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
