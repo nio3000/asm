@@ -59,7 +59,7 @@ module Asm
 				self.move( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:not] )
 				self.not( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:and] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:and] )				
 				self.and( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:or] )
 				self.or( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )

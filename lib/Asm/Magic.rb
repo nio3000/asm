@@ -495,33 +495,26 @@ module Asm
 				end
 
 				module Binary
-					# instructions and their 4 bit binary codes
-					String = { :move   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVE.to_s(2),
-								:not   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::NOT.to_s(2),
-								:and   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::AND.to_s(2),
-								:or    => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::OR.to_s(2),
-								:add   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADD.to_s(2),
-								:sub   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUB.to_s(2),
-								:addi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::ADDI.to_s(2),
-								:subi  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SUBI.to_s(2),
-								:set   => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SET.to_s(2),
-								:seth  => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::SETH.to_s(2),
-								:inciz => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::INCIZ.to_s(2),
-								:decin => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::DECIN.to_s(2),
-								:movez => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEZ.to_s(2),
-								:movex => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEX.to_s(2),
-								:movep => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEP.to_s(2),
-								:moven => "%04d" % ::Asm::Magic::ISA::Opcode::Integer::MOVEN.to_s(2)}
+					include Asm::Magic::ISA
+					opcodes = Opcode::Integer.constants
+					binary = lambda { |x| "%04d" % x.to_s(2) }
+					String = Hash.new
+					opcodes.each do |code|
+						# instructions and their 4 bit binary codes
+						String[code] = binary.call(Opcode::Integer.const_get(code))
+					end
 					end
 				end
 			def self.machine_code_to_String( a_memory_value )
 				# Paranoid type checking
 				raise 'TypeError' unless a_memory_value.instance_of? ::Asm::BCPU::Memory::Value
-				machine_code_String = a_memory_value.to_s
+				machine_code_String = a_memory_value.to_s.reverse
+				::Asm::Boilerplate::DEBUG::Console.announce( "\n GUI Raw memory value: #{a_memory_value} \n GUI Raw memory strng: #{machine_code_String}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 
 				# Slice BCPU word in memory into 4 quarterwords
 				mc_qtrwords = []
 				machine_code_String.split("").each_slice(4) { |qword| mc_qtrwords << qword }
+				::Asm::Boilerplate::DEBUG::Console.announce( "\n Quarterwords: #{mc_qtrwords}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 
 				# Build format arrays
 				ra = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_RB + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_data
@@ -531,19 +524,15 @@ module Asm
 				rb_d4bit = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_data
 				rb_empty = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_data
 
-				# C15, C14, C13, C12
-				# => e.g., [0, 1, 1, 0]
-				opcode = mc_qtrwords[3].reverse.join("")
+				opcode = mc_qtrwords[3].join("")
 				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
 				opcode_key.upcase!
 
-				# C11, C10, C9, C8
-				decimal_value_dest = mc_qtrwords[2].reverse.join("").to_i(2)
+				decimal_value_dest = mc_qtrwords[2].join("").to_i(2)
 				dest_reg = "R#{decimal_value_dest}"
 
-				# C7, C6, C5, C4
 				instruction = opcode_key.downcase.to_sym
-				decimal_value_a = mc_qtrwords[1].reverse.join("").to_i(2)
+				decimal_value_a = mc_qtrwords[1].join("").to_i(2)
 				if ra.include? instruction
 					reg_a = "R#{decimal_value_a}"
 				elsif ra_d4bit.include? instruction
@@ -554,8 +543,7 @@ module Asm
 					raise "Unknown format for opcode #{opcode_key}"
 				end
 
-				# C3, C2, C1, C0:
-				decimal_value_b = mc_qtrwords[0].reverse.join("").to_i(2)
+				decimal_value_b = mc_qtrwords[0].join("").to_i(2)
 				if rb.include? instruction
 					reg_b = "R#{decimal_value_b}"
 				elsif rb_d4bit.include? instruction
