@@ -126,7 +126,13 @@ module Asm
 			rb = self.get_memory_value(reg_b)
 			#self.set_location_to_value(dest_reg, ra & rb)
 			# TODO: Double check the next two lines work properly
+			#NOT WORKING: Not getting proper value for location reg_b
+			::Asm::Boilerplate::DEBUG::Console.announce( "ra:#{ra.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
+			::Asm::Boilerplate::DEBUG::Console.announce( "ra_location:#{reg_a.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
+			::Asm::Boilerplate::DEBUG::Console.announce( "rb:#{rb.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
+			::Asm::Boilerplate::DEBUG::Console.announce( "rb_location:#{reg_b.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
 			rab = Asm::BCPU::Memory::Value.from_Bitset((ra.the_bits) & (rb.the_bits))
+			::Asm::Boilerplate::DEBUG::Console.announce( "rab:#{rab.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::AND )
 			self.set_location_to_value(dest_reg, rab)
 			self.increment_program_counter( dest_reg ,true )
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
