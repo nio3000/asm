@@ -45,15 +45,16 @@ module Asm
 					return	( an_Integer > ::Asm::Magic::Memory::Index::Exclusive::Minimum ) && ( an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum )
 				end
 				# DOCIT
-				def	self.assert_valid( an_Integer )
-					raise 'TypeError' unless an_Integer.integer?
-					if !(an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum)
-						raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive to be a memory location index.'
-					elsif !(::Asm::Magic::Memory::Index::Exclusive::Minimum < an_Integer)
-						raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative to be a memory location index.'
-					end
-					return
-				end
+				# relocated to Boilerplate.rb
+				# def	self.assert_valid( an_Integer )
+					# raise 'TypeError' unless an_Integer.integer?
+					# if !(an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum)
+						# raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive to be a memory location index.'
+					# elsif !(::Asm::Magic::Memory::Index::Exclusive::Minimum < an_Integer)
+						# raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative to be a memory location index.'
+					# end
+					# return
+				# end
 			end
 		end
 =begin
@@ -78,15 +79,16 @@ module Asm
 					return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				end
 				# twos complement range checking
-				def	self.assert_valid( an_Integer )
-					raise 'adsgasdgawer' unless an_Integer.integer?
-					if !(an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum)
-						raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
-					elsif !(Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer)
-						raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
-					end
-					return
-				end
+				# relocated to Boilerplate.rb
+				# def	self.assert_valid( an_Integer )
+					# raise 'adsgasdgawer' unless an_Integer.integer?
+					# if !(an_Integer < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum)
+						# raise 'The integer, \'' << an_Integer.to_s << '\',  is too positive for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
+					# elsif !(Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer)
+						# raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative for twos complement encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
+					# end
+					# return
+				# end
 			end
 =begin
 			# Asm::Magic::Binary::Unsigned
@@ -109,15 +111,16 @@ module Asm
 					return	( an_Integer > Exclusive::Minimum ) && ( an_Integer < Exclusive::Maximum )
 				end
 				# unsigned binary range checking
-				def	self.assert_valid( an_Integer )
-					raise 'adsgasdgawer' unless an_Integer.integer?
-					if !(an_Integer < Asm::Magic::Binary::Unsigned::Exclusive::Maximum)
-						raise 'The integer, \'' << an_Integer.to_s << '\', is too positive for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
-					elsif !(Asm::Magic::Binary::Unsigned::Exclusive::Minimum < an_Integer)
-						raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
-					end
-					return
-				end
+				# relocated to Boilerplate.rb
+				# def	self.assert_valid( an_Integer )
+					# raise 'adsgasdgawer' unless an_Integer.integer?
+					# if !(an_Integer < Asm::Magic::Binary::Unsigned::Exclusive::Maximum)
+						# raise 'The integer, \'' << an_Integer.to_s << '\', is too positive for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
+					# elsif !(Asm::Magic::Binary::Unsigned::Exclusive::Minimum < an_Integer)
+						# raise 'The integer, \'' << an_Integer.to_s << '\',  is too negative for unsigned binary encoded in ' << Asm::Magic::Memory::Bits_per::Word.to_s << 'bits.'
+					# end
+					# return
+				# end
 			end
 			# DOCIT
 			module	String
@@ -126,12 +129,13 @@ module Asm
 					return	(a_String.size == a_String.count( '01' )) && (a_String.size > 0)
 				end
 				# raise if there is evidence that the given string is not a binary string.
-				def	self.assert_valid( a_String )
-					if	!Asm::Magic::Binary::String::valid?( a_String )
-						raise 'the given string, \'' << a_String << '\', is not a binary String.'
-					end
-					return
-				end
+				# relocated to Boilerplate.rb
+				# def	self.assert_valid( a_String )
+					# if	!Asm::Magic::Binary::String::valid?( a_String )
+						# raise 'the given string, \'' << a_String << '\', is not a binary String.'
+					# end
+					# return
+				# end
 			end
 			# DOCIT
 			module	Bitset
@@ -140,12 +144,13 @@ module Asm
 					return	a_Bitset.size <= Asm::Magic::Memory::Bits_per::Word
 				end
 				# raise if there is evidence that the given string is not a binary string.
-				def	self.assert_valid( a_Bitset )
-					if	!Asm::Magic::Binary::Bitset::valid?( a_Bitset )
-						raise 'the given bitset, \'' << a_Bitset.to_s << '\', contains more than ' << Asm::Magic::Memory::Bits_per::Word << 'bits; assigning it may lose information in an unintended way.'
-					end
-					return
-				end
+				# relocated to Boilerplate.rb
+				# def	self.assert_valid( a_Bitset )
+					# if	!Asm::Magic::Binary::Bitset::valid?( a_Bitset )
+						# raise 'the given bitset, \'' << a_Bitset.to_s << '\', contains more than ' << Asm::Magic::Memory::Bits_per::Word << 'bits; assigning it may lose information in an unintended way.'
+					# end
+					# return
+				# end
 			end
 		end
 =begin
@@ -159,12 +164,13 @@ module Asm
 					return	(a_String.size == a_String.count( '+-0123456789' )) && (a_String.size > 0)
 				end
 				# raise if there is evidence that the given string is not a base 10 string of digits.
-				def	self.assert_valid( a_String )
-					if	!Asm::Magic::Base10::String::valid?( a_String )
-						raise 'the given string, \'' << a_String << '\', is not a base 10 string of digits.'
-					end
-					return
-				end
+				# relocated to Boilerplate.rb
+				# def	self.assert_valid( a_String )
+					# if	!Asm::Magic::Base10::String::valid?( a_String )
+						# raise 'the given string, \'' << a_String << '\', is not a base 10 string of digits.'
+					# end
+					# return
+				# end
 			end
 		end
 =begin
@@ -179,15 +185,15 @@ module Asm
 						return	(an_Integer >= Asm::Magic::Memory::Index::Inclusive::Minimum) && (an_Integer <= Asm::Magic::Memory::Index::Inclusive::Maximum)
 					end
 					# raise unless the given load index is in a valid state
-					def self.assert_valid( an_Integer )
-						raise 'an_Integer is not an integer' unless an_Integer.integer?
-						if !(an_Integer >= Asm::Magic::Memory::Index::Inclusive::Minimum)
-							raise 'the load index, \'' << an_Integer << '\', is less than \'' << Asm::Magic::Memory::Index::Inclusive::Minimum << '\''
-						elsif !(an_Integer <= Asm::Magic::Memory::Index::Inclusive::Maximum)
-							raise 'the load index, \'' << an_Integer << '\', is greater than \'' << Asm::Magic::Memory::Index::Inclusive::Maximum << '\''
-						end
-						return
-					end
+					# def self.assert_valid( an_Integer )
+						# raise 'an_Integer is not an integer' unless an_Integer.integer?
+						# if !(an_Integer >= Asm::Magic::Memory::Index::Inclusive::Minimum)
+							# raise 'the load index, \'' << an_Integer << '\', is less than \'' << Asm::Magic::Memory::Index::Inclusive::Minimum << '\''
+						# elsif !(an_Integer <= Asm::Magic::Memory::Index::Inclusive::Maximum)
+							# raise 'the load index, \'' << an_Integer << '\', is greater than \'' << Asm::Magic::Memory::Index::Inclusive::Maximum << '\''
+						# end
+						# return
+					# end
 					# a safe to use invalid load index that should be assigned anytime the Loader's load index needs to be in an invalid (unusable) state.
 					Invalid	= Asm::Magic::Memory::Index::Exclusive::Minimum
 				end

@@ -25,6 +25,7 @@ module Asm
 		#
 		# the_Virtual_Machine	- reference to a Virtual_Machine instance
 		def initialize( the_Virtual_Machine )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'Asm::Loader' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			# paranoid type checking of arguments.
 			Asm::Boilerplate.raise_unless_type( the_Virtual_Machine ,Asm::Virtual_Machine )
 			# initialize all persistant member variables.
@@ -33,6 +34,7 @@ module Asm
 		end
 		# Returns the load index interpretted as an instance of Asm::BCPU::Memory::Location
 		def getLocationFromLoadIndex
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			# if the load index is in an invalid state when this method is called, raise an error
 			if	!Asm::Magic::Loader::Load::Index.valid?( self.load_index )
 				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following "# loc = asm" invalidate the load index state.' )
@@ -44,6 +46,7 @@ module Asm
 		# raise error if load index is a invalid value
 		# Returns nothing
 		def incrementLoadIndex
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			# if the load index is in an invalid state when this method is called, raise an error
 			if	!Asm::Magic::Loader::Load::Index.valid?( self.load_index )
 				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid load index state; directives following "# loc = asm" invalidate the load index state.' )
@@ -55,6 +58,7 @@ module Asm
 		#
 		# Returns nothing
 		def invalidateLoadIndex
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			self.load_index	= Asm::Magic::Loader::Load::Index::Invalid
 			return
 		end
@@ -62,6 +66,7 @@ module Asm
 		#
 		# Returns nothing
 		def setLoadIndex( an_integer )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			if	!Asm::Magic::Loader::Load::Index.valid?( an_integer )
 				raise Asm::Boilerplate::Exception::Syntax.new( "invalid attempt to set load index state; \"#{an_integer.to_s}\" is not a valid index for a memory location." )
 			else
@@ -71,6 +76,7 @@ module Asm
 		end
 		# DOCIT
 		def word_from_register_literal( a_register_literal )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			# TODO refactor these & merge with other regex constants
 			#register_flag	= 'd{,1}'
 			#base10_number	= '[+\-]{,1}[0-9]+'
@@ -87,6 +93,7 @@ module Asm
 		end
 		# DOCIT
 		def word_from_numeric_literal( a_numeric_literal )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			# TODO refactor these & merge with other regex constants
 			#binary_flag	= '0[bB]'
 			#binary_number	= '[01]+'
@@ -114,6 +121,7 @@ module Asm
 		end
 		# DOCIT
 		def location_from_numeric_literal( a_numeric_literal )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			# TODO refactor these & merge with other regex constants
 			#binary_flag	= '0[bB]'
 			#binary_number	= '[01]+'
@@ -150,6 +158,7 @@ module Asm
 		# Raises if the range's don't match up in cardinality
 		# Returns nothing
 		def map_bits_to_bits( from_Range ,from_Word ,to_Range ,to_Word ,bCPU_range_checking = true )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			puts '#map_bits_to_bits,args |-> from_Range = ' << from_Range.to_s << '; to_Range = ' << to_Range.to_s << ''
 			puts '#map_bits_to_bits,args |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''
 			# paranoid type checking
@@ -195,6 +204,7 @@ module Asm
 		#
 		# Returns an array of the first exception encountered for each line of text in the given file
 		def load( path )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			messages	= []
 			line_count	= 0
 			if	File.file?( path )
@@ -202,6 +212,8 @@ module Asm
 				# parse individually each line in the file
 				code.each_line do |line|
 					line_count += 1
+					::Asm::Boilerplate::DEBUG::Console.announce( "line ##{line_count} is \"#{line}\"" ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
+					::Asm::Boilerplate::DEBUG::Console.announce( "load index before line ##{line_count} is #{self.load_index}" ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 					begin
 						self.handle( line )
 					rescue Asm::Boilerplate::Exception::Syntax => a_syntax_error
@@ -213,10 +225,13 @@ module Asm
 					rescue ::String => an_error
 						messages.push "unexpected error on line #{line_count}: \"#{an_error.message}\""
 					end
-					puts "DEBUG: load index after line #{line_count} is #{self.load_index}."
+					::Asm::Boilerplate::DEBUG::Console.announce( "load index after line ##{line_count} is #{self.load_index}" ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 				end
-			else messages.push '\'' << path << '\' is not a file.' end
-			messages
+			else
+				messages.push "\"" << path << "\" is not a file."
+			end
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
+			return	messages
 		end
 	#private
 	public
@@ -230,6 +245,7 @@ module Asm
 		#
 		# Returns nothing
 		def handle( line_of_text )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 =begin
 			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA	# check if 'keyword RD RA' instruction format consumes line
 			puts ::Asm::Magic::Regexp::String::Asm::Instruction::Format::RD_RA_RB
@@ -336,6 +352,7 @@ module Asm
 				raise Asm::Boilerplate::Exception::Syntax.new( 'this is not BCPU assembly; Loader refuses to do anything with this.' )
 			end
 =end
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
 			return
 		end
 		# initialize the VM
@@ -344,6 +361,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_RB( keyword ,dest_reg ,reg_a ,reg_b )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_RB )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( keyword ,::String )
 			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
@@ -398,6 +416,7 @@ module Asm
 			location = self.getLocationFromLoadIndex()
 			puts "#instruction_format__keyword_RD_RA_RB, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_RB )
 			return
 		end
 		# initialize the VM
@@ -406,6 +425,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA( keyword ,dest_reg ,reg_a )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( keyword ,::String )
 			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
@@ -434,6 +454,7 @@ module Asm
 			location = self.getLocationFromLoadIndex()
 			puts "#instruction_format__keyword_RD_RA, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
 			return
 		end
 		# initialize the VM
@@ -442,6 +463,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_RA_literal( keyword ,dest_reg ,reg_a ,literal )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_lit )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( keyword ,::String )
 			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
@@ -477,6 +499,7 @@ module Asm
 			location = self.getLocationFromLoadIndex()
 			puts "#instruction_format__keyword_RD_RA_literal, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_lit )
 			return
 		end
 		# initialize the VM
@@ -485,6 +508,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_literal_RA( keyword ,dest_reg ,literal ,reg_a )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RB )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( keyword ,::String )
 			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
@@ -520,6 +544,7 @@ module Asm
 			location = self.getLocationFromLoadIndex()
 			puts '#instruction_format__keyword_RD_literal_RA, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RB )
 			return
 		end
 		# initialize the VM
@@ -527,6 +552,7 @@ module Asm
 		# DOCIT
 		# # Returns nothing
 		def instruction_format__keyword_RD_literal( keyword ,dest_reg ,literal )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_lit )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( keyword ,::String )
 			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
@@ -557,6 +583,7 @@ module Asm
 			location = self.getLocationFromLoadIndex()
 			puts "#instruction_format__keyword_RD_literal, location = #{location.to_s}; value = #{value.to_s}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_lit )
 			return
 		end
 		# initialize the VM
@@ -565,6 +592,7 @@ module Asm
 		#
 		# Returns nothing
 		def directive__memory_value( memory_location_literal ,memory_value_literal )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Directive )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( memory_location_literal ,::String )
 			Asm::Boilerplate::raise_unless_type( memory_value_literal ,::String )
@@ -575,6 +603,7 @@ module Asm
 
 			puts "location.to_s=\"#{location}\"; value.to_s=\"#{value}\";" # confirmed that location and value have the correct content.
 			self.the_Virtual_Machine.set_location_to_value(location, value)
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Directive )
 			return
 		end
 		# initialize the VM
@@ -583,11 +612,13 @@ module Asm
 		#
 		# Returns nothing
 		def directive__asm( memory_location_literal )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Directive )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( memory_location_literal ,::String )
 			#
 			location = self.location_from_numeric_literal(memory_location_literal)
 			self.setLoadIndex( location.to_i )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Directive )
 			return
 		end
 	end
