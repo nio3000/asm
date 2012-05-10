@@ -498,10 +498,10 @@ module Asm
 					include Asm::Magic::ISA
 					opcodes = Opcode::Integer.constants
 					binary = lambda { |x| "%04d" % x.to_s(2) }
-					Ophash = Hash.new
+					String = Hash.new
 					opcodes.each do |code|
 						# instructions and their 4 bit binary codes
-						Ophash[code] = binary.call(Opcode::Integer.const_get(code))
+						String[code] = binary.call(Opcode::Integer.const_get(code))
 					end
 					end
 				end
@@ -525,7 +525,7 @@ module Asm
 				rb_empty = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_data
 
 				opcode = mc_qtrwords[3].join("")
-				opcode_key = (Asm::Magic::ISA::Opcode::Binary::Ophash.key(opcode)).to_s
+				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
 				opcode_key.upcase!
 
 				decimal_value_dest = mc_qtrwords[2].join("").to_i(2)
