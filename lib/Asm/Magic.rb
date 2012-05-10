@@ -497,7 +497,7 @@ module Asm
 				module Binary
 					include Asm::Magic::ISA
 					opcodes = Opcode::Integer.constants
-					binary = lambda { |x| "%04d" % x.to_s(2) }
+					binary = lambda { |x| x.to_s(2).rjust(4,'0') }
 					String = Hash.new
 					opcodes.each do |code|
 						# instructions and their 4 bit binary codes
@@ -524,15 +524,15 @@ module Asm
 				rb_d4bit = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA_data
 				rb_empty = ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_RA + ::Asm::Magic::Regexp::String::Asm::Keyword::Array::RD_data
 
-				opcode = mc_qtrwords[3].join("")
+				opcode = mc_qtrwords[0].join("")
 				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
 				opcode_key.upcase!
 
-				decimal_value_dest = mc_qtrwords[2].join("").to_i(2)
+				decimal_value_dest = mc_qtrwords[1].join("").to_i(2)
 				dest_reg = "R#{decimal_value_dest}"
 
 				instruction = opcode_key.downcase.to_sym
-				decimal_value_a = mc_qtrwords[1].join("").to_i(2)
+				decimal_value_a = mc_qtrwords[2].join("").to_i(2)
 				if ra.include? instruction
 					reg_a = "R#{decimal_value_a}"
 				elsif ra_d4bit.include? instruction
@@ -543,7 +543,7 @@ module Asm
 					raise "Unknown format for opcode #{opcode_key}"
 				end
 
-				decimal_value_b = mc_qtrwords[0].join("").to_i(2)
+				decimal_value_b = mc_qtrwords[3].join("").to_i(2)
 				if rb.include? instruction
 					reg_b = "R#{decimal_value_b}"
 				elsif rb_d4bit.include? instruction

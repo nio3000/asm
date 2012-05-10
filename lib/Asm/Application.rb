@@ -149,6 +149,7 @@ module Asm
 		# DOCIT
 		def process_memory_entry( a_memory_index ,a_raw_memory_value )
 			temp	= ::Asm::BCPU::Word.new( a_raw_memory_value.the_bits )
+			::Asm::Boilerplate::DEBUG::Console.announce( "Binary String: #{Asm::Magic::ISA::Opcode::Binary::String}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			::Asm::Boilerplate::DEBUG::Console.announce( "\n APP Memory Index: #{a_memory_index} \n APP Raw memory value: #{a_raw_memory_value}" ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			return	'A' << a_memory_index.to_s << ' |-> 0b' << temp.to_s << "\nd" << temp.to_i( true ,false ).to_s << '; d' << temp.to_i( false ,true ).to_s << '; "' << ::Asm::Magic::ISA.machine_code_to_String(a_raw_memory_value) << '"'
 		end
