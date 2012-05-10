@@ -177,9 +177,9 @@ module Asm
 					GUI	= true
 					Loader	= true
 					VM	= true
-					BCPU	= true
-						Lexical_casting	= true
-					Scope	= true
+					BCPU	= true	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
+						Lexical_casting	= false	# uses thus far: BCPU::Word#to_i
+					Scope	= true	# lifetime and where one is in the code in general
 					Invalid_usage	= true
 					Incorrect_results	= true
 				end
