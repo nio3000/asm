@@ -288,6 +288,9 @@ module Asm
 			@the_BCPU	= Asm::Virtual_Machine.new
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 			@stopped    = true
+			the_console	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Console )
+			Asm::Boilerplate::raise_unless_type( the_console ,::Wx::TextCtrl )
+			the_console.change_value( "The button you just pressed resets everything. This is a clean slate." )
 			self.update_VM_display( true )
 			return
 		end
