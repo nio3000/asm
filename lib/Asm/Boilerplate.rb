@@ -200,6 +200,35 @@ module Asm
 						puts output
 					end
 				end
+				# ::Asm::Boilerplate::DEBUG::Console.assert
+				# code to notify if a condition is not met
+				def self.assert( a_boolean ,a_message = 'undocumented' )
+					if a_bool && Asm::Boilerplate::DEBUG::Control::Manner::Raise
+						if	Asm::Boilerplate::DEBUG::Control::Concern::Scope
+							::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_bool ,'ASSERT: ' )
+						else
+							puts a_message unless a_boolean
+						end
+					end
+				end
+			end
+=begin
+			# Asm::Boilerplate::DEBUG::Exception
+			* managed debug boilerplate that primarily uses exceptions to communicate information during execution
+=end
+			module Exception
+				# ::Asm::Boilerplate::DEBUG::Exception.assert
+				# code to raise if a condition is not met
+				# * will raise an exception of a given type
+				# 	* default type for exceptions raised is `Asm::Boilerplate::Exception::DEBUG`
+				# * if raises have been disallowed, then this will use console instead.
+				def self.assert( a_boolean ,a_message = 'undocumented' ,an_exception_type = Asm::Boilerplate::Exception::DEBUG )
+					if a_bool && Asm::Boilerplate::DEBUG::Control::Manner::Raise
+						raise an_exception_type.new( a_message ) unless a_boolean
+					elsif a_bool && Asm::Boilerplate::DEBUG::Control::Manner::Console
+						::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_boolean ,'ASSERT: ' )
+					end
+				end
 			end
 		end
 =begin
