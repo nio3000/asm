@@ -64,16 +64,35 @@ module Asm
 			# 	String[code] = binary.call(Opcode::Integer.const_get(code))
 			# end
 			#
-			# include Asm::Magic::Regexp::String::Asm::Keyword::Array
-			# formats: rdra, rdrarb,rdrabit,rdbit,rdbitrb
-			# opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
-			# TODO: Refactor this
-			# if RD_RA.include?
-			# self.code( rd, ra, rb, bit )
 			# rd = Asm::Boilerplate::Machine::Code.get_RD_location( mc )
 			# ra = Asm::Boilerplate::Machine::Code.get_RA_location( mc )
 			# rb = Asm::Boilerplate::Machine::Code.get_RB_location( mc )
-			# bit = Asm::Boilerplate::Machine::Code.get_value_bit_range( mc )
+			# bit = Asm::Boilerplate::Machine::Code.get_value_from_bit_range( mc, range )
+			# self.code( rd, ra, rb, bit )
+			#
+			# TODO: Refactor this
+			# include Asm::Magic::Regexp::String::Asm::Keyword::Array
+			# include Asm::Boilerplate::Machine
+			#
+			# rd = lambda { |mc| Code.get_RD_location( mc ) }
+			# ra = lambda { |mc| Code.get_RA_location( mc ) }
+			# rb = lambda { |mc| Code.get_RB_location( mc ) }
+			# bit = lambda { |mc, range| Code.get_value_from_bit_range( mc, range ) }
+			#
+			# if RD_RA.include?
+			# formats: rdra, rdrarb,rdrabit,rdbit,rdbitrb
+			# opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(op_code_binary_string)).to_s
+			# if RD_RA.include? op_code_binary_string
+			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), ra(the_machine_code))"
+			# elsif RD_RA_RB.include? op_code_binary_string
+			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), ra(the_machine_code), rb(the_machine_code))"
+			# elsif RD_RA_data.include? op_code_binary_string
+			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), ra(the_machine_code), bit(the_machine_code, (0..3)))"
+			# elsif RD_data_RB.include? op_code_binary_string
+			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), bit(the_machine_code, (4..7)), ra(the_machine_code))"
+			# elsif RD_data.include? op_code_binary_string
+			#	eval "self.#{opcode_key.downcase}(rd(the_machine_code), bit(the_machine_code, (0..7)))"
+			#
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
 			::Asm::Boilerplate::DEBUG::Console.announce( "opcode:#{op_code_binary_string}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
 			if op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVE] )

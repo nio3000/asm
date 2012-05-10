@@ -446,29 +446,6 @@ module Asm
 		* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
 =end
 		module ISA
-			# TODO: Abandoned
-			class Instruction
-				def initialize( )
-					@opcode	= -1
-					@text	= 'Kya~' # exclaimed Pyrrha
-					@format_text	= []
-					@format_regex	= []
-				end
-
-				def opcode_as_binary_String
-				end
-				def keyword_as_String
-					@text
-				end
-				def format_as_String
-					@format_text
-				end
-				def format_as_String_regex
-					result	= ''
-					@format_regex.each do |literal_regex|
-					end
-				end
-			end
 =begin
 			Integer OpCodes corresponding to
 			* magic literals that appear in Choi's definition of the Instruction Set Architecture (ISA)
