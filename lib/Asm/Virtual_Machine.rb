@@ -187,16 +187,20 @@ module Asm
 
 		# RD <- RA - 4bit data
 		def subi( dest_reg, reg_a, reg_fourbit)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 			ra = self.get_memory_value(reg_a).to_i
+			::Asm::Boilerplate::DEBUG::Console.announce( "ra:#{ra}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 			::Asm::Magic::Binary::Twos_complement.assert_valid( ra )
+			::Asm::Boilerplate::DEBUG::Console.announce( "an_Integer:#{reg_fourbit.to_i}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 			::Asm::Magic::Binary::Unsigned.assert_valid( reg_fourbit.to_i )
 			an_Integer	= ra - reg_fourbit.to_i
+			::Asm::Boilerplate::DEBUG::Console.announce( "an_Integer:#{an_Integer}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 			::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 			result	= Asm::BCPU::Memory::Value.from_integer_as_twos_complement( an_Integer )
+			::Asm::Boilerplate::DEBUG::Console.announce( "result:#{result.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg, true )
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SUBI )
 		end
 
 		# RD <- 8 0's followed by 8 bit data
@@ -205,7 +209,7 @@ module Asm
 		#	self.increment_program_counter( dest_reg )
 		#end# RD <- 8bit data follow by RD7, RD6, ... RD0
 		def set( dest_reg, reg_eightbit)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
 			puts '#set RD ' << reg_eightbit.to_s
@@ -217,12 +221,12 @@ module Asm
 			puts '#set RD <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 
 		# RD <- 8bit data follow by RD7, RD6, ... RD0
 		def seth( dest_reg, reg_eightbit)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
 			puts '#seth RD ' << reg_eightbit.to_s
@@ -234,12 +238,12 @@ module Asm
 			puts '#seth RD <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 
 		# RD <- RD + 4bit data if RB == 0 (zero)
 		def inciz( dest_reg, reg_fourbit, reg_b)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			dest_reg_altered	= false
 			if self.get_memory_value( reg_b ).to_i == 0
 				an_Integer	= self.get_memory_value( dest_reg ).to_i + reg_fourbit.to_i
@@ -251,11 +255,11 @@ module Asm
 				dest_reg_altered	= true
 			end
 			self.increment_program_counter( dest_reg ,dest_reg_altered )
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 		# RD <- RD - 4bit data if RB15 == 1 (neg)
 		def decin( dest_reg, reg_fourbit, reg_b )
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			dest_reg_altered	= false
 			#if self.get_memory_value( reg_b ).to_i <= 0
 			if self.get_memory_value( reg_b ).the_bits[15] == true
@@ -267,56 +271,57 @@ module Asm
 				dest_reg_altered	= true
 			end
 			self.increment_program_counter( dest_reg ,dest_reg_altered )
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 
 		# RD <- RA if RB == 0 (zero)
 		def movez( dest_reg, reg_a, reg_b)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			if self.get_memory_value( reg_b ).to_i == 0
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
 			end
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 
 		# RD <- RA if RB != 0 (not zero)
 		def movex( dest_reg, reg_a, reg_b)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			if self.get_memory_value( reg_b ).to_i != 0
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
 			end
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 
 		# RD <- RA if RB15 == 0 (positive)
 		def movep( dest_reg, reg_a, reg_b)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#if self.get_memory_value( reg_b ).the_bits[15] == 0
 			if self.get_memory_value( reg_b ).the_bits[15] == false
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
 			end
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 
 		# RD <- RA if RB15 == 1 (negative)
 		def moven( dest_reg, reg_a, reg_b)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#if self.get_memory_value( reg_b ).the_bits[15] == 1
 			if self.get_memory_value( reg_b ).the_bits[15] == true
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
 			end
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 		end
 		# R15 <- R15 + 1
 		def increment_program_counter( dest_reg ,dest_reg_altered = false ,an_Integer = 1 )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#program_counter	= Asm::BCPU::Word.from_Bitset( Asm::Magic::Register::Location::Program_counter.the_bits ).to_i( false ,true )
 			program_counter	= Asm::Magic::Register::Location::Program_counter.to_i
 			#unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
@@ -330,6 +335,7 @@ module Asm
 			else
 				puts 'R15 not incremented.'
 			end
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			return
 		end
 	public
@@ -341,6 +347,7 @@ module Asm
 		# Maps the memory location (@param location) to the memory value (@param value)
 		# Returns nothing
 		def set_location_to_value( location ,value )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
 			# paranoid type checking
 			Asm::Boilerplate::puts_unless_type( location ,Asm::BCPU::Memory::Location )
 			Asm::Boilerplate::puts_unless_type( value ,Asm::BCPU::Memory::Value )
@@ -349,6 +356,7 @@ module Asm
 			@the_memory[location.to_s]	= value
 			#puts '	@the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s
 			# return nothing
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
 			return
 		end
 		# Returns by value the Asm::BCPU::Memory::Value mapped by the memory location (@param location)
@@ -357,6 +365,7 @@ module Asm
 		#
 		# Returns by value an Asm::BCPU::Memory::Value instance
 		def get_memory_value( location )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
 			# paranoid type checking
 			Asm::Boilerplate::puts_unless_type( location ,Asm::BCPU::Memory::Location )
 			# create association even if none exists
@@ -369,7 +378,9 @@ module Asm
 			#puts 'Aya; @the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s unless @the_memory[location.to_s].instance_of?( Asm::BCPU::Memory::Value )
 			# return association by value
 			#return	Asm::BCPU::Memory::Value.from_Bitset( @the_memory[location.to_s].the_bits ) #.clone
-			return	Asm::BCPU::Memory::Value.from_binary_String( @the_memory[location.to_s].the_bits.to_s ) #.clone
+			result	= Asm::BCPU::Memory::Value.from_binary_String( @the_memory[location.to_s].the_bits.to_s ) #.clone
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
+			result
 		end
 		# Obtain values mapped by memory locations in the given range (@param inclusive_minimum, @paramexclusive_maximum)
 		# 	values are obtained in order
@@ -383,6 +394,7 @@ module Asm
 		# #putss exceptions when the memory range is invalid
 		# Returns memory-location-ordered array of memory values
 		def get_memory_range( inclusive_minimum ,exclusive_maximum )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
 			# paranoid type checking
 			#puts 'haerierhaerh' unless inclusive_minimum.integer? && exclusive_maximum.integer?
 			#puts "The minimum is not less than the maximum" unless inclusive_minimum < exclusive_maximum
@@ -409,7 +421,8 @@ module Asm
 			locations.each { |key| values.push self.get_memory_value( key ) }
 =end
 			# return sorted values
-			values
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
+			return	values
 		end
 	end
 end

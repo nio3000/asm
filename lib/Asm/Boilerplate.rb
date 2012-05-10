@@ -177,6 +177,9 @@ module Asm
 					GUI	= true
 					Loader	= true
 					VM	= true
+						Instructions	= true
+							SUBI	= true
+						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
 					BCPU	= true	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
 						Lexical_casting	= false	# uses thus far: BCPU::Word#to_i
 					Scope	= true	# lifetime and where one is in the code in general
@@ -197,7 +200,7 @@ module Asm
 						#output	= '' << prepend_this_string + caller[1][/`.*'/][1..-2]
 						#output	= '' << prepend_this_string + caller.to_s
 						#puts caller.to_s
-						output	= '' << prepend_this_string + caller[0][/[a-zA-Z0-9 ]+.rb:[0-9]+/] + ' in ' + caller[0][/`.*'/][1..-2]
+						output	= '' << prepend_this_string + Asm::Boilerplate::DEBUG::String.report_caller( 1 )
 						if	!append_this_String.empty?
 							output << delim << append_this_String
 						end
@@ -227,15 +230,19 @@ module Asm
 				# 	* default type for exceptions raised is `Asm::Boilerplate::Exception::DEBUG`
 				# * if raises have been disallowed, then this will use console instead.
 				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true ,an_exception_type = Asm::Boilerplate::Exception::DEBUG )
+					::Asm::Boilerplate::DEBUG::Console.assert( the_result_of_the_test ,a_message ,a_boolean )
 					if Asm::Boilerplate::DEBUG::Control::Manner::Raise && a_boolean
 						raise an_exception_type.new( a_message ) unless the_result_of_the_test
-					elsif !the_result_of_the_test && Asm::Boilerplate::DEBUG::Control::Manner::Console
-						::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_boolean ,'ASSERT: ' )
 					end
 				end
 			end
 			module String
 				# DOCIT
+				def self.report_caller( index = 0 )
+					return	caller[index][/[a-zA-Z0-9 _.]+.rb:[0-9]+/] + ' in ' + caller[index][/`.*'/][1..-2]
+				end
+				# DOCIT
+				# Deprecated, use "#{an_Integer}" instead.
 				def self.report_an_Integer( an_Integer ,prepend_this_String = 'an_Integer = ' ,append_this_String = '' )
 					begin
 						if an_Integer.integer?
