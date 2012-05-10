@@ -508,7 +508,7 @@ module Asm
 		#
 		# Returns nothing
 		def instruction_format__keyword_RD_literal_RA( keyword ,dest_reg ,literal ,reg_a )
-			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RB )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
 			# Paranoid type checking
 			Asm::Boilerplate::raise_unless_type( keyword ,::String )
 			Asm::Boilerplate::raise_unless_type( dest_reg ,::String )
@@ -544,7 +544,7 @@ module Asm
 			location = self.getLocationFromLoadIndex()
 			puts '#instruction_format__keyword_RD_literal_RA, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
-			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RB )
+			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
 			return
 		end
 		# initialize the VM
