@@ -30,6 +30,7 @@ module Asm
 					(8..11).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
+					::Asm::Boilerplate::DEBUG::Console.announce( "RD_result:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
 				# DOCIT
@@ -38,6 +39,7 @@ module Asm
 					(4..7).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
+					::Asm::Boilerplate::DEBUG::Console.announce( "RA_result:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
 				# DOCIT
@@ -46,6 +48,7 @@ module Asm
 					(0..3).each do |index|
 						result.the_bits[index] = a_Memory_Value.the_bits[index]
 					end
+					::Asm::Boilerplate::DEBUG::Console.announce( "RB_result:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
 				# DOCIT
@@ -185,6 +188,7 @@ module Asm
 						Comment	= false
 					VM	= true
 						Instructions	= true
+							AND		= true
 							SUBI	= true
 						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
 					BCPU	= true	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value

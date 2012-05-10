@@ -2,6 +2,10 @@
 //Sets Program Counter to 100
 #15 = 100
 
+//AND Test
+#0 = 15
+#4 = 20
+
 //Load OpCode to memory location 100 
 #100=asm
 
