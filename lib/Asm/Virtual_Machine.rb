@@ -241,7 +241,7 @@ module Asm
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			::Asm::Boilerplate::DEBUG::Console.announce( "dest_reg.to_i:#{dest_reg.to_i}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
 			result	= ::Asm::BCPU::Memory::Value.new( )
-			puts '#set RD ' << reg_eightbit.to_s
+			#puts '#set RD ' << reg_eightbit.to_s
 			(0..(result.the_bits.size - 1 - 7)).each do |index|
 				adjustment	= 7
 				result.the_bits[index + adjustment]	= reg_eightbit.the_bits[index + adjustment]
@@ -249,7 +249,7 @@ module Asm
 				::Asm::Boilerplate::DEBUG::Console.announce( "result[#{index}]:#{result.to_i} <- reg_eightbit.the_bits[#{index}]: #{reg_eightbit.the_bits[index]}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
 			end
 			#Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
-			puts '#set RD HOPE: <- ' << result.to_s
+			#puts '#set RD HOPE: <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
@@ -259,7 +259,7 @@ module Asm
 		def seth( dest_reg, reg_eightbit)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			result	= ::Asm::BCPU::Memory::Value.new( )
-			puts '#seth RD ' << reg_eightbit.to_s
+			#puts '#seth RD ' << reg_eightbit.to_s
 			dest_reg_value = self.get_memory_value( dest_reg )
 			::Asm::Boilerplate::DEBUG::Console.announce( "dest_reg_value:#{dest_reg_value}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#((result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)).each do |index|
@@ -273,7 +273,7 @@ module Asm
 				result.the_bits[index + adjustment] = dest_reg_value.the_bits[index + adjustment]
 				::Asm::Boilerplate::DEBUG::Console.announce( "result[#{index}]:#{result.to_i} <- reg_eightbit.the_bits[#{index}]: #{reg_eightbit.the_bits[index]}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
 			end
-			puts '#seth RD <- ' << result.to_s
+			#puts '#seth RD <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
@@ -365,7 +365,7 @@ module Asm
 			#program_counter	= Asm::BCPU::Word.from_Bitset( Asm::Magic::Register::Location::Program_counter.the_bits ).to_i( false ,true )
 			program_counter	= Asm::Magic::Register::Location::Program_counter.to_i
 			#unless	( dest_reg.equal_to?( Asm::Magic::Register::Location::Program_counter ) && dest_reg_altered )
-			puts 'R15 |-> ' << program_counter.to_s << '; dest_reg_altered is ' << (dest_reg_altered ? 'true' : 'false')
+			#puts 'R15 |-> ' << program_counter.to_s << '; dest_reg_altered is ' << (dest_reg_altered ? 'true' : 'false')
 			if	!(( dest_reg.to_i == program_counter ) && dest_reg_altered)
 				#lhs = self.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 				temp	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( Asm::Magic::Register::Location::Program_counter ).the_bits ).to_i + an_Integer
@@ -373,7 +373,7 @@ module Asm
 				value	= ::Asm::BCPU::Memory::Value.new( ::Asm::BCPU::Memory::Location.new( temp ).the_bits )
 				self.set_location_to_value( Asm::Magic::Register::Location::Program_counter ,value )
 			else
-				puts 'R15 not incremented.'
+				#puts 'R15 not incremented.'
 			end
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			return
