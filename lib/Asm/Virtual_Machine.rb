@@ -270,6 +270,7 @@ module Asm
 			dest_reg_altered	= false
 			if self.get_memory_value( reg_b ).to_i == 0
 				an_Integer	= self.get_memory_value( dest_reg ).to_i + reg_fourbit.to_i
+				::Asm::Boilerplate::DEBUG::Console.announce( "inciz: #{an_Integer} = #{reg_fourbit.to_s}, REALLY?" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
 				::Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 				#var = self.get_memory_value( dest_reg )
 				#var.add!( reg_fourbit.to_i )
