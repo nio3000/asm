@@ -207,6 +207,7 @@ module Asm::BCPU
 			# paranoid type checking
 			raise 'argument is not an integer' unless an_Integer.integer?
 			# twos complement range checking
+			::Asm::Boilerplate::DEBUG::Console.announce("assign_integer_as_twos_complement: an_Integer: #{an_Integer.to_s}" , Asm::Boilerplate::DEBUG::Control::Concern::VM )
 			Asm::Magic::Binary::Twos_complement.assert_valid( an_Integer )
 			# convert to binary String twos complement encoding
 			#puts '#assign_integer_as_twos_complement( ' << an_Integer.to_s << ' ) |-> ' << ::Asm::Boilerplate.get_sign_bit_as_String( an_Integer )  << '<<' << ::Asm::Boilerplate.get_twos_complement_bits_as_String( an_Integer )

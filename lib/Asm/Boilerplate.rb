@@ -66,12 +66,11 @@ module Asm
 				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
 					puts("Memory Value: " + a_Memory_Value.to_s)
 					result = ::Asm::BCPU::Memory::Location.new
-					puts("Results 1: " + result.to_s)
+					front = 15 - a_bit_range.last 
 					a_bit_range.each do |index|
-						result.the_bits[index] = a_Memory_Value.the_bits[index]
+						result.the_bits[front + index] = a_Memory_Value.the_bits[index]
 						puts("" << result.the_bits[index].to_s << " = " << a_Memory_Value.the_bits[index].to_s)
 					end
-					puts("Results 2: " + result.to_s)
 					return result
 				end
 				# DOCIT
@@ -92,6 +91,7 @@ module Asm
 			if	an_Integer.instance_of? ::Fixnum
 				index_of_sign_bit	= (an_Integer.size * ::Asm::Magic::Memory::Bits_per::Byte) - 1
 				result	= an_Integer[index_of_sign_bit].to_s( 2 )
+				::Asm::Boilerplate::DEBUG::Console.announce("an_Integer:#{an_Integer.to_s} -> #{result}" , Asm::Boilerplate::DEBUG::Control::Concern::VM )
 				raise 'shenanigans and sharnigans!' unless ((result.size == 1) && (result.count('01') == 1))
 				return	result
 			else
@@ -201,6 +201,7 @@ module Asm
 						Instructions	= true
 							AND		= false
 							SUBI	= true
+							INCIZ	= false
 						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
 					BCPU	= false	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
 						Lexical_casting	= false	# uses thus far: BCPU::Word#to_i
