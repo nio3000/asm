@@ -526,11 +526,11 @@ module Asm
 				opcode = mc_qtrwords[0].join("")
 				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
 
-				decimal_value_dest = mc_qtrwords[1].join("").to_i(2)
+				decimal_value_dest = mc_qtrwords[1].reverse.join("").to_i(2)
 				dest_reg = "R#{decimal_value_dest}"
 
 				instruction = opcode_key.to_sym
-				decimal_value_a = mc_qtrwords[2].join("").to_i(2)
+				decimal_value_a = mc_qtrwords[2].reverse.join("").to_i(2)
 				if ra.include? instruction
 					reg_a = "R#{decimal_value_a}"
 				elsif ra_d4bit.include? instruction
@@ -541,7 +541,7 @@ module Asm
 					raise "Unknown format for opcode #{opcode_key}"
 				end
 
-				decimal_value_b = mc_qtrwords[3].join("").to_i(2)
+				decimal_value_b = mc_qtrwords[3].reverse.join("").to_i(2)
 				if rb.include? instruction
 					reg_b = "R#{decimal_value_b}"
 				elsif rb_d4bit.include? instruction

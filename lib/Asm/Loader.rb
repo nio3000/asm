@@ -111,7 +111,8 @@ module Asm
 			if !binary_match_info && decimal_match_info
 				result.assign_decimal_String( decimal_match_info[::Asm::Magic::Regexp::String::Names::Value] )
 			elsif binary_match_info && !decimal_match_info
-				result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value].reverse )
+				#result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value].reverse )
+				result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value] )
 			elsif binary_match_info && decimal_match_info
 				raise "decimal or binary literal expected from \"#{a_numeric_literal}\", but it\'s too ambiguous to tell which"
 			else

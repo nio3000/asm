@@ -40,7 +40,7 @@ module Asm
 				::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			end
 			def notify
-				puts 'RunTimer#notify'
+				::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 				if @the_Application.stopped == true
 					#@the_Application.timer.stop()
 					self.stop()

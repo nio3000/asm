@@ -64,24 +64,24 @@ module Asm
 				end
 				# DOCIT
 				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
-					puts("Memory Value: " + a_Memory_Value.to_s)
+					::Asm::Boilerplate::DEBUG::Console.announce( "Memory Value: #{a_Memory_Value.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 					result = ::Asm::BCPU::Memory::Location.new
 					front = 15 - a_bit_range.last 
 					a_bit_range.each do |index|
 						result.the_bits[front + index] = a_Memory_Value.the_bits[index]
-						puts("" << result.the_bits[index].to_s << " = " << a_Memory_Value.the_bits[index].to_s)
+						::Asm::Boilerplate::DEBUG::Console.announce("result.the_bits[#{index}]: #{result.the_bits[index].to_s} <- a_Memory_Value.the_bits[#{index}].to_s: #{a_Memory_Value.the_bits[index].to_s}",Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 					end
 					return result
 				end
 				# DOCIT
-				def self.get_value_from_bit_range__reversi( a_Memory_Value ,a_bit_range )
-					result = ::Asm::BCPU::Memory::Location.new
-					(a_bit_range).each do |index|
-						to_index	= result.the_bits.size - 1 - index
-						result.the_bits[to_index] = a_Memory_Value.the_bits[index]
-					end
-					return result
-				end
+				# def self.get_value_from_bit_range__reversi( a_Memory_Value ,a_bit_range )
+					# result = ::Asm::BCPU::Memory::Location.new
+					# (a_bit_range).each do |index|
+						# to_index	= result.the_bits.size - 1 - index
+						# result.the_bits[to_index] = a_Memory_Value.the_bits[index]
+					# end
+					# return result
+				# end
 			end
 		end
 		# DOCIT
@@ -126,33 +126,6 @@ module Asm
 			offset	= (a_Range.last - a_Range.first) - 2 * index
 			return	a_Range.first( index + 1 )[index]
 		end
-		# paranoid typechecking boilerplate
-		#
-		# argument - an object whose type is being checked
-		# type - the type which argument's type must be for the check to not fail.
-		#
-		# Rasies exception when the check fails.
-		# Returns nothing.
-		def	self.raise_unless_type( argument ,type )
-			begin
-				raise "(#{argument}) argument's type is " << argument.kind_of() << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
-			rescue
-				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
-			rescue
-				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '". It is probably nil.' unless argument.instance_of?( type )
-			end
-			return
-		end
-		def	self.puts_unless_type( argument ,type )
-			begin
-				puts "(#{argument}) argument's type is #{argument.kind_of()}" << ', not ' << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
-			rescue
-				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".' unless argument.instance_of?( type )
-			rescue
-				puts "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '". It is probably nil.' unless argument.instance_of?( type )
-			end
-			return
-		end
 =begin
 		# Asm::Boilerplate::DEBUG
 		* boilerplate from debugging
@@ -188,9 +161,9 @@ module Asm
 					* Scope	# when are you where
 =end
 				module Concern
-					GUI	= false
+					GUI	= true
 					Loader	= true
-						Directive	= false
+						Directive	= true
 						Key_RD_RA	= true
 						Key_RD_RA_RB	= true
 						Key_RD_RA_lit	= true
@@ -199,11 +172,12 @@ module Asm
 						Comment	= false
 					VM	= true
 						Instructions	= true
-							AND		= false
+							AND		= true
 							SUBI	= true
-							INCIZ	= false
-						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
-					BCPU	= false	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
+							INCIZ	= true
+							SET	= true
+						Memory_operations	= true	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
+					BCPU	= true	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
 						Lexical_casting	= false	# uses thus far: BCPU::Word#to_i
 					Scope	= true	# lifetime and where one is in the code in general
 					Invalid_usage	= true
@@ -220,9 +194,6 @@ module Asm
 				# * will print out the name of the method containing
 				def self.announce( append_this_String = '' ,a_bool = true ,prepend_this_string = 'DEBUG: ' ,levels_to_caller = 1 ,delim = ': ' )
 					if a_bool && Asm::Boilerplate::DEBUG::Control::Manner::Console && Asm::Boilerplate::DEBUG::Control::Concern::Scope
-						#output	= '' << prepend_this_string + caller[1][/`.*'/][1..-2]
-						#output	= '' << prepend_this_string + caller.to_s
-						#puts caller.to_s
 						output	= '' << prepend_this_string + Asm::Boilerplate::DEBUG::String.report_caller( levels_to_caller )
 						if	!append_this_String.empty?
 							output << delim << append_this_String
@@ -278,6 +249,31 @@ module Asm
 					end
 				end
 			end
+		end
+		# paranoid typechecking boilerplate
+		#
+		# argument - an object whose type is being checked
+		# type - the type which argument's type must be for the check to not fail.
+		#
+		# Rasies exception when the check fails.
+		# Returns nothing.
+		def	self.raise_unless_type( argument ,type )
+			text	= "#{argument}, argument's type is '#{argument.class}', not '#{type}'; argument.inspect -> '#{argument.inspect( )}'."
+			::Asm::Boilerplate::DEBUG::Exception.assert( argument.instance_of?( type ) ,text ,Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			return
+		end
+		def	self.puts_unless_type( argument ,type )
+			begin
+				text	= "#{argument} argument's type is '#{argument.class}', not '#{type}'; argument.inspect gives '#{argument.inspect( )}'."
+				::Asm::Boilerplate::DEBUG::Console.assert( argument.instance_of?( type ) ,text ,Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			rescue
+				text	= "(#{argument}) argument's type is not " << type.inspect() << '; argument.inspect gives "' << argument.inspect( ) << '".'
+				::Asm::Boilerplate::DEBUG::Console.assert( argument.instance_of?( type ) ,text ,Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			#else
+			#	text	= "argument's type resists identification."
+			#	::Asm::Boilerplate::DEBUG::Console.assert( false ,text ,Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			end
+			return
 		end
 =begin
 		# Asm::Boilerplate::Bitset
