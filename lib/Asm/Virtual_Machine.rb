@@ -54,7 +54,9 @@ module Asm
 			the_program_counter	= ::Asm::Magic::Register::Location::Program_counter
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
+			::Asm::Boilerplate::DEBUG::Console.announce( "the_machine_code.to_s:#{the_machine_code.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
+			::Asm::Boilerplate::DEBUG::Console.announce( "opcode:#{op_code_binary_string}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
 			if op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVE] )
 				self.move( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:NOT] )
