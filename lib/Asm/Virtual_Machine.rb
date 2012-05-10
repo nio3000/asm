@@ -390,7 +390,12 @@ module Asm
 			Asm::Boilerplate::puts_unless_type( value ,Asm::BCPU::Memory::Value )
 			#puts 'VM#set_location_to_value( loc=' << location.to_s << ' ,val=' << value.to_s << ' )'
 			# assignment; creates association if none existed, else overwrites.
-			@the_memory[location.to_s]	= value
+			if !(::Asm::Magic::Register::Indicies::Input_registers.include?( location.to_i ))
+				@the_memory[location.to_s]	= value
+			else
+				@the_memory[location.to_s]	= Asm::BCPU::Memory::Value.new
+				::Asm::Boilerplate::DEBUG::Console.announce( 'input register write attempt silently ignored' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
+			end
 			#puts '	@the_memory[location.to_s=' << location.to_s << ']=' << @the_memory[location.to_s].to_s
 			# return nothing
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::Memory_operations && Asm::Boilerplate::DEBUG::Control::Concern::Scope )
