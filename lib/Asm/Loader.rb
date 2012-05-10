@@ -532,7 +532,7 @@ module Asm
 
 			if keyword == 'INCIZ'
 				value.the_bits[15] = true
-				value.the_bits[12] = true
+				value.the_bits[13] = true
 			elsif keyword == 'DECIN'
 				value.the_bits[15] = true
 				value.the_bits[13] = true

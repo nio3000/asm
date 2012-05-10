@@ -525,12 +525,11 @@ module Asm
 
 				opcode = mc_qtrwords[0].join("")
 				opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
-				opcode_key.upcase!
 
 				decimal_value_dest = mc_qtrwords[1].join("").to_i(2)
 				dest_reg = "R#{decimal_value_dest}"
 
-				instruction = opcode_key.downcase.to_sym
+				instruction = opcode_key.to_sym
 				decimal_value_a = mc_qtrwords[2].join("").to_i(2)
 				if ra.include? instruction
 					reg_a = "R#{decimal_value_a}"
