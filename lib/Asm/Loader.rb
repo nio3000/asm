@@ -412,8 +412,8 @@ module Asm
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognized operation' )
 			end
-			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			self.incrementLoadIndex()
 			puts "#instruction_format__keyword_RD_RA_RB, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_RB )
@@ -450,8 +450,8 @@ module Asm
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
-			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			self.incrementLoadIndex()
 			puts "#instruction_format__keyword_RD_RA, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
@@ -495,8 +495,8 @@ module Asm
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
-			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			self.incrementLoadIndex()
 			puts "#instruction_format__keyword_RD_RA_literal, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_lit )
@@ -540,8 +540,8 @@ module Asm
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
-			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			self.incrementLoadIndex()
 			puts '#instruction_format__keyword_RD_literal_RA, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
@@ -579,8 +579,8 @@ module Asm
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
 			end
-			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
+			self.incrementLoadIndex()
 			puts "#instruction_format__keyword_RD_literal, location = #{location.to_s}; value = #{value.to_s}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_lit )
