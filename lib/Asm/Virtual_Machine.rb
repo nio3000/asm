@@ -241,11 +241,12 @@ module Asm
 			puts '#set RD ' << reg_eightbit.to_s
 			(0..(result.the_bits.size - 1 - 7)).each do |index|
 				adjustment	= 7
-				result.the_bits[index + adjustment]	= reg_eightbit.the_bits[index]
+				result.the_bits[index + adjustment]	= reg_eightbit.the_bits[index + adjustment]
+				result.the_bits[index] = false
 				::Asm::Boilerplate::DEBUG::Console.announce( "result[#{index}]:#{result.to_i} <- reg_eightbit.the_bits[#{index}]: #{reg_eightbit.the_bits[index]}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
 			end
 			#Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
-			puts '#set RD <- ' << result.to_s
+			puts '#set RD HOPE: <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
@@ -257,11 +258,19 @@ module Asm
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
 			puts '#seth RD ' << reg_eightbit.to_s
-			((result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)).each do |index|
-				#adjustment	= -8
-				result.the_bits[index]	= reg_eightbit.the_bits[index]
-			end
+			dest_reg_value = self.get_memory_value( dest_reg )
+			::Asm::Boilerplate::DEBUG::Console.announce( "dest_reg_value:#{dest_reg_value}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
+			#((result.the_bits.size - 1 - 7)..(result.the_bits.size - 1)).each do |index|
+			#	#adjustment	= -8
+			#	result.the_bits[index]	= reg_eightbit.the_bits[index]
+			#end
 			#Asm::Loader::map_bits_to_bits( 8..15,self.get_memory_value( dest_reg ), 8..15, reg_eightbit)
+			(0..(result.the_bits.size - 1 - 7)).each do |index|
+				adjustment	= 7
+				result.the_bits[index]	= reg_eightbit.the_bits[index + adjustment]
+				result.the_bits[index + adjustment] = dest_reg_value.the_bits[index + adjustment]
+				::Asm::Boilerplate::DEBUG::Console.announce( "result[#{index}]:#{result.to_i} <- reg_eightbit.the_bits[#{index}]: #{reg_eightbit.the_bits[index]}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions && Asm::Boilerplate::DEBUG::Control::Concern::SET )
+			end
 			puts '#seth RD <- ' << result.to_s
 			self.set_location_to_value( dest_reg ,result )
 			self.increment_program_counter( dest_reg ,true )
