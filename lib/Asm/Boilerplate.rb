@@ -174,8 +174,15 @@ module Asm
 					* Scope	# when are you where
 =end
 				module Concern
-					GUI	= true
+					GUI	= false
 					Loader	= true
+						Directive	= false
+						Key_RD_RA	= true
+						Key_RD_RA_RB	= true
+						Key_RD_RA_lit	= true
+						Key_RD_lit_RB	= true
+						Key_RD_lit	= true
+						Comment	= false
 					VM	= true
 						Instructions	= true
 							SUBI	= true
