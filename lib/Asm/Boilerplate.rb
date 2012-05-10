@@ -20,35 +20,46 @@ module Asm
 		end
 		module Machine
 			module Code
-				# DOCIT
+				#
+				#
+				#
 				def self.get_OPcode_as_string( a_Memory_Value )
 					return "" + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[15]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[14]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[13]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[12])
 				end
-				# DOCIT
+				
+				# 
+				#
+				# Returns the location of RD
 				def self.get_RD_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
 					(8..11).each do |index|
-						result.the_bits[index] = a_Memory_Value.the_bits[index]
+						result.the_bits[4 + index] = a_Memory_Value.the_bits[index]
 					end
-					::Asm::Boilerplate::DEBUG::Console.announce( "RD_result:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
+					::Asm::Boilerplate::DEBUG::Console.announce( "RD_result_location:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
-				# DOCIT
+				
+				#
+				#
+				# Returns the location of RA
 				def self.get_RA_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
 					(4..7).each do |index|
-						result.the_bits[index] = a_Memory_Value.the_bits[index]
+						result.the_bits[8 + index] = a_Memory_Value.the_bits[index] #7!!! No wait 8 :)
 					end
-					::Asm::Boilerplate::DEBUG::Console.announce( "RA_result:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
+					::Asm::Boilerplate::DEBUG::Console.announce( "RA_result_location:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
-				# DOCIT
+				
+				#
+				#
+				# Returns the location of RB
 				def self.get_RB_location( a_Memory_Value )
 					result = ::Asm::BCPU::Memory::Location.new
 					(0..3).each do |index|
-						result.the_bits[index] = a_Memory_Value.the_bits[index]
+						result.the_bits[12 + index] = a_Memory_Value.the_bits[index]
 					end
-					::Asm::Boilerplate::DEBUG::Console.announce( "RB_result:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
+					::Asm::Boilerplate::DEBUG::Console.announce( "RB_result_location:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
 				# DOCIT

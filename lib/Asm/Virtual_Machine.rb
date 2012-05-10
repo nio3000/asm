@@ -68,7 +68,6 @@ module Asm
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:sub] )
 				self.sub( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:addi] )
-				puts("the_machine_code: " << the_machine_code.to_s)
 				self.addi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
 			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:subi] )
 				self.subi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
