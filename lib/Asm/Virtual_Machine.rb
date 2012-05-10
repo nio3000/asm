@@ -55,6 +55,25 @@ module Asm
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
 			::Asm::Boilerplate::DEBUG::Console.announce( "the_machine_code.to_s:#{the_machine_code.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
+			# Reference:
+			# include Asm::Magic::ISA
+			# opcodes = Opcode::Integer.constants
+			# binary = lambda { |x| x.to_s(2).rjust(4,'0') }
+			# String = Hash.new
+			# opcodes.each do |code|
+			# 	String[code] = binary.call(Opcode::Integer.const_get(code))
+			# end
+			#
+			# include Asm::Magic::Regexp::String::Asm::Keyword::Array
+			# formats: rdra, rdrarb,rdrabit,rdbit,rdbitrb
+			# opcode_key = (Asm::Magic::ISA::Opcode::Binary::String.key(opcode)).to_s
+			# TODO: Refactor this
+			# if RD_RA.include?
+			# self.code( rd, ra, rb, bit )
+			# rd = Asm::Boilerplate::Machine::Code.get_RD_location( mc )
+			# ra = Asm::Boilerplate::Machine::Code.get_RA_location( mc )
+			# rb = Asm::Boilerplate::Machine::Code.get_RB_location( mc )
+			# bit = Asm::Boilerplate::Machine::Code.get_value_bit_range( mc )
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
 			::Asm::Boilerplate::DEBUG::Console.announce( "opcode:#{op_code_binary_string}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM )
 			if op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVE] )
