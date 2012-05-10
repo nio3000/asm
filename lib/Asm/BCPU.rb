@@ -341,8 +341,9 @@ module Asm::BCPU
 					::Asm::Boilerplate::DEBUG::Exception.assert( Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage )
 				end
 			end
-			#
-			a_String	= @the_bits.to_s
+			# convert to binary string
+			a_String	= @the_bits.to_s.rjust( Asm::Magic::Memory::Bits_per::Word ,'0')
+			::Asm::Boilerplate::DEBUG::Exception.assert( a_String.size == Asm::Magic::Memory::Bits_per::Word,'Bitset#to_i produced a string of more than ' + Asm::Magic::Memory::Bits_per::Word.to_s + ' bits.', Asm::Boilerplate::DEBUG::Control::Concern::Incorrect_results )
 			#a_bits = the_bits
 			# interpret as unsigned
 			unsigned_result	= 0
@@ -353,11 +354,11 @@ module Asm::BCPU
 			Asm::Magic::Binary::Unsigned.assert_valid( unsigned_result )
 			# interpret as twos complement
 			twos_complement_result	= 0
-			(0..(Asm::Magic::Memory::Bits_per::Word - 2)).each do |index|
+			(1..(Asm::Magic::Memory::Bits_per::Word - 1)).each do |index|
 				exponent	= (Asm::Magic::Memory::Bits_per::Word - 1) - index
 				twos_complement_result	+= a_String[index].to_s.to_i( 2 ) * ( 2 ** exponent )
 			end
-			if a_String[Asm::Magic::Memory::Bits_per::Word - 1].to_s.to_i( 2 ) == 1
+			if a_String[0].to_s.to_i( 2 ) == 1
 				twos_complement_result	= -twos_complement_result
 			end
 			#
@@ -392,8 +393,9 @@ module Asm::BCPU
 			end
 =end
 			::Asm::Boilerplate::DEBUG::Console.announce( ::Asm::Boilerplate::DEBUG::String.report_an_Integer( twos_complement_result ,"2's comp -> " ) + '; ' + ::Asm::Boilerplate::DEBUG::String.report_an_Integer( unsigned_result ,"unsigned -> " ) ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
+			::Asm::Boilerplate::DEBUG::Console.announce( '@the_bits is "' << @the_bits.to_s << '"' ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
 			::Asm::Boilerplate::DEBUG::Console.announce( ::Asm::Boilerplate::DEBUG::String.report_an_Integer( result ,"returned result -> " ) ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
-			::Asm::Boilerplate::DEBUG::Exception.assert( (result == twos_complement_result) || (result == unsigned_result) ,"returned result is neither of the expected possible results." )
+			::Asm::Boilerplate::DEBUG::Exception.assert( (result == twos_complement_result) || (result == unsigned_result) ,"returned result is neither of the expected possible results." ,Asm::Boilerplate::DEBUG::Control::Concern::Incorrect_results )
 			result
 		end
 		# DOCIT

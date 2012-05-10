@@ -227,8 +227,8 @@ module Asm
 				# 	* default type for exceptions raised is `Asm::Boilerplate::Exception::DEBUG`
 				# * if raises have been disallowed, then this will use console instead.
 				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true ,an_exception_type = Asm::Boilerplate::Exception::DEBUG )
-					if !the_result_of_the_test && Asm::Boilerplate::DEBUG::Control::Manner::Raise && a_boolean
-						raise an_exception_type.new( a_message ) unless a_boolean
+					if Asm::Boilerplate::DEBUG::Control::Manner::Raise && a_boolean
+						raise an_exception_type.new( a_message ) unless the_result_of_the_test
 					elsif !the_result_of_the_test && Asm::Boilerplate::DEBUG::Control::Manner::Console
 						::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_boolean ,'ASSERT: ' )
 					end
