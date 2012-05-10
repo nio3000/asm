@@ -337,7 +337,8 @@ module Asm
 		def movep( dest_reg, reg_a, reg_b)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#if self.get_memory_value( reg_b ).the_bits[15] == 0
-			if self.get_memory_value( reg_b ).the_bits[15] == false
+			::Asm::Boilerplate::DEBUG::Console.announce( "MOVEP: get_memory_value( reg_b ).the_bits[0]: #{get_memory_value( reg_b ).the_bits[0].to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::MOVEP )
+			if self.get_memory_value( reg_b ).the_bits[0] == false
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )
@@ -349,7 +350,7 @@ module Asm
 		def moven( dest_reg, reg_a, reg_b)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			#if self.get_memory_value( reg_b ).the_bits[15] == 1
-			if self.get_memory_value( reg_b ).the_bits[15] == true
+			if self.get_memory_value( reg_b ).the_bits[0] == true
 				self.move( dest_reg ,reg_a )
 			else
 				self.increment_program_counter( dest_reg )

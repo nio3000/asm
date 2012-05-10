@@ -1,8 +1,9 @@
-//Test OR
+//Test MOVEX
 
 #15=100
 #1 = 15
 #2 = 14
+#10 = 0
 #100 = ASM
 
-or R4,R1,R2
+moveX R4,R1,R10

@@ -1,8 +1,9 @@
-//Test OR
+//Test MOVEP
 
 #15=100
 #1 = 15
 #2 = 14
+#10 = 1
 #100 = ASM
 
-or R4,R1,R2
+moveP R4,R1,R10

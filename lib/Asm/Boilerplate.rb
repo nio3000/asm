@@ -176,6 +176,7 @@ module Asm
 							SUBI	= false
 							INCIZ	= false
 							SET	= true
+							MOVEP = false
 						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
 					BCPU	= false	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
 						Lexical_casting	= false	# uses thus far: BCPU::Word#to_i
