@@ -531,11 +531,11 @@ module Asm
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordLit, 4..7, value)
 
 			if keyword == 'INCIZ'
-				value.the_bits[13] = true
-				value.the_bits[14] = true
+				value.the_bits[15] = true
+				value.the_bits[12] = true
 			elsif keyword == 'DECIN'
+				value.the_bits[15] = true
 				value.the_bits[13] = true
-				value.the_bits[14] = true
 				value.the_bits[12] = true
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )
@@ -570,11 +570,9 @@ module Asm
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..3 ), wordRD, 8..11, value)
 			self.map_bits_to_bits( ::Asm::Boilerplate.pads!( 0..7 ), wordLit, 0..7, value)
 			if keyword == 'SET'
-				value.the_bits[13] = true
-				value.the_bits[14] = true
+				value.the_bits[15] = true
 			elsif keyword == 'SETH'
-				value.the_bits[13] = true
-				value.the_bits[14] = true
+				value.the_bits[15] = true
 				value.the_bits[12] = true
 			else
 				raise Asm::Boilerplate::Exception::Syntax.new( 'Keyword [' + keyword + '] is not a recognize operation' )

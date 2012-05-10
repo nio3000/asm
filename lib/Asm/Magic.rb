@@ -347,11 +347,11 @@ module Asm
 						RD_data	= '(SET)|(SETH)'
 
 						module Array
-							RD_RA      = [:move, :not]
-							RD_RA_RB   = [:and, :or, :add, :sub, :movez, :movex, :movep, :moven]
-							RD_RA_data = [:addi, :subi]
-							RD_data_RB = [:inciz, :decin]
-							RD_data    = [:set, :seth]
+							RD_RA      = [:MOVE, :NOT]
+							RD_RA_RB   = [:AND, :OR, :ADD, :SUB, :MOVEZ, :MOVEX, :MOVEP, :MOVEN]
+							RD_RA_data = [:ADDI, :SUBI]
+							RD_data_RB = [:INCIZ, :DECIN]
+							RD_data    = [:SET, :SETH]
 						end
 
 						module	Capture
@@ -500,7 +500,6 @@ module Asm
 					binary = lambda { |x| x.to_s(2).rjust(4,'0') }
 					String = Hash.new
 					opcodes.each do |code|
-						# instructions and their 4 bit binary codes
 						String[code] = binary.call(Opcode::Integer.const_get(code))
 					end
 					end
