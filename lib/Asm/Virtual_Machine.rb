@@ -55,43 +55,40 @@ module Asm
 			the_program_counter_dereferenced	= ::Asm::BCPU::Memory::Location.new( self.get_memory_value( the_program_counter ).the_bits )
 			the_machine_code	= self.get_memory_value( the_program_counter_dereferenced )
 			op_code_binary_string	= ::Asm::Boilerplate::Machine::Code.get_OPcode_as_string( the_machine_code )
-
-			# TODO: Exploit ::Asm::Magic::Regexp::String::Asm::Keyword::Array and ruby 'blocks' to make refactor this code duplication
-			if op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVE] )
+			if op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:move] )
 				self.move( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:NOT] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:not] )
 				self.not( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:AND] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:and] )				
 				self.and( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:OR] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:or] )
 				self.or( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:ADD] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:add] )
 				self.add( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:SUB] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:sub] )
 				self.sub( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:ADDI] )
-				puts "the_machine_code: #{the_machine_code}"
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:addi] )
 				self.addi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:SUBI] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:subi] )
 				self.subi( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..3) ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:SET] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:set] )
 				self.set( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..7) ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:SETH] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:seth] )
 				self.seth( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(0..7) ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:INCIZ] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:inciz] )
 				self.inciz( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(4..7) ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code )  )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:DECIN] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:decin] )
 				self.decin( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ),Asm::Boilerplate::Machine::Code.get_value_from_bit_range( the_machine_code ,(4..7) ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code )  )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVEZ] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:movez] )
 				self.movez( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVEX] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:movex] )
 				self.movex( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVEP] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:movep] )
 				self.movep( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
-			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:MOVEN] )
+			elsif op_code_binary_string.eql?( Asm::Magic::ISA::Opcode::Binary::String[:moven] )
 				self.moven( Asm::Boilerplate::Machine::Code.get_RD_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RA_location( the_machine_code ) ,Asm::Boilerplate::Machine::Code.get_RB_location( the_machine_code ) )
 			else
-				raise "BANKAI: #{op_code_binary_string}  =  #{Asm::Magic::ISA::Opcode::Binary::String[:MOVE]}"
+				raise "BANKAI: #{op_code_binary_string}  =  #{Asm::Magic::ISA::Opcode::Binary::String[:move]}"
 			end
 		end
 		# DOCIT
@@ -219,7 +216,7 @@ module Asm
 			::Asm::Boilerplate::DEBUG::Console.announce( 'start' ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 			result	= ::Asm::BCPU::Memory::Value.new( )
 			# TODO verify correctness
-			puts "#set RD #{reg_eightbit}"
+			puts '#set RD ' << reg_eightbit.to_s
 			(0..(result.the_bits.size - 1 - 7)).each do |index|
 				#adjustment	= 8
 				result[index]	= reg_eightbit.the_bits[index]
