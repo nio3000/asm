@@ -1,0 +1,90 @@
+% Project Presentation for CSC521
+% vim: set ft=tex
+
+\input{header}
+\title[Louisiana Tech University]{B\footnote{B*****}CPU}
+%\subtitle{}
+\date{\today}
+\begin{document}
+
+\section{Introduction}
+\frame{\maketitle}
+
+\begin{frame}
+    \frametitle{BCPU Overview}
+    \begin{itemize}
+	\item Implement BCPU ISA (instruction set architecture)
+	\item Model execution of ASM instructions
+	\item Visualize execution (registers and memory)
+    \end{itemize}
+\end{frame}
+
+\section{BCPU Project}
+
+\begin{frame}
+	\frametitle{Asm Components}
+	\begin{itemize}
+	\item Loader
+	\item Virtual Machine
+	\item Interface
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Loader}
+	\begin{itemize}
+	\item Parses ASM Code into machine code using regex
+	\item Recognizes syntax and other errors
+	\item Loads machine code into Virtual Machine memory
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Virtual Machine}
+	\begin{itemize}
+	\item Represents internal state of BCPU
+	\item Models execution of machine code
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Interface}
+	\begin{itemize}
+	\item Graphical User Interface
+		\begin{itemize}
+		\item Recognizes Syntax errors in ASM files
+		\item Reports registers and memory contents
+		\item Tracks Special Registers (PC, input/output registers)
+		\item Manageable execution
+		\end{itemize}
+	\item Debug CLI
+	\end{itemize}
+\end{frame}
+
+\section{Questions}
+\begin{frame}
+    \frametitle{References}
+    \begin{itemize}
+	\item Github (code repository hosting) \\
+		\alert{https://github.com/}
+	\item Trello (project management)\\
+		\alert{https://trello.com/}
+	\item Asm (project code) \\
+		\alert{https://github.com/mistofvongola/asm}
+	\item bitset (gem) \\
+		\alert{https://github.com/tyler/bitset}
+	\item wxWidgets (GUI framework)\\
+		\alert{http://www.wxwidgets.org/} \\
+		\alert{http://wxruby.rubyforge.org/doc/}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Questions}
+    \begin{center}
+        Thank you for your attention.
+    \end{center}
+\end{frame}
+
+\end{document}
+%EOF
