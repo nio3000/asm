@@ -119,6 +119,8 @@ module Asm
 			#	Loader
 			#		filepath
 			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Filepath ) ) { |event| self.handle_compile_code( event ) }
+			#		reset
+			evt_button( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Reset ) ) { |event| self.handle_state_reset( event ) }
 			#	VM
 			#		Control
 			#			advance n
@@ -133,6 +135,7 @@ module Asm
 			evt_text_enter( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display( false ) }
 			evt_spinctrl( @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Memory::Counter ) ) { | event | self.update_VM_display( false ) }
 			# show the GUI
+			self.update_VM_display( true )
 			@main_GUI_sheet.show(true)
 			#return
 		end
@@ -269,10 +272,23 @@ module Asm
 			if @stopped == false
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).disable()
 				temp = @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).get_value * 1000
-				@the_BCPU.advance_once
+				self.handle_advance_n( 1 )
 				raise 'Aya' unless @timer.start(temp)
 				raise 'Aya Aya' unless @timer.is_running
 			end
+			return
+		end
+		# WxRuby callback; DOCIT
+		#
+		# event - instance of ???
+		#
+		# Returns nothing
+		def handle_state_reset( an_Event )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
+			@the_BCPU	= Asm::Virtual_Machine.new
+			@the_Loader	= Asm::Loader.new( @the_BCPU )
+			@stopped    = true
+			self.update_VM_display( true )
 			return
 		end
 	end

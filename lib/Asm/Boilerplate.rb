@@ -26,8 +26,8 @@ module Asm
 				def self.get_OPcode_as_string( a_Memory_Value )
 					return "" + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[15]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[14]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[13]) + Asm::Boilerplate.bool_to_s(a_Memory_Value.the_bits[12])
 				end
-				
-				# 
+
+				#
 				#
 				# Returns the location of RD
 				def self.get_RD_location( a_Memory_Value )
@@ -38,7 +38,7 @@ module Asm
 					::Asm::Boilerplate::DEBUG::Console.announce( "RD_result_location:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
-				
+
 				#
 				#
 				# Returns the location of RA
@@ -50,7 +50,7 @@ module Asm
 					::Asm::Boilerplate::DEBUG::Console.announce( "RA_result_location:#{result.to_s}",::Asm::Boilerplate::DEBUG::Control::Concern::VM )
 					return result
 				end
-				
+
 				#
 				#
 				# Returns the location of RB
@@ -66,7 +66,7 @@ module Asm
 				def self.get_value_from_bit_range( a_Memory_Value ,a_bit_range )
 					::Asm::Boilerplate::DEBUG::Console.announce( "Memory Value: #{a_Memory_Value.to_s}" ,Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
 					result = ::Asm::BCPU::Memory::Location.new
-					front = 15 - a_bit_range.last 
+					front = 15 - a_bit_range.last
 					a_bit_range.each do |index|
 						result.the_bits[front + index] = a_Memory_Value.the_bits[index]
 						::Asm::Boilerplate::DEBUG::Console.announce("result.the_bits[#{index}]: #{result.the_bits[index].to_s} <- a_Memory_Value.the_bits[#{index}].to_s: #{a_Memory_Value.the_bits[index].to_s}",Asm::Boilerplate::DEBUG::Control::Concern::VM && Asm::Boilerplate::DEBUG::Control::Concern::Instructions )
@@ -162,20 +162,20 @@ module Asm
 =end
 				module Concern
 					GUI	= false
-					Loader	= true
-						Directive	= true
-						Key_RD_RA	= true
-						Key_RD_RA_RB	= true
-						Key_RD_RA_lit	= true
-						Key_RD_lit_RB	= true
-						Key_RD_lit	= true
+					Loader	= false
+						Directive	= false
+						Key_RD_RA	= false
+						Key_RD_RA_RB	= false
+						Key_RD_RA_lit	= false
+						Key_RD_lit_RB	= false
+						Key_RD_lit	= false
 						Comment	= false
-					VM	= true
-						Instructions	= true
-							AND		= true
-							SUBI	= true
-							INCIZ	= true
-							SET	= true
+					VM	= false
+						Instructions	= false
+							AND		= false
+							SUBI	= false
+							INCIZ	= false
+							SET	= false
 							MOVEP = false
 						Memory_operations	= false	# Virtual_Machine#get_memory_value ,Virtual_Machine#set_location_to_value ,Virtual_Machine#get_memory_range
 					BCPU	= false	# related to BCPU::Word, BCPU::Memory::Location, or BCPU::Memory::Value
@@ -276,15 +276,6 @@ module Asm
 			end
 			return
 		end
-=begin
-		# Asm::Boilerplate::Bitset
-=end
-		#module Asm::Boilerplate::Bitset
-			# boilerplate for resizing an instance of Bitset
-			#self.def	resize( a_Bitset ,desired_size )
-				# TODO implement this
-			#end
-		#end
 =begin
 		# Asm::Boilerplate::Exception
 =end
