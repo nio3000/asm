@@ -174,8 +174,15 @@ module Asm
 					* Scope	# when are you where
 =end
 				module Concern
-					GUI	= true
+					GUI	= false
 					Loader	= true
+						Directive	= false
+						Key_RD_RA	= true
+						Key_RD_RA_RB	= true
+						Key_RD_RA_lit	= true
+						Key_RD_lit_RB	= true
+						Key_RD_lit	= true
+						Comment	= false
 					VM	= true
 						Instructions	= true
 							AND		= true
@@ -196,12 +203,12 @@ module Asm
 				# ::Asm::Boilerplate::DEBUG::Console.announce
 				# code to get scope information from inside a method
 				# * will print out the name of the method containing
-				def self.announce( append_this_String = '' ,a_bool = true ,prepend_this_string = 'DEBUG: ' ,delim = ': ' )
+				def self.announce( append_this_String = '' ,a_bool = true ,prepend_this_string = 'DEBUG: ' ,levels_to_caller = 1 ,delim = ': ' )
 					if a_bool && Asm::Boilerplate::DEBUG::Control::Manner::Console && Asm::Boilerplate::DEBUG::Control::Concern::Scope
 						#output	= '' << prepend_this_string + caller[1][/`.*'/][1..-2]
 						#output	= '' << prepend_this_string + caller.to_s
 						#puts caller.to_s
-						output	= '' << prepend_this_string + Asm::Boilerplate::DEBUG::String.report_caller( 1 )
+						output	= '' << prepend_this_string + Asm::Boilerplate::DEBUG::String.report_caller( levels_to_caller )
 						if	!append_this_String.empty?
 							output << delim << append_this_String
 						end
@@ -210,10 +217,10 @@ module Asm
 				end
 				# ::Asm::Boilerplate::DEBUG::Console.assert
 				# code to notify if a condition is not met
-				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true )
+				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true ,levels_to_caller = 1  )
 					if !the_result_of_the_test && Asm::Boilerplate::DEBUG::Control::Manner::Raise && a_boolean
 						if	Asm::Boilerplate::DEBUG::Control::Concern::Scope
-							::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_boolean ,'ASSERT: ' )
+							::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_boolean ,'ASSERT: ' ,levels_to_caller + 1 )
 						else
 							puts a_message unless a_boolean
 						end
@@ -230,8 +237,8 @@ module Asm
 				# * will raise an exception of a given type
 				# 	* default type for exceptions raised is `Asm::Boilerplate::Exception::DEBUG`
 				# * if raises have been disallowed, then this will use console instead.
-				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true ,an_exception_type = Asm::Boilerplate::Exception::DEBUG )
-					::Asm::Boilerplate::DEBUG::Console.assert( the_result_of_the_test ,a_message ,a_boolean )
+				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true ,levels_to_caller = 1 ,an_exception_type = Asm::Boilerplate::Exception::DEBUG )
+					::Asm::Boilerplate::DEBUG::Console.assert( the_result_of_the_test ,a_message ,a_boolean ,levels_to_caller + 1 )
 					if Asm::Boilerplate::DEBUG::Control::Manner::Raise && a_boolean
 						raise an_exception_type.new( a_message ) unless the_result_of_the_test
 					end
@@ -290,6 +297,80 @@ module Asm
 			end
 			class Asm::Boilerplate::Exception::DEBUG < ::Exception
 			end
+		end
+	end
+end
+=begin
+# DOCIT
+=end
+module	::Asm::Magic
+=begin
+	# DOCIT
+=end
+	module	Memory::Index
+		# DOCIT
+		def	self.assert_valid( an_Integer )
+			::Asm::Boilerplate::DEBUG::Exception.assert( an_Integer.integer? ,'argument is not an integer incompatible type' ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			text	= "(#{::Asm::Magic::Memory::Index::Exclusive::Minimum} < #{an_Integer} < #{::Asm::Magic::Memory::Index::Exclusive::Maximum}) == false -> invalid memory index"
+			::Asm::Boilerplate::DEBUG::Exception.assert( an_Integer < ::Asm::Magic::Memory::Index::Exclusive::Maximum ,text ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			::Asm::Boilerplate::DEBUG::Exception.assert( ::Asm::Magic::Memory::Index::Exclusive::Minimum < an_Integer ,text,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			return
+		end
+	end
+=begin
+	# DOCIT
+=end
+	module	Binary
+		module	Twos_complement
+			# twos complement range checking
+			def	self.assert_valid( an_Integer )
+				::Asm::Boilerplate::DEBUG::Exception.assert( an_Integer.integer? ,'argument is not an integer incompatible type' ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				text	= "(#{::Asm::Magic::Binary::Twos_complement::Exclusive::Minimum} < #{an_Integer} < #{::Asm::Magic::Binary::Twos_complement::Exclusive::Maximum}) == false -> invalid twos complement number on #{Asm::Magic::Memory::Bits_per::Word} bits"
+				::Asm::Boilerplate::DEBUG::Exception.assert( an_Integer < ::Asm::Magic::Binary::Twos_complement::Exclusive::Maximum ,text ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				::Asm::Boilerplate::DEBUG::Exception.assert( ::Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < an_Integer ,text,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				return
+			end
+		end
+		module	Unsigned
+			# unsigned binary range checking
+			def	self.assert_valid( an_Integer )
+				::Asm::Boilerplate::DEBUG::Exception.assert( an_Integer.integer? ,'argument is not an integer incompatible type' ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				text	= "(#{::Asm::Magic::Binary::Unsigned::Exclusive::Minimum} < #{an_Integer} < #{::Asm::Magic::Binary::Unsigned::Exclusive::Maximum}) == false -> invalid unsigned binary on #{Asm::Magic::Memory::Bits_per::Word} bits"
+				::Asm::Boilerplate::DEBUG::Exception.assert( an_Integer < ::Asm::Magic::Binary::Unsigned::Exclusive::Maximum ,text ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				::Asm::Boilerplate::DEBUG::Exception.assert( ::Asm::Magic::Binary::Unsigned::Exclusive::Minimum < an_Integer ,text,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				return
+			end
+		end
+		module	String
+			# raise if there is evidence that the given string is not a binary string.
+			def	self.assert_valid( a_String )
+				::Asm::Boilerplate::DEBUG::Exception.assert( a_String.instance_of?( ::String ),'argument is not an instance of ::String' ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				::Asm::Boilerplate::DEBUG::Exception.assert( Asm::Magic::Binary::String::valid?( a_String ) ,"#{a_String} is not a binary string" ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				return
+			end
+		end
+		module	Bitset
+			# raise if there is evidence that the given string is not a binary string.
+			def	self.assert_valid( a_Bitset )
+				::Asm::Boilerplate::DEBUG::Exception.assert( a_Bitset.instance_of?( ::Bitset ),'argument is not an instance of ::Bitset' ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				::Asm::Boilerplate::DEBUG::Exception.assert( Asm::Magic::Binary::Bitset::valid?( a_Bitset ),"#{a_Bitset.to_s} contains more than #{Asm::Magic::Memory::Bits_per::Word} bits; it won't play nice with bitset from Asm::BCPU::Word and derived classes." ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+				return
+			end
+		end
+	end
+	module	Base10::String
+		# raise if there is evidence that the given string is not a base 10 string of digits.
+		def	self.assert_valid( a_String )
+			::Asm::Boilerplate::DEBUG::Exception.assert( a_String.instance_of?( ::String ),'argument is not an instance of ::String' ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			::Asm::Boilerplate::DEBUG::Exception.assert( Asm::Magic::Base10::String::valid?( a_String ) ,"#{a_String} is not a decimal (base 10) string" ,::Asm::Boilerplate::DEBUG::Control::Concern::Invalid_usage ,2 )
+			return
+		end
+	end
+	module	Loader::Load::Index
+		# raise unless the given load index is in a valid state
+		def self.assert_valid( an_Integer )
+			::Asm::Magic::Binary::Unsigned.assert_valid( an_Integer )
+			return
 		end
 	end
 end
