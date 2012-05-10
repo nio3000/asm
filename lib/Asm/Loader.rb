@@ -63,7 +63,7 @@ module Asm
 		# Returns nothing
 		def setLoadIndex( an_integer )
 			if	!Asm::Magic::Loader::Load::Index.valid?( an_integer )
-				raise Asm::Boilerplate::Exception::Syntax.new( 'invalid attempt to set load index state; "' << an_integer.to_s << '" is not a valid index for a memory location.' )
+				raise Asm::Boilerplate::Exception::Syntax.new( "invalid attempt to set load index state; \"#{an_integer.to_s}\" is not a valid index for a memory location." )
 			else
 				self.load_index	= an_integer
 			end
@@ -80,7 +80,7 @@ module Asm
 			#capture_register_literal	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String.consume_capture( ::Asm::Magic::Regexp::String::Asm::Register::Capture::Flag_Value ) )
 			capture_register_literal	= ::Asm::Magic::Regexp.create( ::Asm::Magic::Regexp::String::Asm::Register::Capture::Flag_Value )
 			match_info	= capture_register_literal.match( a_register_literal )
-			raise 'register literal expected from "' << a_register_literal << '"' if !match_info
+			raise "register literal expected from \"#{a_register_literal}\"" if !match_info
 			result	= Asm::BCPU::Word.new( )
 			result.assign_decimal_String( match_info[::Asm::Magic::Regexp::String::Names::Value] ,false )
 			return	result
@@ -106,9 +106,9 @@ module Asm
 			elsif binary_match_info && !decimal_match_info
 				result.assign_binary_String( binary_match_info[::Asm::Magic::Regexp::String::Names::Value].reverse )
 			elsif binary_match_info && decimal_match_info
-				raise 'decimal or binary literal expected from "' << a_numeric_literal << '", but it\'s too ambiguous to tell which'
+				raise "decimal or binary literal expected from \"#{a_numeric_literal}\", but it\'s too ambiguous to tell which"
 			else
-				raise 'decimal or binary literal expected from "' << a_numeric_literal << '"'
+				raise "decimal or binary literal expected from \"#{a_numeric_literal}\""
 			end
 			return	result
 		end
@@ -557,7 +557,7 @@ module Asm
 			end
 			self.incrementLoadIndex()
 			location = self.getLocationFromLoadIndex()
-			puts '#instruction_format__keyword_RD_literal, location = ' << location.to_s << ';value = ' << value.to_s
+			puts "#instruction_format__keyword_RD_literal, location = #{location.to_s}; value = #{value.to_s}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
@@ -575,7 +575,7 @@ module Asm
 			wordLit = self.word_from_numeric_literal( memory_value_literal )
 			value = Asm::BCPU::Memory::Value.new( wordLit.the_bits )
 
-			puts 'location.to_s="' << location.to_s << '"; value.to_s="' << value.to_s << '";' # confirmed that location and value have the correct content.
+			puts "location.to_s=\"#{location.to_s}\"; value.to_s=\"#{value.to_s}\";" # confirmed that location and value have the correct content.
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			return
 		end
