@@ -9,28 +9,17 @@ include Wx
 * highest-level namespace for the project.
 =end
 module Asm
+=begin	# WxRuby References to colors as they will be used to identify concepts in the GUI
+=end
 	module	::Asm::Magic::GUI::Colour
-		Output_register	= ::Wx::GREEN
-		Input_register	= ::Wx::BLUE
-		Program_counter	= ::Wx::RED
-		Default	= ::Wx::WHITE
-	end
-	class RunTimer < ::Wx::Timer
-		def initialize( the_Application )
-			@the_Application	= the_Application
-			puts 'RunTimmer#initialize'
-		end
-		def notify
-			puts 'RunTimmer#notify'
-			if @the_Application.stopped == true
-				#@the_Application.timer.stop()
-				self.stop()
-				@the_Application.main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).enable()
-			else
-				@the_Application.the_BCPU.advance_once
-				@the_Application.update_VM_display
-			end
-		end
+		Output_register	= ::Wx::Colour.new( 0x20 ,0xB2 ,0xAA ,0xFF )
+		Input_register	= ::Wx::Colour.new( 0x00 ,0xB7 ,0xEB ,0xFF )
+		Program_counter	= ::Wx::Colour.new( 0x00 ,0xFF ,0xFF ,0xFF )
+		Default	= ::Wx::LIGHT_GREY
+		#Output_register	= ::Wx::GREEN
+		#Input_register	= ::Wx::BLUE
+		#Program_counter	= ::Wx::RED
+		#Default	= ::Wx::WHITE
 	end
 =begin
 	# Asm::Application
@@ -39,16 +28,46 @@ module Asm
 =end
 	class Application < ::Wx::App
 	public
-=begin	Wx::App callbacks
+=begin	# Asm::Application::RunTimer
+		* makes periodic calls to `the_BCPU.advance_once` after `self.start( delay_in_milliseconds)` is invoked
+=end
+		class RunTimer < ::Wx::Timer
+			def initialize( the_Application )
+				@the_Application	= the_Application
+				::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
+			end
+			def notify
+				puts 'RunTimmer#notify'
+				if @the_Application.stopped == true
+					#@the_Application.timer.stop()
+					self.stop()
+					@the_Application.main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Run::Counter ).enable()
+				else
+					@the_Application.the_BCPU.advance_once
+					@the_Application.update_VM_display
+				end
+			end
+		end
+=begin	# DOCIT
 =end
 		attr_accessor :the_BCPU ,:the_Loader ,:stopped ,:timer ,:main_GUI_sheet
+		# default constructor
+		def initialize
+			super
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
+		end
+=begin	GUI 
+=end
+=begin	Wx::App callbacks
+=end
 		# WxRuby callback, no need to register; program initialization
 		def on_init
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			# application-specific initialization
 			@the_BCPU	= Asm::Virtual_Machine.new
 			@the_Loader	= Asm::Loader.new( @the_BCPU )
 			@stopped    = true
-			@timer = RunTimer.new( self )
+			@timer = Asm::Application::RunTimer.new( self )
 			#::Wx::init_all_image_handlers()	# may be depreciated
 			xml	= ::Wx::XmlResource.get()
 			xml.init_all_handlers()
@@ -136,9 +155,11 @@ module Asm
 		end
 		# DOCIT
 		def update_VM_display( force_program_counter_visible = true )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			# info
 			program_counter_value	= @the_BCPU.get_memory_value( Asm::Magic::Register::Location::Program_counter )
 			program_counter	= ::Asm::BCPU::Memory::Location.from_binary_String( program_counter_value.the_bits.to_s ).to_i
+			# TODO the to_i method may be causing the problem in the GUI where advance does not update the program counter disply sensically.
 			# write registers
 			raw_registers	= @the_BCPU.get_memory_range( ::Asm::Magic::Register::Index::Inclusive::Minimum ,::Asm::Magic::Register::Index::Exclusive::Maximum )
 			(0..(raw_registers.size - 1)).each do |index|
@@ -178,6 +199,7 @@ module Asm
 					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Default )
 				end
 			end
+			::Asm::Boilerplate::DEBUG::Console.announce( 'complete update' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			return
 		end
 		# WxRuby callback; invokes compilation and posts results to GUI
@@ -188,6 +210,7 @@ module Asm
 		#
 		# Returns nothing
 		def handle_compile_code( a_CommandEvent )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			# obtain a file path
 			a_file_path	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::Loader::Filepath ).get_value
 			# invoke load, capture returned messages
@@ -205,7 +228,7 @@ module Asm
 			Asm::Boilerplate::raise_unless_type( the_console ,::Wx::TextCtrl )
 			the_console.change_value( the_processed_message )
 			# post new VM state to the GUI
-			self.update_VM_display
+			self.update_VM_display( true )
 			return
 		end
 		# WxRuby callback; DOCIT
@@ -214,14 +237,16 @@ module Asm
 		#
 		# Returns nothing
 		def handle_advance_n( an_Event )
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			# obtain necessary info
 			number_of_advances	= @main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::N::Counter ).get_value
 			raise Asm::Boilerplate::Exception::Misaka_Mikoto.new( 'jiiiiiiiiiiiiiiiiiiiiiiii' ) unless number_of_advances > 0
 			# advance state
 			@the_BCPU.advance( number_of_advances )
 			# necessary things
-			self.update_VM_display
+			self.update_VM_display( true )
 			#puts @the_BCPU.inspect + ' ' + @the_Loader.the_Virtual_Machine.inspect
+			::Asm::Boilerplate::DEBUG::Console.announce( 'complete' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			return
 		end
 		# WxRuby callback; DOCIT
@@ -230,7 +255,7 @@ module Asm
 		#
 		# Returns nothing
 		def handle_go_stop_button( an_Event )
-			puts '#handle_go_stop_button( ' << an_Event.inspect << ' )'
+			::Asm::Boilerplate::DEBUG::Console.announce( '' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			@stopped = !@stopped
 			if @stopped == false
 				@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::Control::Advance::Run::Counter ).disable()

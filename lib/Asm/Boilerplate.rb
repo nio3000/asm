@@ -139,15 +139,69 @@ module Asm
 			end
 			return
 		end
-		# paranoid typechecking boilerplate
-		#
-		# argument - an object whose type is being checked
-		# type - the type which argument's type must be for the check to not fail.
-		#
-		# Returns true iff arugment is of type type.
-		#def	self.true_if_type( argument ,type )
-		#	return	argument.kind_of? type
-		#end
+=begin
+		# Asm::Boilerplate::DEBUG
+		* boilerplate from debugging
+		* management of boilerplate from debugging
+			* if it's not defined under this module, it isn't managed by this module.
+=end
+		module DEBUG
+=begin
+			# Asm::Boilerplate::DEBUG::Control
+			* management of boilerplate from debugging
+				* globally accessible bools to govern output
+				* if your DEBUG boilerplate can be disabled without deleting the line of code, then put a bool for it here or use one of these.
+=end
+			module Control
+=begin
+				# Asm::Boilerplate::DEBUG::Control::Manner
+				* governing the methods of DEBUG output
+					* console ...
+					* raise ::Asm::Boilerplate::Exception::DEBUG.new( ... )
+=end
+				module Manner
+					Console = true	# allow managed methods to use puts or print
+					Raise	= true	# allow managed methods to raise Asm::Boilerplate::Exception::DEBUG instances
+				end
+=begin
+				# Asm::Boilerplate::DEBUG::Control::Concern
+				* governing the content of DEBUG output for special concerns
+					* GUI
+					* Loader
+					* VM
+					* BCPU	# Asm::BCPU
+					* Scope	# when are you where
+=end
+				module Concern
+					GUI	= true
+					Loader	= true
+					VM	= true
+					BCPU	= true
+					Scope	= true
+				end
+			end
+=begin
+			# Asm::Boilerplate::DEBUG::Console
+			* managed debug boilerplate that primarily uses the console to communicate information during execution
+=end
+			module Console
+				# ::Asm::Boilerplate::DEBUG::Console.announce
+				# code to get scope information from inside a method
+				# * will print out the name of the method containing
+				def self.announce( append_this_String = '' ,a_bool = true ,prepend_this_string = 'DEBUG: ' ,delim = ': ' )
+					if a_bool && Asm::Boilerplate::DEBUG::Control::Manner::Console && Asm::Boilerplate::DEBUG::Control::Concern::Scope
+						#output	= '' << prepend_this_string + caller[1][/`.*'/][1..-2]
+						#output	= '' << prepend_this_string + caller.to_s
+						#puts caller.to_s
+						output	= '' << prepend_this_string + caller[0][/[a-zA-Z0-9 ]+.rb:[0-9]+/] + ' in ' + caller[0][/`.*'/][1..-2]
+						if	!append_this_String.empty?
+							output << delim << append_this_String
+						end
+						puts output
+					end
+				end
+			end
+		end
 =begin
 		# Asm::Boilerplate::Bitset
 =end
@@ -178,6 +232,8 @@ module Asm
 			class Asm::Boilerplate::Exception::Overflow < ::Exception
 			end
 			class Asm::Boilerplate::Exception::Misaka_Mikoto < ::Exception
+			end
+			class Asm::Boilerplate::Exception::DEBUG < ::Exception
 			end
 		end
 	end
