@@ -201,7 +201,11 @@ module Asm
 				else
 					@main_GUI_sheet.find_window_by_name( Asm::Magic::GUI::Names::VM::State::Memories[index] ).set_background_colour( ::Asm::Magic::GUI::Colour::Default )
 				end
+				@main_GUI_sheet.find_window_by_name( ::Asm::Magic::GUI::Names::VM::State::Memories[index] ).refresh
 			end
+			# Force update of the affected widgets; lack of update has been an issue on one windows machine, but not one linux machine.
+			@main_GUI_sheet.find_window_by_name( ::Asm::Magic::GUI::Names::VM::Frame ).refresh
+			#
 			::Asm::Boilerplate::DEBUG::Console.announce( 'complete update' ,Asm::Boilerplate::DEBUG::Control::Concern::GUI )
 			return
 		end

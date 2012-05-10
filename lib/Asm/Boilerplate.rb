@@ -170,6 +170,7 @@ module Asm
 					* Loader
 					* VM
 					* BCPU	# Asm::BCPU
+						* Lexical_casting	# when converting between types, don't lose information
 					* Scope	# when are you where
 =end
 				module Concern
@@ -177,7 +178,10 @@ module Asm
 					Loader	= true
 					VM	= true
 					BCPU	= true
+						Lexical_casting	= true
 					Scope	= true
+					Invalid_usage	= true
+					Incorrect_results	= true
 				end
 			end
 =begin
@@ -198,6 +202,49 @@ module Asm
 							output << delim << append_this_String
 						end
 						puts output
+					end
+				end
+				# ::Asm::Boilerplate::DEBUG::Console.assert
+				# code to notify if a condition is not met
+				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true )
+					if !the_result_of_the_test && Asm::Boilerplate::DEBUG::Control::Manner::Raise && a_boolean
+						if	Asm::Boilerplate::DEBUG::Control::Concern::Scope
+							::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_boolean ,'ASSERT: ' )
+						else
+							puts a_message unless a_boolean
+						end
+					end
+				end
+			end
+=begin
+			# Asm::Boilerplate::DEBUG::Exception
+			* managed debug boilerplate that primarily uses exceptions to communicate information during execution
+=end
+			module Exception
+				# ::Asm::Boilerplate::DEBUG::Exception.assert
+				# code to raise if a condition is not met
+				# * will raise an exception of a given type
+				# 	* default type for exceptions raised is `Asm::Boilerplate::Exception::DEBUG`
+				# * if raises have been disallowed, then this will use console instead.
+				def self.assert( the_result_of_the_test ,a_message = 'undocumented' ,a_boolean = true ,an_exception_type = Asm::Boilerplate::Exception::DEBUG )
+					if Asm::Boilerplate::DEBUG::Control::Manner::Raise && a_boolean
+						raise an_exception_type.new( a_message ) unless the_result_of_the_test
+					elsif !the_result_of_the_test && Asm::Boilerplate::DEBUG::Control::Manner::Console
+						::Asm::Boilerplate::DEBUG::Console.announce( a_message ,a_boolean ,'ASSERT: ' )
+					end
+				end
+			end
+			module String
+				# DOCIT
+				def self.report_an_Integer( an_Integer ,prepend_this_String = 'an_Integer = ' ,append_this_String = '' )
+					begin
+						if an_Integer.integer?
+							return	'' << prepend_this_String << an_Integer.to_s << append_this_String
+						else
+							return	'' << prepend_this_String << an_Integer.to_i.to_s << append_this_String
+						end
+					rescue
+						Asm::Boilerplate::DEBUG::Exception.assert( false ,'the type of the argument is disagreable OR to_s and to_i methods may have thrown.' )
 					end
 				end
 			end
