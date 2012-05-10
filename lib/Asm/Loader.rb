@@ -160,8 +160,8 @@ module Asm
 		# Returns nothing
 		def map_bits_to_bits( from_Range ,from_Word ,to_Range ,to_Word ,bCPU_range_checking = true )
 			::Asm::Boilerplate::DEBUG::Console.announce( '' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader )
-			puts '#map_bits_to_bits,args |-> from_Range = ' << from_Range.to_s << '; to_Range = ' << to_Range.to_s << ''
-			puts '#map_bits_to_bits,args |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''
+			#puts '#map_bits_to_bits,args |-> from_Range = ' << from_Range.to_s << '; to_Range = ' << to_Range.to_s << ''
+			#puts '#map_bits_to_bits,args |-> from_Word = ' << from_Word.to_s << '; to_Word = ' << to_Word.to_s << ''
 			# paranoid type checking
 			Asm::Boilerplate::raise_unless_type( from_Range ,::Range )
 			Asm::Boilerplate::raise_unless_type( to_Range ,::Range )
@@ -188,13 +188,13 @@ module Asm
 			from_Range.each do |from_index|
 				to_index	= ::Asm::Boilerplate.socks!( to_Range, to_range_index )
 				raise 'shenanigans' unless to_Range.include?( to_index )
-				puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))	<< '[' << to_index.to_s << ']=' << ((from_Word.the_bits[from_index])?('true'):('false'))	<< '[' << from_index.to_s << ']'
+				#puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))	<< '[' << to_index.to_s << ']=' << ((from_Word.the_bits[from_index])?('true'):('false'))	<< '[' << from_index.to_s << ']'
 				to_Word.the_bits[to_index]	= from_Word.the_bits[from_index]
 				to_Word.the_bits[to_index]	= ((from_Word.the_bits[from_index])?(true):(false))
-				puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))
+				#puts '' << ((to_Word.the_bits[to_index])?('true'):('false'))
 				to_range_index	= to_range_index + 1
 			end
-			puts "#map_bits_to_bits |-> from_Word = #{from_Word}; to_Word = #{to_Word}"
+			#puts "#map_bits_to_bits |-> from_Word = #{from_Word}; to_Word = #{to_Word}"
 			return
 		end
 
@@ -415,7 +415,7 @@ module Asm
 			end
 			location = self.getLocationFromLoadIndex()
 			self.incrementLoadIndex()
-			puts "#instruction_format__keyword_RD_RA_RB, location = #{location}; value = #{value}"
+			#puts "#instruction_format__keyword_RD_RA_RB, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_RB )
 			return
@@ -453,7 +453,7 @@ module Asm
 			end
 			location = self.getLocationFromLoadIndex()
 			self.incrementLoadIndex()
-			puts "#instruction_format__keyword_RD_RA, location = #{location}; value = #{value}"
+			#puts "#instruction_format__keyword_RD_RA, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
 			return
@@ -498,7 +498,7 @@ module Asm
 			end
 			location = self.getLocationFromLoadIndex()
 			self.incrementLoadIndex()
-			puts "#instruction_format__keyword_RD_RA_literal, location = #{location}; value = #{value}"
+			#puts "#instruction_format__keyword_RD_RA_literal, location = #{location}; value = #{value}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA_lit )
 			return
@@ -543,7 +543,7 @@ module Asm
 			end
 			location = self.getLocationFromLoadIndex()
 			self.incrementLoadIndex()
-			puts '#instruction_format__keyword_RD_literal_RA, location = ' << location.to_s << ';value = ' << value.to_s
+			#puts '#instruction_format__keyword_RD_literal_RA, location = ' << location.to_s << ';value = ' << value.to_s
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_RA )
 			return
@@ -580,7 +580,7 @@ module Asm
 			end
 			location = self.getLocationFromLoadIndex()
 			self.incrementLoadIndex()
-			puts "#instruction_format__keyword_RD_literal, location = #{location.to_s}; value = #{value.to_s}"
+			#puts "#instruction_format__keyword_RD_literal, location = #{location.to_s}; value = #{value.to_s}"
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Key_RD_lit )
 			return
@@ -600,7 +600,7 @@ module Asm
 			wordLit = self.word_from_numeric_literal( memory_value_literal )
 			value = Asm::BCPU::Memory::Value.new( wordLit.the_bits )
 
-			puts "location.to_s=\"#{location}\"; value.to_s=\"#{value}\";" # confirmed that location and value have the correct content.
+			#puts "location.to_s=\"#{location}\"; value.to_s=\"#{value}\";" # confirmed that location and value have the correct content.
 			self.the_Virtual_Machine.set_location_to_value(location, value)
 			::Asm::Boilerplate::DEBUG::Console.announce( 'end' ,::Asm::Boilerplate::DEBUG::Control::Concern::Loader && ::Asm::Boilerplate::DEBUG::Control::Concern::Directive )
 			return

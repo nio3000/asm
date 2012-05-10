@@ -385,25 +385,6 @@ module Asm::BCPU
 				end
 				result	= twos_complement_result
 			end
-=begin
-			if force_twos_complement
-				#result	= (2 ** Asm::Magic::Memory::Bits_per::Word) - result + 1
-				#result	= - result
-				puts '' << @the_bits.to_s << ' interpretted as ' << result.to_s
-				Asm::Magic::Binary::Twos_complement.assert_valid( result )
-				#assert( result < Asm::Magic::Binary::Twos_complement::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
-				#assert( Asm::Magic::Binary::Twos_complement::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
-			elsif force_unsigned
-				Asm::Magic::Binary::Unsigned.assert_valid( result )
-				raise 'shenanigans' << @the_bits.to_s.to_i( 2 ).to_s << '==' << result.to_s unless @the_bits.to_s.to_i( 2 ) == result
-				#assert( result < Asm::Magic::Binary::Unsigned::Exclusive::Maximum , 'unexpected overflow when converting a binary string to an Integer; number too positive' )
-				#assert( Asm::Magic::Binary::Unsigned::Exclusive::Minimum < result , 'unexpected overflow when converting a binary string to an Integer; number too negative' )
-			else
-				if	!Asm::Magic::Binary::Unsigned.valid?( result )
-					result	= - result + 1
-				end
-			end
-=end
 			::Asm::Boilerplate::DEBUG::Console.announce( ::Asm::Boilerplate::DEBUG::String.report_an_Integer( twos_complement_result ,"2's comp -> " ) + '; ' + ::Asm::Boilerplate::DEBUG::String.report_an_Integer( unsigned_result ,"unsigned -> " ) ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
 			::Asm::Boilerplate::DEBUG::Console.announce( '@the_bits is "' << @the_bits.to_s << '"' ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
 			::Asm::Boilerplate::DEBUG::Console.announce( ::Asm::Boilerplate::DEBUG::String.report_an_Integer( result ,"returned result -> " ) ,Asm::Boilerplate::DEBUG::Control::Concern::Lexical_casting )
